@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -33,8 +34,7 @@ interface GeneratedInvoice {
 }
 
 const InvoiceGenerator = () => {
-  // URL del backend desde las variables de entorno
-  const API_URL = import.meta.env.VITE_API_URL || '/api';
+  const navigate = useNavigate();
 
   const [usageCount, setUsageCount] = useState(0);
   const [showCaptureModal, setShowCaptureModal] = useState(false);
@@ -67,9 +67,7 @@ const InvoiceGenerator = () => {
   };
 
   const generateInvoice = () => {
-    // Redirigir directamente a la aplicación FastAPI
-    // Los usuarios podrán generar cuentas reales en la app
-    window.location.href = `${API_URL}/login`;
+    navigate('/crear-cuenta');
   };
 
   const handleContactSubmit = () => {

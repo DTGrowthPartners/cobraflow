@@ -1,19 +1,43 @@
 from fastapi import FastAPI, Request, Depends, Form, HTTPException
-from typing import Optional
-from fastapi.responses import HTMLResponse, RedirectResponse
+from typing import Optional, List
+from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from datetime import datetime
 import os
+import json
 from . import auth, services
 from fastapi import HTTPException
+from pydantic import BaseModel, Field
+from ..generador import generar_cuenta_de_cobro
 
 app = FastAPI(
     title="Demo Web App - Cuentas de Cobro",
     description="Interfaz web para la generación de cuentas de cobro.",
     version="1.0.0"
 )
+
+class Servicio(BaseModel):
+    descripcion: str = Field(..., example="Desarrollo de landing page")
+    cantidad: int = Field(..., example=1)
+    precio_unitario: float = Field(..., example=500000)
+
+class SolicitudCuenta(BaseModel):
+    nickname_cliente: str = Field(..., example="experiencia_cartagena")
+    valor: float = Field(..., example=2000000)
+    servicios: List[Servicio]
+    concepto: str = Field(..., example="Facturación de servicios de marketing")
+    fecha: str = Field(default_factory=lambda: datetime.now().strftime("%d/%m/%Y"))
+    servicio_proyecto: str = Field("", example="Desarrollo Web, Marketing Digital")
+
+def get_client_data_local(nickname: str):
+    try:
+        with open(os.path.join(project_root, "clientes.json"), "r", encoding="utf-8") as f:
+            clientes = json.load(f)
+        return clientes.get(nickname)
+    except FileNotFoundError:
+        return None
 
 # --- MIDDLEWARE Y CONFIGURACIÓN ---
 SECRET_KEY = "tu-super-secreto-key-debe-cambiarse"
@@ -74,6 +98,45 @@ async def get_base6():
     raise HTTPException(status_code=404, detail="File not found")
 
 templates = Jinja2Templates(directory=os.path.join(script_dir, "templates"))
+
+# --- API ENDPOINTS ---
+@app.post("/api/crear-cuenta/", summary="Crear una nueva cuenta de cobro")
+async def crear_cuenta(solicitud: SolicitudCuenta):
+    """
+    Genera una cuenta de cobro para un cliente específico.
+    """
+    try:
+        cliente_data = get_client_data_local(solicitud.nickname_cliente)
+
+        if not cliente_data:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Cliente con nickname '{solicitud.nickname_cliente}' no encontrado."
+            )
+
+        servicios_dict = [s.dict() for s in solicitud.servicios]
+
+        ruta_archivo_generado = generar_cuenta_de_cobro(
+            nombre_cliente=cliente_data['nombre_completo'],
+            identificacion=cliente_data['nit'],
+            servicios=servicios_dict,
+            concepto=solicitud.concepto,
+            fecha=solicitud.fecha,
+            servicio_proyecto=solicitud.servicio_proyecto if solicitud.servicio_proyecto else None
+        )
+
+        if not os.path.exists(ruta_archivo_generado):
+            raise HTTPException(status_code=500, detail="Error: el archivo PDF no pudo ser creado.")
+
+        return FileResponse(
+            path=ruta_archivo_generado,
+            media_type='application/pdf',
+            filename=os.path.basename(ruta_archivo_generado)
+        )
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ocurrió un error inesperado: {e}")
 
 # --- RUTAS ---
 

@@ -1,12 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, FileText, Share2, CreditCard } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
-  // URL del backend desde las variables de entorno
-  const API_URL = import.meta.env.VITE_API_URL || '/api';
-  const redirectToApp = () => {
-    // Redirige al login de la aplicación FastAPI
-    window.location.href = `${API_URL}/login`;
+  const navigate = useNavigate();
+  const redirectToCreateAccount = () => {
+    navigate('/crear-cuenta');
   };
 
   return (
@@ -41,7 +40,7 @@ const Hero = () => {
               <Button
                 variant="hero"
                 size="xl"
-                onClick={redirectToApp}
+                onClick={redirectToCreateAccount}
                 className="group"
               >
                 Probar Gratis Ahora
