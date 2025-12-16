@@ -7,7 +7,7 @@ const Hero = () => {
   const app_sirve = import.meta.env.VITE_API_URL || 'http://localhost:8000';
   const redirectToApp = () => {
     // Redirige al login de la aplicación FastAPI
-    window.location.href = `http://localhost:8000/login`;
+    window.location.href = `${API_URL}/login`;
   };
 
   return (
