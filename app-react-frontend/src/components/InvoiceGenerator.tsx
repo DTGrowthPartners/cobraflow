@@ -34,7 +34,7 @@ interface GeneratedInvoice {
 
 const InvoiceGenerator = () => {
   // URL del backend desde las variables de entorno
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const API_URL = import.meta.env.VITE_API_URL || '/api';
 
   const [usageCount, setUsageCount] = useState(0);
   const [showCaptureModal, setShowCaptureModal] = useState(false);

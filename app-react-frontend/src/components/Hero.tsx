@@ -3,8 +3,7 @@ import { ArrowRight, FileText, Share2, CreditCard } from 'lucide-react';
 
 const Hero = () => {
   // URL del backend desde las variables de entorno
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-  const app_sirve = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const API_URL = import.meta.env.VITE_API_URL || '/api';
   const redirectToApp = () => {
     // Redirige al login de la aplicación FastAPI
     window.location.href = `${API_URL}/login`;
