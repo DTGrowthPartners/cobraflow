@@ -799,4 +799,4 @@ if __name__ == "__main__":
     import uvicorn
     # Se asume que este comando se ejecuta desde el directorio raíz del proyecto
     # Ejemplo: python -m webapp.app
-    uvicorn.run("webapp.app:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("webapp.app:app", host="0.0.0.0", port=8001, reload=True)
