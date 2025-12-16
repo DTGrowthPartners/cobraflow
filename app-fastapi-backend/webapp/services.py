@@ -49,7 +49,16 @@ def generate_invoice_service(
     fecha: str,
     servicio_proyecto: str,
     nombre_empresa: str = "",
-    fuente_seleccionada: str = "HelveticaNeue.ttf"
+    fuente_seleccionada: str = "HelveticaNeue.ttf",
+    emisor_nombre: str = "Dairo Tralasviña",
+    emisor_cedula: str = "1143397563",
+    emisor_telefono: str = "+57 3007189383",
+    emisor_email: str = "Dairo@dtgrowthpartners.com",
+    emisor_ciudad: str = "Cartagena, Colombia",
+    cuenta_bancolombia: str = "78841707710",
+    nequi_daviplata: str = "+57 3007189383",
+    nota_pago: str = "Se solicita que el pago sea realizado a la mayor brevedad posible",
+    firma: str = "Dairo Tralasviña,"
 ) -> str:
     """
     Llama a la función principal para generar el PDF de la cuenta de cobro.
@@ -60,7 +69,7 @@ def generate_invoice_service(
     client_data = get_client_by_nickname(nickname_cliente)
     if not client_data:
         raise ValueError(f"Cliente '{nickname_cliente}' no encontrado.")
-
+    
     # Llamada a la función importada del módulo generador
     pdf_path = generar_cuenta_de_cobro(
         nombre_cliente=client_data['nombre_completo'],
@@ -70,7 +79,16 @@ def generate_invoice_service(
         fecha=fecha,
         servicio_proyecto=servicio_proyecto,
         nombre_empresa=nombre_empresa,
-        fuente_seleccionada=fuente_seleccionada
+        fuente_seleccionada=fuente_seleccionada,
+        emisor_nombre=emisor_nombre,
+        emisor_cedula=emisor_cedula,
+        emisor_telefono=emisor_telefono,
+        emisor_email=emisor_email,
+        emisor_ciudad=emisor_ciudad,
+        cuenta_bancolombia=cuenta_bancolombia,
+        nequi_daviplata=nequi_daviplata,
+        nota_pago=nota_pago,
+        firma=firma
     )
     
     return pdf_path
@@ -333,3 +351,55 @@ def list_fonts() -> List[Dict[str, str]]:
     # Ordenar alfabéticamente
     fonts.sort(key=lambda x: x['name'])
     return fonts
+
+def save_billing_data(emisor_nombre: str, emisor_cedula: str, emisor_telefono: str, emisor_email: str, emisor_ciudad: str, cuenta_bancolombia: str, nequi_daviplata: str, nota_pago: str, firma: str) -> bool:
+    """
+    Guarda los datos de facturación en un archivo JSON.
+    """
+    try:
+        billing_data = {
+            "emisor_nombre": emisor_nombre,
+            "emisor_cedula": emisor_cedula,
+            "emisor_telefono": emisor_telefono,
+            "emisor_email": emisor_email,
+            "emisor_ciudad": emisor_ciudad,
+            "cuenta_bancolombia": cuenta_bancolombia,
+            "nequi_daviplata": nequi_daviplata,
+            "nota_pago": nota_pago,
+            "firma": firma
+        }
+
+        billing_file = os.path.join(os.path.dirname(__file__), '..', 'billing_data.json')
+        with open(billing_file, "w", encoding="utf-8") as f:
+            json.dump(billing_data, f, indent=2, ensure_ascii=False)
+
+        return True
+    except Exception as e:
+        print(f"Error al guardar datos de facturación: {e}")
+        return False
+
+def get_billing_data() -> Dict[str, str]:
+    """
+    Obtiene los datos de facturación desde el archivo JSON.
+    """
+    try:
+        billing_file = os.path.join(os.path.dirname(__file__), '..', 'billing_data.json')
+        if os.path.exists(billing_file):
+            with open(billing_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        else:
+            # Valores por defecto
+            return {
+                "emisor_nombre": "Dairo Tralasviña",
+                "emisor_cedula": "1143397563",
+                "emisor_telefono": "+57 3007189383",
+                "emisor_email": "Dairo@dtgrowthpartners.com",
+                "emisor_ciudad": "Cartagena, Colombia",
+                "cuenta_bancolombia": "78841707710",
+                "nequi_daviplata": "+57 3007189383",
+                "nota_pago": "Se solicita que el pago sea realizado a la mayor brevedad posible",
+                "firma": "Dairo Tralasviña,"
+            }
+    except Exception as e:
+        print(f"Error al cargar datos de facturación: {e}")
+        return {}

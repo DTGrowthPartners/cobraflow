@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -34,12 +33,10 @@ interface GeneratedInvoice {
 }
 
 const InvoiceGenerator = () => {
-  const navigate = useNavigate();
-
   const [usageCount, setUsageCount] = useState(0);
   const [showCaptureModal, setShowCaptureModal] = useState(false);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
-  const [generatedInvoice, setGeneratedInvoice] = useState<GeneratedInvoice | null>(null);
+  const [generatedInvoice] = useState<GeneratedInvoice | null>(null);
   const [copied, setCopied] = useState(false);
   const [contactInfo, setContactInfo] = useState('');
 
@@ -67,7 +64,9 @@ const InvoiceGenerator = () => {
   };
 
   const generateInvoice = () => {
-    navigate('/crear-cuenta');
+    // Redirigir al login del backend
+    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    window.location.href = `${backendUrl}/login`;
   };
 
   const handleContactSubmit = () => {

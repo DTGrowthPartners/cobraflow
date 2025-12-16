@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, FileText, Share2, CreditCard } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
-  const navigate = useNavigate();
-  const redirectToCreateAccount = () => {
-    navigate('/crear-cuenta');
+  const redirectToApp = () => {
+    // Redirige al login del backend
+    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    window.location.href = `${backendUrl}/login`;
   };
 
   return (
@@ -40,7 +40,7 @@ const Hero = () => {
               <Button
                 variant="hero"
                 size="xl"
-                onClick={redirectToCreateAccount}
+                onClick={redirectToApp}
                 className="group"
               >
                 Probar Gratis Ahora

@@ -3,10 +3,11 @@
 {% block title %}Dashboard - Generador de Cuentas{% endblock %}
 
 {% block content %}
-<div class="dashboard-grid">
-
-    <!-- Sección Crear Cuenta -->
-    <div class="card active-section" id="crear-cuenta">
+<div class="dashboard-wrapper">
+    <!-- Sección Superior: 2 columnas (80% / 20%) -->
+    <div class="dashboard-top-grid">
+        <!-- Columna Izquierda: Generación de PDF (80%) -->
+        <div class="card active-section" id="crear-cuenta">
         <h2 data-subtitle="Crear y descargar PDF rápidamente">Generar Nueva Cuenta de Cobro</h2>
 
         {% if success_message %}
@@ -85,72 +86,115 @@
                 </div>
                 <!-- Puedes añadir más bloques de servicio si quieres permitir más de uno por defecto -->
             </div>
-            <button type="button" onclick="addMoreServices()" class="btn btn-primary btn-block">Añadir Otro Servicio</button>
+            <button type="button" onclick="addMoreServices()" class="btn btn-secondary btn-block">Añadir Otro Servicio</button>
 
             <hr>
 
             <button type="submit" class="btn btn-primary btn-block">Generar Cuenta</button>
         </form>
 
-        <!-- Sección para añadir nuevos servicios (Acordión) - Solo Desktop -->
-        <div class="accordion desktop-only">
-            <div class="accordion-header" onclick="toggleAccordion('service-accordion')">
-                <h3>📝 Añadir Nuevo Servicio</h3>
-                <span class="accordion-icon">+</span>
-            </div>
-            <div class="accordion-content" id="service-accordion">
-                <form class="add-form">
-                    <div class="form-group">
-                        <label for="desktop-service-name">Nombre del Servicio:</label>
-                        <input type="text" id="desktop-service-name" required placeholder="Ej: Desarrollo de App Móvil">
-                    </div>
-                    <div class="form-group">
-                        <label for="desktop-service-desc">Descripción:</label>
-                        <textarea id="desktop-service-desc" required placeholder="Descripción detallada del servicio"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="desktop-service-cat">Categoría:</label>
-                        <input type="text" id="desktop-service-cat" required placeholder="Ej: Desarrollo">
-                    </div>
-                    <button type="button" onclick="addNewServiceDesktop()" class="btn btn-primary btn-block">Añadir Servicio</button>
-                </form>
+    </div>
+
+        <!-- Columna Derecha: Personalización (20%) -->
+        <div class="card personalization-sidebar desktop-only" id="personalizacion-panel">
+            <h3>⚙️ Opciones Rápidas</h3>
+
+            <!-- Botón para cambiar base del PDF -->
+            <button type="button" onclick="openBaseModal()" class="btn btn-primary btn-block" style="margin-bottom: 12px;">
+                🎨 Cambiar Plantilla
+            </button>
+
+            <!-- Botón de Gestión -->
+            <button type="button" onclick="openManagementModal()" class="btn btn-secondary btn-block">
+                👥 Gestionar Datos
+            </button>
+
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border-light);">
+
+            <!-- Añadir servicios rápido -->
+            <div class="quick-add-section">
+                <h4 style="font-size: 0.9rem; margin-bottom: 12px; color: var(--text-secondary);">Añadir Rápido</h4>
+                <button type="button" onclick="toggleAccordion('service-accordion-sidebar')" class="btn btn-ghost btn-block btn-sm accordion-toggle">
+                    <span>+ Nuevo Servicio</span>
+                    <span class="accordion-icon">+</span>
+                </button>
+                <div class="accordion-content" id="service-accordion-sidebar" style="margin-top: 12px;">
+                    <form class="add-form compact-form">
+                        <div class="form-group">
+                            <input type="text" id="sidebar-service-name" required placeholder="Nombre del Servicio" class="input-sm">
+                        </div>
+                        <div class="form-group">
+                            <textarea id="sidebar-service-desc" required placeholder="Descripción" rows="2" class="input-sm"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="sidebar-service-cat" required placeholder="Categoría" class="input-sm">
+                        </div>
+                        <button type="button" onclick="addNewServiceSidebar()" class="btn btn-primary btn-block btn-sm">Añadir</button>
+                    </form>
+                </div>
+
+                <button type="button" onclick="toggleAccordion('client-accordion-sidebar')" class="btn btn-ghost btn-block btn-sm accordion-toggle" style="margin-top: 8px;">
+                    <span>+ Nuevo Cliente</span>
+                    <span class="accordion-icon">+</span>
+                </button>
+                <div class="accordion-content" id="client-accordion-sidebar" style="margin-top: 12px;">
+                    <form class="add-form compact-form">
+                        <div class="form-group">
+                            <input type="text" id="sidebar-client-nickname" required placeholder="Nickname" class="input-sm">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="sidebar-client-name" required placeholder="Nombre Completo" class="input-sm">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="sidebar-client-address" required placeholder="Dirección" class="input-sm">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="sidebar-client-nit" required placeholder="NIT" class="input-sm">
+                        </div>
+                        <button type="button" onclick="addNewClientSidebar()" class="btn btn-primary btn-block btn-sm">Añadir</button>
+                    </form>
+                </div>
+
+                <button type="button" onclick="toggleAccordion('billing-accordion-sidebar')" class="btn btn-ghost btn-block btn-sm accordion-toggle" style="margin-top: 8px;">
+                    <span>+ Datos de Facturaci?n</span>
+                    <span class="accordion-icon">+</span>
+                </button>
+                <div class="accordion-content" id="billing-accordion-sidebar" style="margin-top: 12px;">
+                    <form class="add-form compact-form">
+                        <div class="form-group">
+                            <input type="text" id="sidebar-emisor-nombre" required placeholder="Nombre del Emisor" class="input-sm">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="sidebar-emisor-cedula" required placeholder="Cédula/NIT" class="input-sm">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="sidebar-emisor-telefono" required placeholder="Teléfono" class="input-sm">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="sidebar-emisor-email" required placeholder="Email" class="input-sm">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="sidebar-emisor-ciudad" required placeholder="Ciudad" class="input-sm">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="sidebar-emisor-cuenta" required placeholder="Cuenta Bancolombia" class="input-sm">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="sidebar-emisor-nequi" required placeholder="Nequi/Daviplata" class="input-sm">
+                        </div>
+                        <div class="form-group">
+                            <textarea id="sidebar-emisor-nota" required placeholder="Nota de Pago" rows="2" class="input-sm"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="sidebar-emisor-firma" required placeholder="Firma (Atentamente)" class="input-sm">
+                        </div>
+                        <button type="button" onclick="saveBillingData()" class="btn btn-primary btn-block btn-sm">Guardar</button>
+                        <button type="button" onclick="loadBillingData(true)" class="btn btn-secondary btn-block btn-sm" style="margin-top: 8px;">Cargar Datos</button>
+                    </form>
+                </div>
             </div>
         </div>
-
-        <!-- Sección para añadir nuevos clientes (Acordión) - Solo Desktop -->
-        <div class="accordion desktop-only">
-            <div class="accordion-header" onclick="toggleAccordion('client-accordion')">
-                <h3>👥 Añadir Nuevo Cliente</h3>
-                <span class="accordion-icon">+</span>
-            </div>
-            <div class="accordion-content" id="client-accordion">
-                <form class="add-form">
-                    <div class="form-group">
-                        <label for="desktop-client-nickname">Nickname (identificador):</label>
-                        <input type="text" id="desktop-client-nickname" required placeholder="Ej: nuevo_cliente">
-                    </div>
-                    <div class="form-group">
-                        <label for="desktop-client-name">Nombre Completo:</label>
-                        <input type="text" id="desktop-client-name" required placeholder="Ej: Empresa Nueva S.A.S">
-                    </div>
-                    <div class="form-group">
-                        <label for="desktop-client-address">Dirección:</label>
-                        <input type="text" id="desktop-client-address" required placeholder="Ej: Cra 10 #20-30, Cartagena">
-                    </div>
-                    <div class="form-group">
-                        <label for="desktop-client-nit">NIT:</label>
-                        <input type="text" id="desktop-client-nit" required placeholder="Ej: 9012345678">
-                    </div>
-                    <button type="button" onclick="addNewClientDesktop()" class="btn btn-primary btn-block">Añadir Cliente</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Botón de Gestión - Solo Desktop -->
-        <button type="button" onclick="openManagementModal()" class="btn btn-primary btn-block desktop-only" style="margin-top: 20px;">Gestión de Clientes y Servicios</button>
-
-        <!-- Botón para cambiar base del PDF - Solo Desktop -->
-        <button type="button" onclick="openBaseModal()" class="btn btn-primary btn-block desktop-only" style="margin-top: 10px;" id="personalizacion">Cambiar Base del PDF</button>
+    </div>
 
         <!-- Modal de Gestión -->
         <div id="management-modal" class="modal" style="display: none;">
@@ -283,14 +327,15 @@
         </div>
     </div>
 
-    <!-- Columna derecha: Historial -->
-    <div class="card" id="historial">
-        <h2 data-subtitle="Historial reciente de archivos generados">Historial de Cuentas Generadas</h2>
-        <div class="history-list">
+    <!-- Sección Inferior: Historial (ancho completo) -->
+    <div class="dashboard-bottom">
+        <div class="card" id="historial">
             {% if history %}
-                <div style="margin-bottom: 10px;">
-                    <button onclick="deleteSelectedInvoices()" class="btn btn-danger">Eliminar Seleccionados</button>
-                </div>
+        <h2 data-subtitle="Historial reciente de archivos generados" style="    display: flex;
+    justify-content: space-between;">Historial de Cuentas Generadas                     <button onclick="deleteSelectedInvoices()" class="btn btn-danger">Eliminar Seleccionados</button>
+</h2>  
+        <div class="history-list">
+               
                 <table>
                     <thead>
                         <tr>
@@ -321,16 +366,268 @@
             {% endif %}
         </div>
     </div>
-
 </div>
 
 <style>
-    .servicio-item {
-        background: var(--bg-subtle);
-        border-radius: var(--radius-lg);
-        padding: 20px;
+    /* Layout del Dashboard: 2 columnas arriba + 1 abajo */
+    .dashboard-wrapper {
+        padding: 2em 4em;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
+    .dashboard-top-grid {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .dashboard-bottom {
+        width: 100%;
+    }
+
+    .personalization-sidebar {
+        position: sticky;
+        top: 100px;
+        height: fit-content;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+    }
+
+    .personalization-sidebar h3 {
+        font-size: 1.1rem;
         margin-bottom: 16px;
-        border: 1px solid var(--border-light);
+        color: var(--text-primary);
+    }
+
+    .quick-add-section {
+        margin-top: 16px;
+    }
+
+    .compact-form .form-group {
+        margin-bottom: 10px;
+    }
+
+    .input-sm {
+        padding: 8px 12px;
+        font-size: 0.875rem;
+    }
+
+    .btn-sm {
+        padding: 8px 14px;
+        font-size: 0.875rem;
+    }
+    
+    .base-preview {
+        width: 150px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Responsive: Mobile */
+    @media (max-width: 1024px) {
+        .dashboard-wrapper {
+            padding: 1em 2em;
+        }
+
+        .dashboard-top-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .personalization-sidebar {
+            position: static;
+            max-height: none;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-wrapper {
+            padding: .5em;
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .servicio-item {
+            padding: 16px;
+        }
+
+        .input-with-dropdown {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-with-dropdown select,
+        .input-with-dropdown input {
+            min-width: 100%;
+            width: 100%;
+        }
+
+        .accordion-header {
+            padding: 12px 16px;
+        }
+
+        .accordion-body {
+            padding: 16px;
+        }
+
+        .btn-group {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn-group .btn {
+            width: 100%;
+        }
+        .base-preview {
+            width: 110px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* PDF Preview mobile improvements for tablets */
+        .pdf-preview {
+            margin: 16px 0;
+            padding: 16px;
+            border-radius: var(--radius-md);
+        }
+
+        .pdf-preview iframe {
+            min-height: 250px;
+            height: 250px;
+            border-radius: var(--radius-sm);
+        }
+
+        .pdf-preview .btn-secondary {
+            width: 100%;
+            justify-content: center;
+            padding: 14px 20px;
+            font-size: 0.875rem;
+            margin-top: 8px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .dashboard-wrapper {
+            padding: 0.2em;
+        }
+
+        .card {
+            padding: 16px;
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            font-size: 0.875rem;
+            margin-bottom: 4px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            font-size: 0.875rem;
+            padding: 8px 12px;
+        }
+
+        .servicio-item {
+            padding: 12px;
+        }
+
+        /* Table responsive */
+        .history-list {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            font-size: 0.7rem;
+            min-width: 600px;
+        }
+
+        table th,
+        table td {
+            padding: 6px 4px;
+            white-space: nowrap;
+        }
+
+        table th:nth-child(4),
+        table td:nth-child(4) {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        table td .btn {
+            padding: 6px 10px;
+            font-size: 0.75rem;
+            margin: 2px 0;
+            display: inline-block;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            font-size: 0.875rem;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.75rem;
+        }
+
+        .accordion-header h3 {
+            font-size: 0.9rem;
+        }
+
+        #historial h2 {
+            flex-wrap: wrap;
+        }
+
+        #historial h2 button {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        /* Extra small mobile devices */
+        .pdf-preview {
+            margin: 12px 0;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+        }
+
+        .pdf-preview iframe {
+            min-height: 200px;
+            height: 250px;
+        }
+
+        .pdf-preview .btn-secondary {
+            padding: 12px 16px;
+            font-size: 0.8125rem;
+            border-radius: var(--radius-sm);
+        }
     }
     
     .input-with-dropdown {
@@ -353,6 +650,13 @@
         border: 1px solid var(--border-light);
         border-radius: var(--radius-lg);
         overflow: hidden;
+    }
+
+    .accordion-toggle {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
     }
     
     .accordion-header {
@@ -390,9 +694,9 @@
     .base-options {
         display: flex;
         flex-wrap: wrap;
-        gap: 20px;
+        gap: 0px;
         justify-content: center;
-        margin-top: 20px;
+        margin-top: 10px;
     }
     
     .base-option {
@@ -411,13 +715,6 @@
         border-color: var(--primary-purple);
     }
     
-    .base-preview {
-        width: 150px;
-        height: 200px;
-        object-fit: cover;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
     
     .base-option p {
         margin: 10px 0 0 0;
@@ -502,11 +799,133 @@
         border-radius: var(--radius-md);
         border: 1px solid var(--border-light);
         margin-bottom: 10px;
+        width: 100%;
+        min-height: 250px;
+        height: 400px;
     }
+    
+    .pdf-preview .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--primary-purple);
+        color: white;
+        padding: 12px 20px;
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .pdf-preview .btn-secondary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    input#primary-color, input#secondary-color {
+    width: 100%;
+    height: 40px;
+    border: solid 1px #FEFEFE;
+}
+
+/* Modal overlay styling */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal .close {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.2s ease;
+}
+
+.modal .close:hover {
+    color: #333;
+}
 </style>
 
 <script>
     let serviceCounter = 1;
+    const API_BASE_URL = "{{ api_base_url }}";
+
+    // Modal close handler functions
+    let modalClickHandlers = {};
+    let modalKeyHandlers = {};
+
+    function setupModalCloseHandlers(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        // Click outside handler
+        modalClickHandlers[modalId] = function(event) {
+            if (event.target === modal) {
+                if (modalId === 'base-modal') {
+                    closeBaseModal();
+                } else if (modalId === 'management-modal') {
+                    closeManagementModal();
+                }
+            }
+        };
+
+        // ESC key handler
+        modalKeyHandlers[modalId] = function(event) {
+            if (event.key === 'Escape') {
+                if (modalId === 'base-modal') {
+                    closeBaseModal();
+                } else if (modalId === 'management-modal') {
+                    closeManagementModal();
+                }
+            }
+        };
+
+        // Add event listeners
+        modal.addEventListener('click', modalClickHandlers[modalId]);
+        document.addEventListener('keydown', modalKeyHandlers[modalId]);
+    }
+
+    function removeModalCloseHandlers(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        // Remove click handler
+        if (modalClickHandlers[modalId]) {
+            modal.removeEventListener('click', modalClickHandlers[modalId]);
+            delete modalClickHandlers[modalId];
+        }
+
+        // Remove key handler
+        if (modalKeyHandlers[modalId]) {
+            document.removeEventListener('keydown', modalKeyHandlers[modalId]);
+            delete modalKeyHandlers[modalId];
+        }
+    }
 
     function updateServicioInput(dropdown, serviceNumber) {
         const inputField = document.getElementById(`servicio_descripcion_${serviceNumber}`);
@@ -560,7 +979,7 @@
         }
 
         try {
-            const response = await fetch('/api/add_service', {
+            const response = await fetch(API_BASE_URL + '/api/add_service', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -593,7 +1012,7 @@
         }
 
         try {
-            const response = await fetch('/api/add_client', {
+            const response = await fetch(API_BASE_URL + '/api/add_client', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -625,7 +1044,7 @@
         }
 
         try {
-            const response = await fetch('/api/add_service', {
+            const response = await fetch(API_BASE_URL + '/api/add_service', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -658,7 +1077,133 @@
         }
 
         try {
-            const response = await fetch('/api/add_client', {
+            const response = await fetch(API_BASE_URL + '/api/add_client', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `nickname=${encodeURIComponent(nickname)}&nombre_completo=${encodeURIComponent(name)}&direccion=${encodeURIComponent(address)}&nit=${encodeURIComponent(nit)}`
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                Swal.fire('Cliente añadido exitosamente');
+                location.replace(location.href);
+            } else {
+                Swal.fire('Error al añadir el cliente: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error al comunicarse con el servidor');
+        }
+    }
+
+    // Funciones para sidebar
+    async function saveBillingData() {
+        const data = {
+            emisor_nombre: document.getElementById('sidebar-emisor-nombre').value,
+            emisor_cedula: document.getElementById('sidebar-emisor-cedula').value,
+            emisor_telefono: document.getElementById('sidebar-emisor-telefono').value,
+            emisor_email: document.getElementById('sidebar-emisor-email').value,
+            emisor_ciudad: document.getElementById('sidebar-emisor-ciudad').value,
+            cuenta_bancolombia: document.getElementById('sidebar-emisor-cuenta').value,
+            nequi_daviplata: document.getElementById('sidebar-emisor-nequi').value,
+            nota_pago: document.getElementById('sidebar-emisor-nota').value,
+            firma: document.getElementById('sidebar-emisor-firma').value
+        };
+
+        try {
+            const response = await fetch(API_BASE_URL + '/api/save_billing', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(data)
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                Swal.fire('Datos guardados correctamente');
+            } else {
+                Swal.fire('Error al guardar: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error al conectar con el servidor');
+        }
+    }
+
+    async function loadBillingData(showMessage = false) {
+        try {
+            const response = await fetch(API_BASE_URL + '/api/get_billing');
+            const data = await response.json();
+
+            document.getElementById('sidebar-emisor-nombre').value = data.emisor_nombre;
+            document.getElementById('sidebar-emisor-cedula').value = data.emisor_cedula;
+            document.getElementById('sidebar-emisor-telefono').value = data.emisor_telefono;
+            document.getElementById('sidebar-emisor-email').value = data.emisor_email;
+            document.getElementById('sidebar-emisor-ciudad').value = data.emisor_ciudad;
+            document.getElementById('sidebar-emisor-cuenta').value = data.cuenta_bancolombia;
+            document.getElementById('sidebar-emisor-nequi').value = data.nequi_daviplata;
+            document.getElementById('sidebar-emisor-nota').value = data.nota_pago;
+            document.getElementById('sidebar-emisor-firma').value = data.firma;
+
+            if (showMessage) {
+                Swal.fire('Datos cargados correctamente');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            if (showMessage) {
+                Swal.fire('Error al cargar datos');
+            }
+        }
+    }
+
+    async function addNewServiceSidebar() {
+        const name = document.getElementById('sidebar-service-name').value;
+        const desc = document.getElementById('sidebar-service-desc').value;
+        const cat = document.getElementById('sidebar-service-cat').value;
+
+        if (!name || !desc || !cat) {
+            Swal.fire('Por favor complete todos los campos');
+            return;
+        }
+
+        try {
+            const response = await fetch(API_BASE_URL + '/api/add_service', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `nombre=${encodeURIComponent(name)}&descripcion=${encodeURIComponent(desc)}&categoria=${encodeURIComponent(cat)}`
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                Swal.fire('Servicio añadido exitosamente');
+                location.replace(location.href);
+            } else {
+                Swal.fire('Error al añadir el servicio: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error al comunicarse con el servidor');
+        }
+    }
+
+    async function addNewClientSidebar() {
+        const nickname = document.getElementById('sidebar-client-nickname').value;
+        const name = document.getElementById('sidebar-client-name').value;
+        const address = document.getElementById('sidebar-client-address').value;
+        const nit = document.getElementById('sidebar-client-nit').value;
+
+        if (!nickname || !name || !address || !nit) {
+            Swal.fire('Por favor complete todos los campos');
+            return;
+        }
+
+        try {
+            const response = await fetch(API_BASE_URL + '/api/add_client', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -695,7 +1240,7 @@
         }
 
         try {
-            const response = await fetch('/api/delete_invoice', {
+            const response = await fetch(API_BASE_URL + '/api/delete_invoice', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -753,7 +1298,7 @@
         }
 
         try {
-            const response = await fetch('/api/delete_multiple_invoices', {
+            const response = await fetch(API_BASE_URL + '/api/delete_multiple_invoices', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -782,14 +1327,19 @@
 
     function toggleAccordion(accordionId) {
         const content = document.getElementById(accordionId);
-        const icon = content.previousElementSibling.querySelector('.accordion-icon');
+        if (!content) {
+            console.warn(`Accordion content not found for id: ${accordionId}`);
+            return;
+        }
 
-        if (content.style.display === 'none' || !content.style.display) {
-            content.style.display = 'block';
-            icon.textContent = '−';
-        } else {
-            content.style.display = 'none';
-            icon.textContent = '+';
+        const header = content.previousElementSibling;
+        const icon = header ? header.querySelector('.accordion-icon') : null;
+        const shouldOpen = content.style.display === 'none' || !content.style.display;
+
+        content.style.display = shouldOpen ? 'block' : 'none';
+
+        if (icon) {
+            icon.textContent = shouldOpen ? '−' : '+';
         }
     }
 
@@ -797,12 +1347,14 @@
         document.getElementById('management-modal').style.display = 'block';
         document.getElementById('management-type').value = '';
         hideAllManagementSections();
+        setupModalCloseHandlers('management-modal');
     }
 
     function closeManagementModal() {
         document.getElementById('management-modal').style.display = 'none';
         document.getElementById('add-client-form').reset();
         document.getElementById('add-service-form').reset();
+        removeModalCloseHandlers('management-modal');
     }
 
     function hideAllManagementSections() {
@@ -838,10 +1390,10 @@
         try {
             let response;
             if (type === 'client') {
-                response = await fetch('/api/get_clients');
+                response = await fetch(API_BASE_URL + '/api/get_clients');
                 document.getElementById('list-title').textContent = 'Clientes';
             } else if (type === 'service') {
-                response = await fetch('/api/get_services');
+                response = await fetch(API_BASE_URL + '/api/get_services');
                 document.getElementById('list-title').textContent = 'Servicios';
             }
 
@@ -939,7 +1491,7 @@
 
     async function loadClientData(nickname) {
         try {
-            const response = await fetch('/api/get_clients');
+            const response = await fetch(API_BASE_URL + '/api/get_clients');
             const data = await response.json();
             const client = data.clients.find(c => c.nickname === nickname);
             if (client) {
@@ -955,7 +1507,7 @@
 
     async function loadServiceData(index) {
         try {
-            const response = await fetch('/api/get_services');
+            const response = await fetch(API_BASE_URL + '/api/get_services');
             const data = await response.json();
             const service = data.services[index];
             if (service) {
@@ -1070,15 +1622,17 @@
         document.getElementById('secondary-color').addEventListener('input', function() {
             selectedSecondaryColor = this.value;
         });
+        setupModalCloseHandlers('base-modal');
     }
 
     function closeBaseModal() {
         document.getElementById('base-modal').style.display = 'none';
+        removeModalCloseHandlers('base-modal');
     }
 
     async function loadCurrentBase() {
         try {
-            const response = await fetch('/api/get_base');
+            const response = await fetch(API_BASE_URL + '/api/get_base');
             const data = await response.json();
             const currentBase = data.base;
             selectedBase = currentBase;
@@ -1107,7 +1661,7 @@
             toggleColorPickers(currentBase);
             toggleEmpresaField(currentBase);
             
-            const colorResponse = await fetch('/api/get_colors');
+            const colorResponse = await fetch(API_BASE_URL + '/api/get_colors');
             const colorData = await colorResponse.json();
             selectedPrimaryColor = colorData.primary;
             selectedSecondaryColor = colorData.secondary;
@@ -1149,7 +1703,7 @@
 
     async function loadEmpresaFieldVisibility() {
         try {
-            const response = await fetch('/api/get_base');
+            const response = await fetch(API_BASE_URL + '/api/get_base');
             const data = await response.json();
             const currentBase = data.base;
             toggleEmpresaField(currentBase);
@@ -1189,7 +1743,7 @@
     async function saveChanges() {
         if (selectedBase) {
             try {
-                const response = await fetch('/api/set_base', {
+                const response = await fetch(API_BASE_URL + '/api/set_base', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -1215,7 +1769,7 @@
         }
 
         try {
-            const response = await fetch('/api/set_colors', {
+            const response = await fetch(API_BASE_URL + '/api/set_colors', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -1278,6 +1832,7 @@
 
     const originalCloseManagementModal = closeManagementModal;
     closeManagementModal = function() {
+        removeModalCloseHandlers('management-modal');
         originalCloseManagementModal();
         const navItems = document.querySelectorAll('.mobile-nav-item');
         navItems.forEach(nav => nav.classList.remove('active'));
@@ -1303,6 +1858,7 @@
 
     const originalCloseBaseModal = closeBaseModal;
     closeBaseModal = function() {
+        removeModalCloseHandlers('base-modal');
         originalCloseBaseModal();
         const navItems = document.querySelectorAll('.mobile-nav-item');
         navItems.forEach(nav => nav.classList.remove('active'));
@@ -1321,9 +1877,70 @@
         });
     };
 
+    async function saveBillingData() {
+        const data = {
+            emisor_nombre: document.getElementById('sidebar-emisor-nombre').value,
+            emisor_cedula: document.getElementById('sidebar-emisor-cedula').value,
+            emisor_telefono: document.getElementById('sidebar-emisor-telefono').value,
+            emisor_email: document.getElementById('sidebar-emisor-email').value,
+            emisor_ciudad: document.getElementById('sidebar-emisor-ciudad').value,
+            cuenta_bancolombia: document.getElementById('sidebar-emisor-cuenta').value,
+            nequi_daviplata: document.getElementById('sidebar-emisor-nequi').value,
+            nota_pago: document.getElementById('sidebar-emisor-nota').value,
+            firma: document.getElementById('sidebar-emisor-firma').value
+        };
+
+        try {
+            const response = await fetch(API_BASE_URL + '/api/save_billing', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(data)
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                Swal.fire('Éxito', 'Datos de facturación guardados correctamente', 'success');
+            } else {
+                Swal.fire('Error', result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error', 'Error al guardar los datos', 'error');
+        }
+    }
+
+    async function loadBillingData(showAlert = false) {
+        try {
+            const response = await fetch(API_BASE_URL + '/api/get_billing');
+            const data = await response.json();
+
+            document.getElementById('sidebar-emisor-nombre').value = data.emisor_nombre || '';
+            document.getElementById('sidebar-emisor-cedula').value = data.emisor_cedula || '';
+            document.getElementById('sidebar-emisor-telefono').value = data.emisor_telefono || '';
+            document.getElementById('sidebar-emisor-email').value = data.emisor_email || '';
+            document.getElementById('sidebar-emisor-ciudad').value = data.emisor_ciudad || '';
+            document.getElementById('sidebar-emisor-cuenta').value = data.cuenta_bancolombia || '';
+            document.getElementById('sidebar-emisor-nequi').value = data.nequi_daviplata || '';
+            document.getElementById('sidebar-emisor-nota').value = data.nota_pago || '';
+            document.getElementById('sidebar-emisor-firma').value = data.firma || '';
+
+            if (showAlert) {
+                Swal.fire('Éxito', 'Datos de facturación cargados correctamente', 'success');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            if (showAlert) {
+                Swal.fire('Error', 'Error al cargar los datos', 'error');
+            }
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         loadEmpresaFieldVisibility();
         initMobileNavbar();
+        loadBillingData();  // Load billing data on page load
     });
 </script>
 

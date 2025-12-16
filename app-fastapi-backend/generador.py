@@ -33,7 +33,7 @@ def get_top_colors(image, exclude_white=True, top=2):
             break
     return filtered
 
-def generar_cuenta_de_cobro(nombre_cliente: str, identificacion: str, servicios: list, concepto: str, fecha: str, servicio_proyecto: str = None, nombre_empresa: str = "", fuente_seleccionada: str = "HelveticaNeue.ttf") -> str:
+def generar_cuenta_de_cobro(nombre_cliente: str, identificacion: str, servicios: list, concepto: str, fecha: str, servicio_proyecto: str = None, nombre_empresa: str = "", fuente_seleccionada: str = "HelveticaNeue.ttf", emisor_nombre: str = "Dairo Tralasviña", emisor_cedula: str = "1143397563", emisor_telefono: str = "+57 3007189383", emisor_email: str = "Dairo@dtgrowthpartners.com", emisor_ciudad: str = "Cartagena, Colombia", cuenta_bancolombia: str = "78841707710", nequi_daviplata: str = "+57 3007189383", nota_pago: str = "Se solicita que el pago sea realizado a la mayor brevedad posible", firma: str = "Dairo Tralasviña,") -> str:
     """
     Genera una cuenta de cobro en formato PDF con una tabla detallada de servicios.
 
@@ -54,13 +54,8 @@ def generar_cuenta_de_cobro(nombre_cliente: str, identificacion: str, servicios:
     numero_cuenta = datetime.now().strftime("%Y%m%d%H%M%S")
 
     # --- DATOS DEL EMISOR ---
-    emisor_nombre = "Dairo Tralasviña"
-    emisor_cedula = "1143397563"
-    emisor_telefono = "+57 3007189383"
-    emisor_email = "Dairo@dtgrowthpartners.com"
-    emisor_ciudad = "Cartagena, Colombia"
-    cuenta_bancolombia = "78841707710"
-    nequi = "+57 3007189383"
+    # Usar los parámetros pasados a la función
+    nequi = nequi_daviplata
 
     # --- REGISTRAR FUENTE SELECCIONADA ---
     fuentes_dir = os.path.join(script_dir, 'fuentes')
@@ -359,7 +354,7 @@ def generar_cuenta_de_cobro(nombre_cliente: str, identificacion: str, servicios:
     y -= 12
     c.drawString(margen_izquierdo, y, f"Cuenta de ahorros Bancolombia: {cuenta_bancolombia}")
     y -= 12
-    c.drawString(margen_izquierdo, y, f"Nequi / Daviplata: {nequi}")
+    c.drawString(margen_izquierdo, y, f"Nequi / Daviplata: {nequi_daviplata}")
 
     y -= 30
     # --- NOTA ---
@@ -367,13 +362,13 @@ def generar_cuenta_de_cobro(nombre_cliente: str, identificacion: str, servicios:
     c.drawString(margen_izquierdo, y, "Nota:")
     nota_width = c.stringWidth("Nota:", bold_font, 9)
     c.setFont(normal_font, 9)
-    c.drawString(margen_izquierdo + nota_width + 2, y, " Se solicita que el pago sea realizado a la mayor brevedad posible")
+    c.drawString(margen_izquierdo + nota_width + 2, y, f" {nota_pago}")
 
     y -= 30
     c.setFont(normal_font, 9)
     c.drawString(margen_izquierdo, y, "Atentamente,")
     y -= 15
-    c.drawString(margen_izquierdo, y, "Dairo Tralasviña,")
+    c.drawString(margen_izquierdo, y, firma)
 
     c.save()
 

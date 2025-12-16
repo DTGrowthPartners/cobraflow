@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, Depends, Form, HTTPException
-from typing import Optional, List
-from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse
+from typing import Optional
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
@@ -9,35 +9,12 @@ import os
 import json
 from . import auth, services
 from fastapi import HTTPException
-from pydantic import BaseModel, Field
-from ..generador import generar_cuenta_de_cobro
 
 app = FastAPI(
     title="Demo Web App - Cuentas de Cobro",
     description="Interfaz web para la generación de cuentas de cobro.",
     version="1.0.0"
 )
-
-class Servicio(BaseModel):
-    descripcion: str = Field(..., example="Desarrollo de landing page")
-    cantidad: int = Field(..., example=1)
-    precio_unitario: float = Field(..., example=500000)
-
-class SolicitudCuenta(BaseModel):
-    nickname_cliente: str = Field(..., example="experiencia_cartagena")
-    valor: float = Field(..., example=2000000)
-    servicios: List[Servicio]
-    concepto: str = Field(..., example="Facturación de servicios de marketing")
-    fecha: str = Field(default_factory=lambda: datetime.now().strftime("%d/%m/%Y"))
-    servicio_proyecto: str = Field("", example="Desarrollo Web, Marketing Digital")
-
-def get_client_data_local(nickname: str):
-    try:
-        with open(os.path.join(project_root, "clientes.json"), "r", encoding="utf-8") as f:
-            clientes = json.load(f)
-        return clientes.get(nickname)
-    except FileNotFoundError:
-        return None
 
 # --- MIDDLEWARE Y CONFIGURACIÓN ---
 SECRET_KEY = "tu-super-secreto-key-debe-cambiarse"
@@ -98,45 +75,6 @@ async def get_base6():
     raise HTTPException(status_code=404, detail="File not found")
 
 templates = Jinja2Templates(directory=os.path.join(script_dir, "templates"))
-
-# --- API ENDPOINTS ---
-@app.post("/api/crear-cuenta/", summary="Crear una nueva cuenta de cobro")
-async def crear_cuenta(solicitud: SolicitudCuenta):
-    """
-    Genera una cuenta de cobro para un cliente específico.
-    """
-    try:
-        cliente_data = get_client_data_local(solicitud.nickname_cliente)
-
-        if not cliente_data:
-            raise HTTPException(
-                status_code=404,
-                detail=f"Cliente con nickname '{solicitud.nickname_cliente}' no encontrado."
-            )
-
-        servicios_dict = [s.dict() for s in solicitud.servicios]
-
-        ruta_archivo_generado = generar_cuenta_de_cobro(
-            nombre_cliente=cliente_data['nombre_completo'],
-            identificacion=cliente_data['nit'],
-            servicios=servicios_dict,
-            concepto=solicitud.concepto,
-            fecha=solicitud.fecha,
-            servicio_proyecto=solicitud.servicio_proyecto if solicitud.servicio_proyecto else None
-        )
-
-        if not os.path.exists(ruta_archivo_generado):
-            raise HTTPException(status_code=500, detail="Error: el archivo PDF no pudo ser creado.")
-
-        return FileResponse(
-            path=ruta_archivo_generado,
-            media_type='application/pdf',
-            filename=os.path.basename(ruta_archivo_generado)
-        )
-    except HTTPException as http_exc:
-        raise http_exc
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Ocurrió un error inesperado: {e}")
 
 # --- RUTAS ---
 
@@ -355,10 +293,39 @@ async def get_colors(request: Request, user: str = Depends(auth.login_required))
                 return {"primary": primary, "secondary": secondary}
     return {"primary": "#005F99", "secondary": "#FFFFFF"}  # Default
 
+
 @app.get("/api/get_fonts")
 async def get_fonts(request: Request, user: str = Depends(auth.login_required)):
     fonts_list = services.list_fonts()
     return {"fonts": fonts_list}
+
+@app.post("/api/save_billing")
+async def save_billing(
+    request: Request,
+    emisor_nombre: str = Form(...),
+    emisor_cedula: str = Form(...),
+    emisor_telefono: str = Form(...),
+    emisor_email: str = Form(...),
+    emisor_ciudad: str = Form(...),
+    cuenta_bancolombia: str = Form(...),
+    nequi_daviplata: str = Form(...),
+    nota_pago: str = Form(...),
+    firma: str = Form(...),
+    user: str = Depends(auth.login_required)
+):
+    success = services.save_billing_data(
+        emisor_nombre, emisor_cedula, emisor_telefono, emisor_email, emisor_ciudad,
+        cuenta_bancolombia, nequi_daviplata, nota_pago, firma
+    )
+    if success:
+        return {"success": True, "message": "Datos de facturación guardados correctamente"}
+    else:
+        return {"success": False, "message": "Error al guardar los datos"}
+
+@app.get("/api/get_billing")
+async def get_billing(request: Request, user: str = Depends(auth.login_required)):
+    billing_data = services.get_billing_data()
+    return billing_data
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request, user: str = Depends(auth.login_required)):
@@ -374,6 +341,8 @@ async def dashboard(request: Request, user: str = Depends(auth.login_required)):
         if pdf_filename:
             success_message = f"¡Cuenta de cobro generada exitosamente! Archivo: {pdf_filename}"
             generated_pdf_url = f"/creadas/{pdf_filename}"
+    api_base_url = str(request.base_url).rstrip("/")
+
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
         "user": user,
@@ -382,7 +351,8 @@ async def dashboard(request: Request, user: str = Depends(auth.login_required)):
         "fonts": fonts,
         "history": history,
         "success_message": success_message,
-        "generated_pdf_url": generated_pdf_url
+        "generated_pdf_url": generated_pdf_url,
+        "api_base_url": api_base_url
     })
 
 @app.post("/dashboard/generate", response_class=HTMLResponse)
@@ -395,6 +365,34 @@ async def generate_invoice_request(request: Request, user: str = Depends(auth.lo
         servicio_proyecto = form_data.get("servicio_proyecto")
         nombre_empresa = form_data.get("nombre_empresa", "")
         fuente_seleccionada = form_data.get("fuente_seleccionada", "HelveticaNeue.ttf")
+
+        # Cargar datos de facturación guardados
+        billing_path = os.path.join(project_root, "billing_data.json")
+        if os.path.exists(billing_path):
+            with open(billing_path, "r", encoding="utf-8") as f:
+                billing_data = json.load(f)
+        else:
+            billing_data = {
+                "emisor_nombre": "Dairo Tralasviña",
+                "emisor_cedula": "1143397563",
+                "emisor_telefono": "+57 3007189383",
+                "emisor_email": "Dairo@dtgrowthpartners.com",
+                "emisor_ciudad": "Cartagena, Colombia",
+                "cuenta_bancolombia": "78841707710",
+                "nequi_daviplata": "+57 3007189383",
+                "nota_pago": "Se solicita que el pago sea realizado a la mayor brevedad posible",
+                "firma": "Dairo Tralasviña,"
+            }
+
+        emisor_nombre = billing_data["emisor_nombre"]
+        emisor_cedula = billing_data["emisor_cedula"]
+        emisor_telefono = billing_data["emisor_telefono"]
+        emisor_email = billing_data["emisor_email"]
+        emisor_ciudad = billing_data["emisor_ciudad"]
+        cuenta_bancolombia = billing_data["cuenta_bancolombia"]
+        nequi_daviplata = billing_data["nequi_daviplata"]
+        nota_pago = billing_data["nota_pago"]
+        firma = billing_data["firma"]
 
         # Recolectar los servicios dinámicamente
         servicios = []
@@ -425,7 +423,16 @@ async def generate_invoice_request(request: Request, user: str = Depends(auth.lo
             fecha=datetime.now().strftime("%d/%m/%Y"),
             servicio_proyecto=servicio_proyecto,
             nombre_empresa=nombre_empresa,
-            fuente_seleccionada=fuente_seleccionada
+            fuente_seleccionada=fuente_seleccionada,
+            emisor_nombre=emisor_nombre,
+            emisor_cedula=emisor_cedula,
+            emisor_telefono=emisor_telefono,
+            emisor_email=emisor_email,
+            emisor_ciudad=emisor_ciudad,
+            cuenta_bancolombia=cuenta_bancolombia,
+            nequi_daviplata=nequi_daviplata,
+            nota_pago=nota_pago,
+            firma=firma
         )
         
         pdf_filename = os.path.basename(pdf_path)
@@ -653,69 +660,6 @@ async def dashboard(request: Request, user: str = Depends(auth.login_required)):
         "generated_pdf_url": generated_pdf_url
     })
 
-@app.post("/dashboard/generate", response_class=HTMLResponse)
-async def generate_invoice_request(request: Request, user: str = Depends(auth.login_required)):
-    form_data = await request.form()
-    
-    try:
-        # Extraer datos del formulario
-        nickname_cliente = form_data.get("nickname_cliente")
-        servicio_proyecto = form_data.get("servicio_proyecto")
-        nombre_empresa = form_data.get("nombre_empresa", "")
-        fuente_seleccionada = form_data.get("fuente_seleccionada", "HelveticaNeue.ttf")
-
-        # Recolectar los servicios dinámicamente
-        servicios = []
-        i = 1
-        while True:
-            desc = form_data.get(f"servicio_descripcion_{i}")
-            cant = form_data.get(f"servicio_cantidad_{i}")
-            precio = form_data.get(f"servicio_precio_{i}")
-
-            if not desc or not cant or not precio:
-                break # Termina el bucle si falta algún campo del servicio
-
-            servicios.append({
-                "descripcion": desc,
-                "cantidad": int(cant),
-                "precio_unitario": float(precio)
-            })
-            i += 1
-
-        if not nickname_cliente or not servicios:
-            raise ValueError("El cliente y al menos un servicio son requeridos.")
-
-        # Llamar al servicio para generar el PDF
-        pdf_path = services.generate_invoice_service(
-            nickname_cliente=nickname_cliente,
-            servicios=servicios,
-            concepto="",  # Eliminado el concepto general como se solicitó
-            fecha=datetime.now().strftime("%d/%m/%Y"),
-            servicio_proyecto=servicio_proyecto,
-            nombre_empresa=nombre_empresa,
-            fuente_seleccionada=fuente_seleccionada
-        )
-        
-        pdf_filename = os.path.basename(pdf_path)
-        generated_pdf_url = f"/creadas/{pdf_filename}"
-        success_message = f"¡Cuenta de cobro generada exitosamente! Archivo: {pdf_filename}"
-
-    except Exception as e:
-        # En caso de error, renderizar el dashboard con un mensaje de error
-        clients = services.list_clients()
-        history = services.list_generated_invoices()
-        services_list = services.list_services()
-        return templates.TemplateResponse("dashboard.html", {
-            "request": request,
-            "user": user,
-            "clients": clients,
-            "services": services_list,
-            "history": history,
-            "error_message": f"Error al generar la cuenta: {e}"
-        })
-
-    # Redirigir para evitar resubmission
-    return RedirectResponse(url=f"/dashboard?success=1&pdf={pdf_filename}", status_code=302)
 
 # --- NUEVAS RUTAS PARA MANEJO DE SERVICIOS Y CLIENTES ---
 @app.post("/api/add_service")

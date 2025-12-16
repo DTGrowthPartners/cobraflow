@@ -2,6 +2,7 @@ import os
 from typing import List
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from generador import generar_cuenta_de_cobro
 from datetime import datetime
@@ -11,6 +12,21 @@ app = FastAPI(
     title="API de Cuentas de Cobro",
     description="Una API para generar cuentas de cobro en formato PDF.",
     version="3.0.0"
+)
+
+# Configurar CORS para permitir requests desde el frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",  # Desarrollo local Vite
+        "http://localhost:8080",  # Desarrollo local alternativo
+        "http://localhost:3000",  # Alternativa desarrollo
+        "https://cobraflow.co",   # Producción
+        "https://www.cobraflow.co"  # Producción con www
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 class Servicio(BaseModel):
@@ -64,6 +80,42 @@ async def crear_cuenta(solicitud: SolicitudCuenta):
 
         return FileResponse(
             path=ruta_archivo_generado, 
+            media_type='application/pdf',
+            filename=os.path.basename(ruta_archivo_generado)
+        )
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ocurrió un error inesperado: {e}")
+
+@app.post("/api/crear-cuenta-simple/", summary="Crear cuenta de cobro sin cliente previo")
+async def crear_cuenta_simple(solicitud: SolicitudCuenta):
+    """
+    Genera una cuenta de cobro sin necesidad de tener un cliente pre-registrado.
+    Usa el nickname_cliente como nombre del cliente directamente.
+    """
+    try:
+        servicios_dict = [s.dict() for s in solicitud.servicios]
+
+        # Usar el nickname como nombre del cliente
+        nombre_cliente = solicitud.nickname_cliente
+        # Generar un NIT/ID temporal basado en el timestamp
+        identificacion = f"ID-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+
+        ruta_archivo_generado = generar_cuenta_de_cobro(
+            nombre_cliente=nombre_cliente,
+            identificacion=identificacion,
+            servicios=servicios_dict,
+            concepto=solicitud.concepto,
+            fecha=solicitud.fecha,
+            servicio_proyecto=solicitud.servicio_proyecto if solicitud.servicio_proyecto else None
+        )
+
+        if not os.path.exists(ruta_archivo_generado):
+            raise HTTPException(status_code=500, detail="Error: el archivo PDF no pudo ser creado.")
+
+        return FileResponse(
+            path=ruta_archivo_generado,
             media_type='application/pdf',
             filename=os.path.basename(ruta_archivo_generado)
         )

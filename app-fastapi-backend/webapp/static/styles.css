@@ -66,9 +66,9 @@ body {
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 32px 24px;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 /* --- Typography --- */
@@ -114,11 +114,12 @@ h4 {
     justify-content: space-between;
     align-items: center;
     background: var(--bg-white);
-    padding: 20px 25px;
+    padding: 20px 50px;
     border-radius: var(--radius-xl);
     border: 1px solid var(--border-light);
     box-shadow: var(--shadow-sm);
-    margin-bottom: 30px;
+    margin-bottom: 0px;
+
 }
 
 .app-logo img {
@@ -304,11 +305,13 @@ textarea::placeholder {
 }
 
 /* --- Grid Layout --- */
+/* Removido - ahora se usa dashboard-wrapper en el template
 .dashboard-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 24px;
-    margin-bottom: 32px;
+    gap: 30px;
+    padding: 2em 8em;
+
 }
 
 /* --- Hero Section --- */
@@ -436,23 +439,23 @@ textarea::placeholder {
 }
 
 /* --- History Table --- */
-.history-table {
+table {
     width: 100%;
     border-collapse: collapse;
     background: var(--bg-white);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    border: 1px solid var(--border-light);
+    border: 1px solid #f1effb;
 }
 
-.history-table th,
-.history-table td {
+table th,
+table td {
     padding: 16px;
     text-align: left;
     border-bottom: 1px solid var(--border-light);
 }
 
-.history-table th {
+table th {
     background: var(--bg-subtle);
     font-weight: 600;
     font-size: 0.875rem;
@@ -461,19 +464,24 @@ textarea::placeholder {
     letter-spacing: 0.05em;
 }
 
-.history-table td {
+table td {
     font-size: 0.875rem;
     color: var(--text-primary);
 }
 
-.history-table tr:last-child td {
+table tr:last-child td {
     border-bottom: none;
 }
 
-.history-table tr:hover {
+table tr:hover {
     background: var(--bg-subtle);
 }
-
+table {
+    width: 100%;
+    border: solid 1px #eceaea;
+    padding: 10px;
+    margin: 0;
+}
 /* --- Badges --- */
 .badge {
     display: inline-flex;
@@ -544,8 +552,8 @@ textarea::placeholder {
     padding: 32px;
     border-radius: var(--radius-xl);
     width: 90%;
-    max-width: 600px;
-    max-height: 80vh;
+    max-width: 650px;
+    max-height: 86vh;
     overflow-y: auto;
     box-shadow: var(--shadow-xl);
 }
@@ -640,11 +648,12 @@ textarea::placeholder {
 /* --- Footer --- */
 .main-footer {
     text-align: center;
-    margin-top: 48px;
-    padding-top: 24px;
+    margin-top: 0x;
+    padding-top: 10px;
     border-top: 1px solid var(--border-light);
     color: var(--text-muted);
     font-size: 0.875rem;
+
 }
 
 /* --- Mobile Navigation --- */
@@ -800,15 +809,79 @@ textarea::placeholder {
     display: block !important;
 }
 
+.card#historial {
+    padding:3em 5em;
+}
 /* --- Responsive Design --- */
 @media (max-width: 768px) {
+    /* --- Login Page --- */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--bg-subtle) 0%, var(--bg-white) 100%);
+    padding: 24px;
+     flex-direction: column;
+}
+
+    .card#historial {
+    padding:0.8em;
+}
     .container {
-        padding: 20px 16px;
+        padding: 0px 0px;
     }
 
     .main-header {
-        padding: 16px 20px;
-        margin-bottom: 24px;
+        padding: 20px 10px;
+        margin-bottom: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .main-header-left {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .app-logo img {
+        max-width: 130px;
+        height: auto;
+    }
+
+    .main-header-right {
+        width: 100%;
+        justify-content: center;
+        padding-top: 10px;
+        border-top: 1px solid var(--border-light);
+        gap: 10px;
+    }
+
+    .user-pill {
+        padding: 8px 14px;
+        flex-shrink: 0;
+    }
+
+    .user-name {
+        font-size: 0.875rem;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .user-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+
+    .btn-ghost {
+        flex-shrink: 0;
+        padding: 8px 14px;
+        font-size: 0.875rem;
     }
 
     .card {
@@ -821,7 +894,7 @@ textarea::placeholder {
 
     .modal-content {
         padding: 24px;
-        margin: 10% auto;
+        margin: 7% auto;
         width: 95%;
     }
 
@@ -843,12 +916,14 @@ textarea::placeholder {
         display: none !important;
     }
 
+    /* Removido - ahora se usa dashboard-wrapper en el template
     .dashboard-grid {
         grid-template-columns: 1fr;
         gap: 20px;
         padding-bottom: 90px;
         margin-bottom: 0;
     }
+    */
 
     .container {
         padding-bottom: 20px;
@@ -862,11 +937,12 @@ textarea::placeholder {
     .card.active-section {
         display: block;
         animation: fadeIn 0.3s ease-in-out;
+        padding: 1em 3em;
     }
 
     /* Ajustes específicos para la card de crear cuenta */
     #crear-cuenta {
-        padding: 12px;
+        padding: 1em 2em;
     }
 
     #crear-cuenta h2 {
@@ -977,19 +1053,55 @@ textarea::placeholder {
 }
 
 @media (max-width: 640px) {
+    .main-header {
+        padding: 20px 0px;
+        margin-bottom: 0px;
+        gap: 8px;
+    }
+
+    .app-logo img {
+        max-width: 100px;
+    }
+
+    .main-header-right {
+        gap: 6px;
+        padding-top: 8px;
+    }
+
+    .user-pill {
+        padding: 6px 10px;
+        gap: 6px;
+    }
+
+    .user-name {
+        font-size: 0.75rem;
+        max-width: 80px;
+    }
+
+    .user-avatar {
+        width: 26px;
+        height: 26px;
+        font-size: 0.7rem;
+    }
+
+    .btn-ghost {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
     .btn {
         padding: 10px 20px;
         font-size: 0.875rem;
     }
-    
+
     .card {
         padding: 20px;
     }
-    
+
     .hero-section {
         padding: 24px 20px;
     }
-    
+
     .login-box {
         padding: 32px 24px;
     }
