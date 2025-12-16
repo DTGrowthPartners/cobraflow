@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+reportlab
+Pillow
+python-multipart
+gspread
+google-auth-oauthlib
+pandas
+requests
+jinja2
+
+itsdangerous

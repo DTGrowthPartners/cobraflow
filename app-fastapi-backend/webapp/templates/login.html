@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Generador de Cuentas{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-box">
+        <div class="login-title">
+            <h2>Iniciar Sesión</h2>
+        </div>
+        
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+        </form>
+    </div>
+
+    <div class="credentials-info">
+        <h4>Credenciales de Prueba</h4>
+        <p><strong>Email:</strong> <span>demo@dtgrowthpartners.com</span></p>
+        <p><strong>Password:</strong> <span>demo123</span></p>
+    </div>
+</div>
+{% endblock %}

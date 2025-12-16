@@ -1,0 +1,34 @@
+{
+  "servicios": [
+    {
+      "nombre": "Diseño de Logo",
+      "descripcion": "Creación de identidad visual corporativa",
+      "categoria": "Diseño Grafico"
+    },
+    {
+      "nombre": "Campaña Redes Sociales",
+      "descripcion": "Gestión y creación de contenido para redes",
+      "categoria": "Marketing Digital"
+    },
+    {
+      "nombre": "SEO y Posicionamiento",
+      "descripcion": "Optimización para motores de búsqueda",
+      "categoria": "Marketing Digital"
+    },
+    {
+      "nombre": "Consultoría Empresarial",
+      "descripcion": "Asesoría estratégica para negocios",
+      "categoria": "Consultoría"
+    },
+    {
+      "nombre": "Gestión de Eventos",
+      "descripcion": "Organización y coordinación de eventos",
+      "categoria": "Eventos"
+    },
+    {
+      "nombre": "Diseño de Material Publicitario",
+      "descripcion": "Creación de folletos, banners y material promocional",
+      "categoria": "Diseño Gráfico"
+    }
+  ]
+}
