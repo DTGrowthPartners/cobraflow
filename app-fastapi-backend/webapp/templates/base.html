@@ -13,9 +13,12 @@
     <div class="container">
         <header class="main-header">
             <div class="main-header-left">
-                <div class="app-logo">
-                    <img src="https://dtgrowthpartners.com/assets/DT-GROWTH-LOGO-DYCI6Arf.png" alt="DT Growth Partners" width="150" style="filter: invert();">
-                </div>
+                <a href="/" class="app-logo" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                    <div style="width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                        <span style="color: white; font-weight: bold; font-size: 1.25rem;">C</span>
+                    </div>
+                    <span style="font-weight: bold; font-size: 1.25rem; color: #1a202c;">CobraFlow</span>
+                </a>
             </div>
             {% if request.session.user %}
             <div class="main-header-right">

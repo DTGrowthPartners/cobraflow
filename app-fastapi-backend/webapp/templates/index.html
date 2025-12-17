@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CobraFlow - Genera cuentas de cobro en segundos</title>
+    <meta name="description" content="Genera cuentas de cobro profesionales en segundos. Sin Excel. Sin complicaciones. Descarga tu archivo PDF listo para enviar y cobrar.">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/static/landing.css">
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: 'hsl(245, 75%, 60%)',
+                            foreground: 'hsl(0, 0%, 100%)',
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(245, 75%, 95%)',
+                            foreground: 'hsl(245, 75%, 50%)',
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(220, 14%, 96%)',
+                            foreground: 'hsl(220, 9%, 46%)',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white text-gray-900 font-sans antialiased">
+
+    <!-- Header -->
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 lg:px-8 max-w-7xl">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">C</span>
+                    </div>
+                    <span class="font-bold text-xl text-gray-900">CobraFlow</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="#como-funciona" class="text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium">
+                        Cómo funciona
+                    </a>
+                    <a href="#beneficios" class="text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium">
+                        Beneficios
+                    </a>
+                    <a href="/login" class="btn-primary">
+                        Probar Gratis
+                    </a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2">
+                    <svg id="menu-icon" class="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                    <svg id="close-icon" class="w-6 h-6 text-gray-900 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div id="mobile-menu" class="md:hidden py-4 border-t border-gray-200 hidden animate-fade-in">
+                <nav class="flex flex-col gap-4">
+                    <a href="#como-funciona" class="text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium py-2">
+                        Cómo funciona
+                    </a>
+                    <a href="#beneficios" class="text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium py-2">
+                        Beneficios
+                    </a>
+                    <a href="/login" class="btn-primary w-full text-center">
+                        Probar Gratis
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-28 lg:pt-36 pb-20 lg:pb-32 hero-gradient overflow-hidden">
+        <!-- Background decoration -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-accent opacity-30 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="container mx-auto px-6 lg:px-8 max-w-7xl relative">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <!-- Left Column - Content -->
+                <div class="text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 bg-accent/50 rounded-full px-4 py-1.5 mb-6 animate-fade-up">
+                        <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                        <span class="text-sm font-medium text-accent-foreground">
+                            Por DT Growth Partners
+                        </span>
+                    </div>
+
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6 animate-fade-up animate-delay-100">
+                        Genera cuentas de cobro <span class="gradient-text">en segundos.</span>
+                    </h1>
+
+                    <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-xl mx-auto lg:mx-0 animate-fade-up animate-delay-200">
+                        Sin Excel. Sin complicaciones. Descarga tu archivo PDF listo para enviar y cobrar.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-up animate-delay-300">
+                        <a href="/login" class="btn-primary btn-xl group">
+                            Probar Gratis Ahora
+                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                        <a href="#como-funciona" class="btn-outline btn-xl">
+                            Ver cómo funciona
+                        </a>
+                    </div>
+
+                    <!-- Trust badges -->
+                    <div class="flex items-center gap-6 mt-10 justify-center lg:justify-start text-gray-600 animate-fade-up animate-delay-400">
+                        <div class="flex items-center gap-2">
+                            <div class="flex -space-x-2">
+                                <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-white">
+                                    <img src="https://us.123rf.com/450wm/andersonrise/andersonrise1903/andersonrise190300624/118467126-feliz-hermosa-mujer-morena-aislada-sobre-fondo-blanco.jpg?ver=6" alt="Usuario 1" class="w-full h-full object-cover">
+                                </div>
+                                <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-white">
+                                    <img src="https://www.printerpix.com/blog/wp-content/uploads/2022/02/02-blog-3.jpg" alt="Usuario 2" class="w-full h-full object-cover">
+                                </div>
+                                <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-white">
+                                    <img src="https://photos.peopleimages.com/picture/202307/2709813-black-man-business-and-selfie-with-a-smile-on-face-of-an-influencer-person-at-work.-portrait-of-an-african-guy-or-entrepreneur-with-job-satisfaction-and-pride-for-social-media-profile-picture-update-fit_400_400.jpg" alt="Usuario 3" class="w-full h-full object-cover">
+                                </div>
+                            </div>
+                            <span class="text-sm">+500 usuarios activos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Invoice Mockup -->
+                <div class="relative animate-fade-up animate-delay-200">
+                    <div class="relative mx-auto max-w-md lg:max-w-none">
+                        <!-- Main card -->
+                        <div class="bg-white rounded-2xl shadow-elevated p-6 border border-gray-200 animate-float">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-gray-900">Cuenta de Cobro</p>
+                                        <p class="text-sm text-gray-600">#001-2024</p>
+                                    </div>
+                                </div>
+                                <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                                    Generada
+                                </span>
+                            </div>
+
+                            <div class="space-y-4 mb-6">
+                                <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                                    <span class="text-gray-600">Emitido por</span>
+                                    <span class="font-medium text-gray-900">Juan Pérez</span>
+                                </div>
+                                <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                                    <span class="text-gray-600">Cliente</span>
+                                    <span class="font-medium text-gray-900">María García</span>
+                                </div>
+                                <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                                    <span class="text-gray-600">Concepto</span>
+                                    <span class="font-medium text-gray-900">Diseño web</span>
+                                </div>
+                                <div class="flex justify-between items-center py-3">
+                                    <span class="text-gray-600">Monto</span>
+                                    <span class="text-2xl font-bold gradient-text">$850.000</span>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-3">
+                                <button class="btn-outline flex-1 text-sm">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                                    </svg>
+                                    Compartir
+                                </button>
+                                <button class="btn-default flex-1 text-sm">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                                    </svg>
+                                    Cobrar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Decorative elements -->
+                        <div class="absolute -top-4 -right-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl"></div>
+                        <div class="absolute -bottom-4 -left-4 w-32 h-32 bg-accent opacity-40 rounded-full blur-2xl"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="como-funciona" class="py-20 lg:py-32 bg-white">
+        <div class="container mx-auto px-6 lg:px-8 max-w-7xl">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                    Cobra en 4 pasos. Simple.
+                </h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Genera tu primera cuenta de cobro en menos de 60 segundos
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Step 1 -->
+                <div class="relative group">
+                    <div class="hidden lg:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/30 to-transparent"></div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-gray-200 hover:border-primary/30 transition-all duration-300 hover:shadow-soft group-hover:-translate-y-1">
+                        <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white font-bold text-sm shadow-soft">
+                            1
+                        </div>
+
+                        <div class="w-14 h-14 rounded-xl bg-accent flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </div>
+
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                            Rellena los datos
+                        </h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Tu nombre, cliente, monto, concepto y forma de pago.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative group">
+                    <div class="hidden lg:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/30 to-transparent"></div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-gray-200 hover:border-primary/30 transition-all duration-300 hover:shadow-soft group-hover:-translate-y-1">
+                        <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white font-bold text-sm shadow-soft">
+                            2
+                        </div>
+
+                        <div class="w-14 h-14 rounded-xl bg-accent flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                            Descarga tu archivo
+                        </h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            PDF profesional generado al instante, listo para enviar.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative group">
+                    <div class="hidden lg:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/30 to-transparent"></div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-gray-200 hover:border-primary/30 transition-all duration-300 hover:shadow-soft group-hover:-translate-y-1">
+                        <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white font-bold text-sm shadow-soft">
+                            3
+                        </div>
+
+                        <div class="w-14 h-14 rounded-xl bg-accent flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                            </svg>
+                        </div>
+
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                            Comparte por WhatsApp
+                        </h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Un clic y tu cliente recibe la cuenta de cobro.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="relative group">
+                    <div class="bg-white rounded-2xl p-6 border border-gray-200 hover:border-primary/30 transition-all duration-300 hover:shadow-soft group-hover:-translate-y-1">
+                        <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white font-bold text-sm shadow-soft">
+                            4
+                        </div>
+
+                        <div class="w-14 h-14 rounded-xl bg-accent flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                            Cobra sin complicaciones
+                        </h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Todo claro, todo profesional. Sin confusiones.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="beneficios" class="py-20 lg:py-32 bg-white">
+        <div class="container mx-auto px-6 lg:px-8 max-w-7xl">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                    ¿Por qué CobraFlow?
+                </h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Diseñado para que cobrar sea tan fácil como enviar un mensaje
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
+                <!-- Benefit 1 -->
+                <div class="group relative bg-white rounded-2xl p-8 border border-gray-200 hover:border-primary/30 transition-all duration-300 hover:shadow-soft">
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-xl gradient-bg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-soft">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">
+                            Ahorra tiempo
+                        </h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Genera cuentas de cobro en segundos, no en minutos buscando plantillas.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Benefit 2 -->
+                <div class="group relative bg-white rounded-2xl p-8 border border-gray-200 hover:border-primary/30 transition-all duration-300 hover:shadow-soft">
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-xl gradient-bg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-soft">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                            </svg>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">
+                            Más profesional que Excel
+                        </h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Impresiona a tus clientes con cobros elegantes y fáciles de entender.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Benefit 3 -->
+                <div class="group relative bg-white rounded-2xl p-8 border border-gray-200 hover:border-primary/30 transition-all duration-300 hover:shadow-soft">
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-xl gradient-bg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-soft">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                            </svg>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">
+                            Cobra sin confusiones
+                        </h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Cada cobro tiene su propio link único. No más correos perdidos.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Benefit 4 -->
+                <div class="group relative bg-white rounded-2xl p-8 border border-gray-200 hover:border-primary/30 transition-all duration-300 hover:shadow-soft">
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-xl gradient-bg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-soft">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">
+                            Ideal para freelancers
+                        </h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Perfecto para freelancers, tiendas y negocios sin sistemas complicados.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20 lg:py-32 bg-gray-50">
+        <div class="container mx-auto px-6 lg:px-8 max-w-7xl">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                    Lo que dicen nuestros usuarios
+                </h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Freelancers y negocios que ya cobran más fácil
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white rounded-2xl p-6 lg:p-8 border border-gray-200 hover:shadow-soft transition-all duration-300">
+                    <div class="flex gap-1 mb-4">
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                    </div>
+
+                    <p class="text-gray-900 leading-relaxed mb-6">
+                        "Antes lo hacía todo en Excel. Ahora genero mis cobros en segundos desde el celular. Mis clientes hasta me felicitan por lo profesional."
+                    </p>
+
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full gradient-bg flex items-center justify-center text-white font-bold text-lg">
+                            A
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900">Ana Rodríguez</p>
+                            <p class="text-sm text-gray-600">Diseñadora Freelancer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white rounded-2xl p-6 lg:p-8 border border-gray-200 hover:shadow-soft transition-all duration-300">
+                    <div class="flex gap-1 mb-4">
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                    </div>
+
+                    <p class="text-gray-900 leading-relaxed mb-6">
+                        "Tengo una tienda pequeña y esto me cambió la vida. Ya no tengo que hacer cuentas a mano ni perder facturas. Todo queda organizado."
+                    </p>
+
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full gradient-bg flex items-center justify-center text-white font-bold text-lg">
+                            C
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900">Carlos Méndez</p>
+                            <p class="text-sm text-gray-600">Dueño de tienda</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white rounded-2xl p-6 lg:p-8 border border-gray-200 hover:shadow-soft transition-all duration-300">
+                    <div class="flex gap-1 mb-4">
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 fill-primary text-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                    </div>
+
+                    <p class="text-gray-900 leading-relaxed mb-6">
+                        "Lo comparto directo por WhatsApp y mis clientes pagan más rápido. Es como magia. Ojalá lo hubiera encontrado antes."
+                    </p>
+
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full gradient-bg flex items-center justify-center text-white font-bold text-lg">
+                            L
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900">Laura Gómez</p>
+                            <p class="text-sm text-gray-600">Community Manager</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="py-20 lg:py-32 bg-white relative overflow-hidden">
+        <!-- Background decoration -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="container mx-auto px-6 lg:px-8 max-w-7xl relative">
+            <div class="max-w-3xl mx-auto text-center">
+                <div class="inline-flex items-center gap-2 bg-accent rounded-full px-4 py-1.5 mb-6">
+                    <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                    </svg>
+                    <span class="text-sm font-medium text-accent-foreground">
+                        100% gratis para empezar
+                    </span>
+                </div>
+
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+                    Empieza a cobrar <span class="gradient-text">con estilo.</span>
+                </h2>
+
+                <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-xl mx-auto">
+                    CobraFlow es gratis para tus primeras cuentas. Sin tarjeta de crédito. Sin compromisos.
+                </p>
+
+                <a href="/login" class="btn-primary btn-xl group inline-flex">
+                    Probar Gratis Ahora
+                    <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                </a>
+
+                <p class="mt-6 text-sm text-gray-600">
+                    Más de 500 freelancers y negocios ya usan CobraFlow
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-gray-900 text-white">
+        <div class="container mx-auto px-6 lg:px-8 max-w-7xl">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <!-- Logo -->
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                        <span class="font-bold text-lg">C</span>
+                    </div>
+                    <span class="font-bold text-xl">CobraFlow</span>
+                </div>
+
+                <!-- Links -->
+                <nav class="flex items-center gap-6 text-sm text-white/70">
+                    <a href="#como-funciona" class="hover:text-white transition-colors">
+                        Cómo funciona
+                    </a>
+                    <a href="#beneficios" class="hover:text-white transition-colors">
+                        Beneficios
+                    </a>
+                    <a href="/login" class="hover:text-white transition-colors">
+                        Probar Gratis
+                    </a>
+                </nav>
+
+                <!-- Credits -->
+                <p class="text-sm text-white/50">
+                    Desarrollador por <a href="https://dtgrowthpartners.com" target="_blank"><span class="text-white/70 font-medium">DT Growth Partners</span>
+                </p>
+            </div>
+
+            <div class="border-t border-white/10 mt-8 pt-8 text-center text-sm text-white/50">
+                <p>&copy; <span id="current-year"></span> CobraFlow. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/static/landing.js"></script>
+</body>
+</html>

@@ -80,9 +80,11 @@ templates = Jinja2Templates(directory=os.path.join(script_dir, "templates"))
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
-    if not auth.get_current_user(request):
-        return RedirectResponse(url="/login", status_code=302)
-    return RedirectResponse(url="/dashboard", status_code=302)
+    # Si el usuario ya está autenticado, redirigir al dashboard
+    if auth.get_current_user(request):
+        return RedirectResponse(url="/dashboard", status_code=302)
+    # Si no, mostrar la landing page
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
@@ -363,7 +365,8 @@ async def generate_invoice_request(request: Request, user: str = Depends(auth.lo
         # Extraer datos del formulario
         nickname_cliente = form_data.get("nickname_cliente")
         servicio_proyecto = form_data.get("servicio_proyecto")
-        nombre_empresa = form_data.get("nombre_empresa", "")
+        # nombre_empresa ya no se usa, se usará emisor_nombre en su lugar
+        nombre_empresa = ""
         fuente_seleccionada = form_data.get("fuente_seleccionada", "HelveticaNeue.ttf")
 
         # Cargar datos de facturación guardados

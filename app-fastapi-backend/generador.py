@@ -215,13 +215,15 @@ def generar_cuenta_de_cobro(nombre_cliente: str, identificacion: str, servicios:
     margen_izquierdo = 95 if original_base_name == 'Base6.jpg' else 40
 
     # Mostrar nombre de empresa como título encima si existe y base >=2
-    if nombre_empresa and original_base_name != 'base.jpg':
+    # Usar emisor_nombre como nombre de empresa si no se proporcionó nombre_empresa
+    nombre_empresa_display = nombre_empresa if nombre_empresa else emisor_nombre
+    if nombre_empresa_display and original_base_name != 'base.jpg':
         c.setFont(bold_font, 16)
         c.setFillColor(colors.HexColor(primary_color_hex))
         if original_base_name in ['Base2.jpg', 'Base3.jpg']:
-            c.drawString(margen_izquierdo, pos['title_y'] + 50, nombre_empresa.upper())
+            c.drawString(margen_izquierdo, pos['title_y'] + 50, nombre_empresa_display.upper())
         else:
-            c.drawCentredString(width / 2.0, pos['title_y'] + 50, nombre_empresa.upper())
+            c.drawCentredString(width / 2.0, pos['title_y'] + 50, nombre_empresa_display.upper())
 
     if original_base_name in ['Base2.jpg', 'Base3.jpg']:
         c.setFont(bold_font, 22)
@@ -352,9 +354,9 @@ def generar_cuenta_de_cobro(nombre_cliente: str, identificacion: str, servicios:
     y -= 12
     c.drawString(margen_izquierdo, y, f"Cédula: {emisor_cedula}")
     y -= 12
-    c.drawString(margen_izquierdo, y, f"Cuenta de ahorros Bancolombia: {cuenta_bancolombia}")
+    c.drawString(margen_izquierdo, y, f"Cuenta: {cuenta_bancolombia}")
     y -= 12
-    c.drawString(margen_izquierdo, y, f"Nequi / Daviplata: {nequi_daviplata}")
+    #c.drawString(margen_izquierdo, y, f"Nequi / Daviplata: {nequi_daviplata}")
 
     y -= 30
     # --- NOTA ---

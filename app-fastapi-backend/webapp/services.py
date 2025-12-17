@@ -48,7 +48,7 @@ def generate_invoice_service(
     concepto: str,
     fecha: str,
     servicio_proyecto: str,
-    nombre_empresa: str = "",
+    nombre_empresa: str = "",  # Ya no se usa, mantenido por compatibilidad
     fuente_seleccionada: str = "HelveticaNeue.ttf",
     emisor_nombre: str = "Dairo Tralasviña",
     emisor_cedula: str = "1143397563",
@@ -71,6 +71,8 @@ def generate_invoice_service(
         raise ValueError(f"Cliente '{nickname_cliente}' no encontrado.")
     
     # Llamada a la función importada del módulo generador
+    # Si no se proporciona nombre_empresa, usar emisor_nombre
+    nombre_empresa_display = nombre_empresa if nombre_empresa else emisor_nombre
     pdf_path = generar_cuenta_de_cobro(
         nombre_cliente=client_data['nombre_completo'],
         identificacion=client_data['nit'],
@@ -78,7 +80,7 @@ def generate_invoice_service(
         concepto=concepto,
         fecha=fecha,
         servicio_proyecto=servicio_proyecto,
-        nombre_empresa=nombre_empresa,
+        nombre_empresa=nombre_empresa_display,
         fuente_seleccionada=fuente_seleccionada,
         emisor_nombre=emisor_nombre,
         emisor_cedula=emisor_cedula,
