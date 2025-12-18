@@ -197,6 +197,28 @@ body {
     .btn-outline.btn-xl {
         width: 100%;
     }
+
+    /* Fix hero section overflow on mobile */
+    .hero-gradient {
+        overflow-x: hidden;
+    }
+
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* Prevent horizontal scroll */
+    body {
+        overflow-x: hidden;
+    }
+
+    /* Adjust mockup card for mobile */
+    .animate-float {
+        animation: none; /* Disable float animation on mobile */
+    }
 }
 
 /* Smooth Transitions */

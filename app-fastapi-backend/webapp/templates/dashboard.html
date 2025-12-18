@@ -653,6 +653,16 @@
     padding-top: 20px;
 }
 
+/* Mobile: Make collapsible steps scrollable */
+@media (max-width: 768px) {
+    .wizard-step-collapsible .step-content:not(.step-collapsed) {
+        max-height: 60vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
 .collapse-icon {
     font-size: 1.5rem;
     color: var(--primary-purple);
@@ -1054,33 +1064,83 @@ input#primary-color, input#secondary-color {
 
 @media (max-width: 768px) {
     .dashboard-wrapper {
-        padding: 1em;
+        padding: 0.75em;
     }
 
     .wizard-container {
-        padding: 20px;
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .wizard-header {
+        margin-bottom: 20px;
+        padding-bottom: 16px;
     }
 
     .wizard-header h1 {
-        font-size: 1.4rem;
+        font-size: 1.25rem;
+    }
+
+    .wizard-subtitle {
+        font-size: 0.85rem;
     }
 
     .step-content {
         padding-left: 0;
     }
 
+    /* Reduce step number size */
+    .step-number {
+        width: 32px;
+        height: 32px;
+        font-size: 0.95rem;
+    }
+
+    .step-title h3 {
+        font-size: 1rem;
+    }
+
+    .step-title p {
+        font-size: 0.8rem;
+    }
+
+    /* Reduce form elements */
+    .form-group-wizard {
+        margin-bottom: 14px;
+    }
+
+    .form-group-wizard label {
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+    }
+
+    .form-group-wizard input,
+    .form-group-wizard select,
+    .form-group-wizard textarea {
+        padding: 10px 12px;
+        font-size: 0.875rem;
+    }
+
     .form-grid-2,
     .form-row-wizard {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
     .btn-large {
         min-width: 100%;
-        padding: 16px 32px;
+        padding: 14px 28px;
+        font-size: 0.95rem;
     }
 
     .wizard-step {
-        padding: 16px;
+        padding: 14px;
+        margin-bottom: 20px;
+    }
+
+    .servicio-item-wizard {
+        padding: 14px;
+        margin-bottom: 12px;
     }
 
     .input-with-dropdown {
@@ -1090,6 +1150,41 @@ input#primary-color, input#secondary-color {
     .base-preview {
         width: 110px;
         height: 150px;
+    }
+
+    /* Reduce button sizes */
+    .btn {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+
+    .btn-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 1.3rem;
+    }
+
+    /* Add more breathing room to collapsible content */
+    .wizard-step-collapsible .step-content:not(.step-collapsed) {
+        padding-bottom: 16px;
+    }
+
+    /* Improve modal sizing on mobile */
+    .modal-content {
+        padding: 1.5rem;
+        max-width: 95vw;
+        max-height: 85vh;
+    }
+
+    /* Make sure wizard CTA is visible */
+    .wizard-cta {
+        padding: 24px 0 16px 0;
+        margin-top: 16px;
+    }
+
+    .cta-helper {
+        font-size: 0.8rem;
+        margin-top: 8px;
     }
 }
 
