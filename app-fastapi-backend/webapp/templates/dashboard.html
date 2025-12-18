@@ -1277,7 +1277,8 @@ input#primary-color, input#secondary-color {
             const response = await fetch(getApiUrl('/api/add_client'), {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: `nickname=${encodeURIComponent(nickname)}&nombre_completo=${encodeURIComponent(name)}&direccion=${encodeURIComponent(address)}&nit=${encodeURIComponent(nit)}`
+                body: `nickname=${encodeURIComponent(nickname)}&nombre_completo=${encodeURIComponent(name)}&direccion=${encodeURIComponent(address)}&nit=${encodeURIComponent(nit)}`,
+                credentials: 'include'
             });
 
             const result = await response.json();
@@ -1326,17 +1327,42 @@ input#primary-color, input#secondary-color {
             const response = await fetch(getApiUrl('/api/save_billing'), {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: new URLSearchParams(data)
+                body: new URLSearchParams(data),
+                credentials: 'include'
             });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error response:', response.status, errorText);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al guardar',
+                    text: `Error ${response.status}: ${errorText.substring(0, 100)}`
+                });
+                return;
+            }
 
             const result = await response.json();
             if (result.success) {
-                Swal.fire('Datos guardados correctamente');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Guardado',
+                    text: 'Datos guardados correctamente'
+                });
             } else {
-                Swal.fire('Error: ' + result.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: result.message
+                });
             }
         } catch (error) {
-            Swal.fire('Error al conectar con el servidor');
+            console.error('Fetch error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de conexión',
+                text: 'Error al conectar con el servidor: ' + error.message
+            });
         }
     }
 
@@ -1527,7 +1553,8 @@ input#primary-color, input#secondary-color {
             const response = await fetch(getApiUrl('/api/add_client'), {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: `nickname=${encodeURIComponent(nickname)}&nombre_completo=${encodeURIComponent(name)}&direccion=${encodeURIComponent(address)}&nit=${encodeURIComponent(nit)}`
+                body: `nickname=${encodeURIComponent(nickname)}&nombre_completo=${encodeURIComponent(name)}&direccion=${encodeURIComponent(address)}&nit=${encodeURIComponent(nit)}`,
+                credentials: 'include'
             });
 
             const result = await response.json();
@@ -1806,17 +1833,42 @@ input#primary-color, input#secondary-color {
             const response = await fetch(getApiUrl('/api/save_billing'), {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: new URLSearchParams(data)
+                body: new URLSearchParams(data),
+                credentials: 'include'
             });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error response:', response.status, errorText);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al guardar',
+                    text: `Error ${response.status}: ${errorText.substring(0, 100)}`
+                });
+                return;
+            }
 
             const result = await response.json();
             if (result.success) {
-                Swal.fire('Datos guardados');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Guardado',
+                    text: 'Datos guardados correctamente'
+                });
             } else {
-                Swal.fire('Error: ' + result.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: result.message
+                });
             }
         } catch (error) {
-            Swal.fire('Error al conectar con el servidor');
+            console.error('Fetch error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de conexión',
+                text: 'Error al conectar con el servidor: ' + error.message
+            });
         }
     }
 

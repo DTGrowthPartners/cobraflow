@@ -326,8 +326,10 @@ async def get_base(request: Request, user: str = Depends(auth.login_required)):
 
 @app.post("/api/set_colors")
 async def set_colors(
+    request: Request,
     primary_color: str = Form(...),
-    secondary_color: Optional[str] = Form(None)
+    secondary_color: Optional[str] = Form(None),
+    user: str = Depends(auth.login_required)
 ):
     # Guardar los colores en un archivo
     colors_path = os.path.join(BASE_DIR, "base_colors.txt")
