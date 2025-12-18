@@ -28,8 +28,8 @@
             /* Fix container widths */
             .container {
                 max-width: 100%;
-                padding-left: 1.5rem;
-                padding-right: 1.5rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
 
             /* Adjust hero section */
@@ -39,8 +39,8 @@
             }
 
             /* Fix decorative elements that might cause overflow */
-            .absolute {
-                max-width: 100vw;
+            section {
+                overflow-x: hidden;
             }
 
             /* Reduce heading sizes for better fit */
@@ -56,6 +56,11 @@
             /* Fix card mockup */
             .animate-float {
                 max-width: 100%;
+            }
+            #herooo {
+                width: 100% !important;
+                margin: 0 !important;
+                overflow: hidden !important;
             }
         }
     </style>
@@ -142,21 +147,21 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="relative pt-28 lg:pt-36 pb-20 lg:pb-32 hero-gradient overflow-hidden">
+<!-- Hero Section -->
+    <section class="relative pt-28 lg:pt-36 pb-20 lg:pb-32 hero-gradient overflow-x-hidden">
         <!-- Background decoration -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-accent opacity-30 rounded-full blur-3xl"></div>
+            <div class="absolute -top-40 -right-40 w-80 h-80 bg-purple-100 rounded-full blur-3xl opacity-50"></div>
+            <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-100 rounded-full blur-3xl opacity-30"></div>
         </div>
 
-        <div class="container mx-auto px-6 lg:px-8 max-w-7xl relative">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative" id="herooo">
             <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 <!-- Left Column - Content -->
                 <div class="text-center lg:text-left">
-                    <div class="inline-flex items-center gap-2 bg-accent/50 rounded-full px-4 py-1.5 mb-6 animate-fade-up">
-                        <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
-                        <span class="text-sm font-medium text-accent-foreground">
+                    <div class="inline-flex items-center gap-2 bg-purple-100 rounded-full px-4 py-1.5 mb-6 animate-fade-up">
+                        <span class="w-2 h-2 bg-purple-600 rounded-full animate-pulse"></span>
+                        <span class="text-sm font-medium text-purple-900">
                             Por DT Growth Partners
                         </span>
                     </div>
@@ -170,32 +175,41 @@
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-up animate-delay-300">
-                        <a href="/login" class="btn-primary btn-xl group">
+                        <a href="/login" class="btn-primary group">
                             Probar Gratis Ahora
                             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                             </svg>
                         </a>
-                        <a href="#como-funciona" class="btn-outline btn-xl">
+                        <a href="#como-funciona" class="btn-outline">
                             Ver cómo funciona
                         </a>
                     </div>
 
                     <!-- Trust badges -->
-                    <div class="flex items-center gap-6 mt-10 justify-center lg:justify-start text-gray-600 animate-fade-up animate-delay-400">
+                    <div class="flex items-center gap-4 sm:gap-6 mt-10 justify-center lg:justify-start text-gray-600 animate-fade-up animate-delay-400 flex-wrap">
                         <div class="flex items-center gap-2">
                             <div class="flex -space-x-2">
-                                <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-white">
-                                    <img src="https://us.123rf.com/450wm/andersonrise/andersonrise1903/andersonrise190300624/118467126-feliz-hermosa-mujer-morena-aislada-sobre-fondo-blanco.jpg?ver=6" alt="Usuario 1" class="w-full h-full object-cover">
+                                <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-white bg-gray-200">
+                                    <img src="https://us.123rf.com/450wm/andersonrise/andersonrise1903/andersonrise190300624/118467126-feliz-hermosa-mujer-morena-aislada-sobre-fondo-blanco.jpg?ver=6" 
+                                         alt="Usuario 1" 
+                                         class="w-full h-full object-cover"
+                                         style="object-fit: cover; object-position: center;">
                                 </div>
-                                <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-white">
-                                    <img src="https://www.printerpix.com/blog/wp-content/uploads/2022/02/02-blog-3.jpg" alt="Usuario 2" class="w-full h-full object-cover">
+                                <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-white bg-gray-200">
+                                    <img src="https://www.printerpix.com/blog/wp-content/uploads/2022/02/02-blog-3.jpg" 
+                                         alt="Usuario 2" 
+                                         class="w-full h-full object-cover"
+                                         style="object-fit: cover; object-position: center;">
                                 </div>
-                                <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-white">
-                                    <img src="https://photos.peopleimages.com/picture/202307/2709813-black-man-business-and-selfie-with-a-smile-on-face-of-an-influencer-person-at-work.-portrait-of-an-african-guy-or-entrepreneur-with-job-satisfaction-and-pride-for-social-media-profile-picture-update-fit_400_400.jpg" alt="Usuario 3" class="w-full h-full object-cover">
+                                <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-white bg-gray-200">
+                                    <img src="https://photos.peopleimages.com/picture/202307/2709813-black-man-business-and-selfie-with-a-smile-on-face-of-an-influencer-person-at-work.-portrait-of-an-african-guy-or-entrepreneur-with-job-satisfaction-and-pride-for-social-media-profile-picture-update-fit_400_400.jpg" 
+                                         alt="Usuario 3" 
+                                         class="w-full h-full object-cover"
+                                         style="object-fit: cover; object-position: center;">
                                 </div>
                             </div>
-                            <span class="text-sm">+500 usuarios activos</span>
+                            <span class="text-sm whitespace-nowrap">+500 usuarios activos</span>
                         </div>
                     </div>
                 </div>
@@ -205,9 +219,9 @@
                     <div class="relative mx-auto max-w-md lg:max-w-none">
                         <!-- Main card -->
                         <div class="bg-white rounded-2xl shadow-elevated p-6 border border-gray-200 animate-float">
-                            <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center">
+                                    <div class="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center shrink-0">
                                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                         </svg>
@@ -223,49 +237,48 @@
                             </div>
 
                             <div class="space-y-4 mb-6">
-                                <div class="flex justify-between items-center py-3 border-b border-gray-200">
-                                    <span class="text-gray-600">Emitido por</span>
-                                    <span class="font-medium text-gray-900">Juan Pérez</span>
+                                <div class="flex justify-between items-center py-3 border-b border-gray-200 gap-4">
+                                    <span class="text-gray-600 text-sm sm:text-base">Emitido por</span>
+                                    <span class="font-medium text-gray-900 text-sm sm:text-base text-right">Juan Pérez</span>
                                 </div>
-                                <div class="flex justify-between items-center py-3 border-b border-gray-200">
-                                    <span class="text-gray-600">Cliente</span>
-                                    <span class="font-medium text-gray-900">María García</span>
+                                <div class="flex justify-between items-center py-3 border-b border-gray-200 gap-4">
+                                    <span class="text-gray-600 text-sm sm:text-base">Cliente</span>
+                                    <span class="font-medium text-gray-900 text-sm sm:text-base text-right">María García</span>
                                 </div>
-                                <div class="flex justify-between items-center py-3 border-b border-gray-200">
-                                    <span class="text-gray-600">Concepto</span>
-                                    <span class="font-medium text-gray-900">Diseño web</span>
+                                <div class="flex justify-between items-center py-3 border-b border-gray-200 gap-4">
+                                    <span class="text-gray-600 text-sm sm:text-base">Concepto</span>
+                                    <span class="font-medium text-gray-900 text-sm sm:text-base text-right">Diseño web</span>
                                 </div>
-                                <div class="flex justify-between items-center py-3">
-                                    <span class="text-gray-600">Monto</span>
-                                    <span class="text-2xl font-bold gradient-text">$850.000</span>
+                                <div class="flex justify-between items-center py-3 gap-4">
+                                    <span class="text-gray-600 text-sm sm:text-base">Monto</span>
+                                    <span class="text-xl sm:text-2xl font-bold gradient-text">$850.000</span>
                                 </div>
                             </div>
 
-                            <div class="flex gap-3">
-                                <button class="btn-outline flex-1 text-sm">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <button class="btn-outline flex-1 text-sm justify-center">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
                                     </svg>
-                                    Compartir
+                                    <span class="ml-2">Compartir</span>
                                 </button>
-                                <button class="btn-default flex-1 text-sm">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <button class="btn-default flex-1 text-sm justify-center">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                                     </svg>
-                                    Cobrar
+                                    <span class="ml-2">Cobrar</span>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Decorative elements -->
-                        <div class="absolute -top-4 -right-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl"></div>
-                        <div class="absolute -bottom-4 -left-4 w-32 h-32 bg-accent opacity-40 rounded-full blur-2xl"></div>
+                        <div class="absolute -top-4 -right-4 w-24 h-24 bg-purple-200 rounded-full blur-2xl opacity-50 pointer-events-none"></div>
+                        <div class="absolute -bottom-4 -left-4 w-32 h-32 bg-blue-200 rounded-full blur-2xl opacity-40 pointer-events-none"></div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
     <!-- How It Works Section -->
     <section id="como-funciona" class="py-20 lg:py-32 bg-white">
         <div class="container mx-auto px-6 lg:px-8 max-w-7xl">
@@ -596,7 +609,7 @@
     <!-- Final CTA Section -->
     <section class="py-20 lg:py-32 bg-white relative overflow-hidden">
         <!-- Background decoration -->
-        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute pointer-events-none">
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl"></div>
         </div>
 
