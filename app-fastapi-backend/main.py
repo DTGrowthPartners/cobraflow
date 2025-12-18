@@ -44,8 +44,59 @@ app.mount(
     name="static"
 )
 
+# Montar la carpeta 'creadas' para poder servir los PDFs generados
+creadas_dir = BASE_DIR / "creadas"
+creadas_dir.mkdir(exist_ok=True)
+app.mount("/creadas", StaticFiles(directory=creadas_dir), name="creadas")
+
+# Rutas para servir las bases
+@app.get("/bases/base.jpg")
+async def get_base1():
+    base_path = BASE_DIR / "base.jpg"
+    if base_path.exists():
+        return FileResponse(base_path)
+    raise HTTPException(status_code=404, detail="File not found")
+
+@app.get("/bases/Base2.jpg")
+async def get_base2():
+    base_path = BASE_DIR / "Base2.jpg"
+    if base_path.exists():
+        return FileResponse(base_path)
+    raise HTTPException(status_code=404, detail="File not found")
+
+@app.get("/bases/Base3.jpg")
+async def get_base3():
+    base_path = BASE_DIR / "Base3.jpg"
+    if base_path.exists():
+        return FileResponse(base_path)
+    raise HTTPException(status_code=404, detail="File not found")
+
+@app.get("/bases/Base4.jpg")
+async def get_base4():
+    base_path = BASE_DIR / "Base4.jpg"
+    if base_path.exists():
+        return FileResponse(base_path)
+    raise HTTPException(status_code=404, detail="File not found")
+
+@app.get("/bases/Base5.jpg")
+async def get_base5():
+    base_path = BASE_DIR / "Base5.jpg"
+    if base_path.exists():
+        return FileResponse(base_path)
+    raise HTTPException(status_code=404, detail="File not found")
+
+@app.get("/bases/Base6.jpg")
+async def get_base6():
+    base_path = BASE_DIR / "Base6.jpg"
+    if base_path.exists():
+        return FileResponse(base_path)
+    raise HTTPException(status_code=404, detail="File not found")
+
 # Plantillas: webapp/templates/*.html
 templates = Jinja2Templates(directory=str(BASE_DIR / "webapp" / "templates"))
+
+# Configurar middleware de sesiones
+app.add_middleware(SessionMiddleware, secret_key="tu-super-secreto-key-debe-cambiarse")
 
 class Servicio(BaseModel):
     descripcion: str = Field(..., example="Desarrollo de landing page")
@@ -145,3 +196,32 @@ async def crear_cuenta_simple(solicitud: SolicitudCuenta):
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/login", response_class=HTMLResponse)
+async def login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.post("/login")
+async def handle_login(request: Request, email: str = Form(...), password: str = Form(...)):
+    # Validación simple - en producción usa autenticación real
+    if email == "demo@cobraflow.co" and password == "demo123":
+        # Establecer sesión
+        request.session["user"] = "demo_user"
+        return RedirectResponse(url="/dashboard", status_code=302)
+    return templates.TemplateResponse("login.html", {"request": request, "error": "Credenciales incorrectas"})
+
+@app.get("/logout")
+async def logout(request: Request):
+    request.session.clear()
+    return RedirectResponse(url="/login", status_code=302)
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(request: Request):
+    # Verificar sesión
+    if "user" not in request.session:
+        return RedirectResponse(url="/login", status_code=302)
+    
+    return templates.TemplateResponse("dashboard.html", {
+        "request": request,
+        "user": request.session["user"]
+    })
