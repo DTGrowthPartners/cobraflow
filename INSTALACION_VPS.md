@@ -6,13 +6,13 @@ Este documento proporciona instrucciones paso a paso para instalar y configurar 
 
 - Un VPS con Ubuntu 20.04 LTS o superior
 - Acceso SSH al servidor
-- Dominio apuntando a la IP del VPS (cobraflow.co)
+- Dominio `cobraflow.co` ya apuntando a la IP del VPS
 - Conocimientos básicos de línea de comandos
 
 ## Paso 1: Conectarse al VPS
 
 ```bash
-ssh usuario@tu-servidor.cobraflow.co
+ssh usuario@cobraflow.co
 ```
 
 Reemplaza `usuario` con tu nombre de usuario en el servidor.
@@ -107,7 +107,7 @@ sudo systemctl restart nginx
 sudo certbot --nginx -d cobraflow.co -d www.cobraflow.co
 ```
 
-Sigue las instrucciones para obtener y configurar el certificado SSL.
+Sigue las instrucciones para obtener y configurar el certificado SSL. Certbot detectará automáticamente tu configuración de Nginx y configurará los certificados HTTPS para ambos dominios (con y sin www).
 
 ## Paso 10: Configurar el Servidor FastAPI
 
@@ -163,6 +163,9 @@ sudo systemctl status cobraflow
 
 Abre tu navegador y visita:
 - `https://cobraflow.co`
+- `https://www.cobraflow.co`
+
+Ambos dominios deben funcionar correctamente con HTTPS.
 
 ## Paso 13: Configuración Adicional (Opcional)
 
