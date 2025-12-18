@@ -42,10 +42,19 @@ app.mount(
     name="static"
 )
 
+# Servir archivos PDF generados: /creadas/...
+creadas_dir = BASE_DIR / "creadas"
+creadas_dir.mkdir(exist_ok=True)
+app.mount(
+    "/creadas",
+    StaticFiles(directory=creadas_dir),
+    name="creadas"
+)
+
 # Plantillas: webapp/templates/*.html
 templates = Jinja2Templates(directory=str(BASE_DIR / "webapp" / "templates"))
 
-# Importar y registrar rutas web
+# Importar y registrar rutas web (landing, login, dashboard)
 from webapp import web_routes
 web_routes.register_web_routes(app)
 

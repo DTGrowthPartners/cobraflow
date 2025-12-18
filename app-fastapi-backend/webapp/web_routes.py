@@ -7,9 +7,7 @@ and should be integrated into the main FastAPI app.
 from fastapi import APIRouter, Request, Depends, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
-from typing import Optional
 import os
 import json
 from datetime import datetime
@@ -196,21 +194,20 @@ async def generate_invoice_request(request: Request, user: str = Depends(auth.lo
 def register_web_routes(app):
     """
     Register web routes and middleware to the main FastAPI app.
-    
+
     Args:
         app: FastAPI application instance
     """
-    # Add session middleware
-    app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
-    
-    # Mount static files
-    app.mount("/static", StaticFiles(directory=os.path.join(script_dir, "static")), name="static")
-    
-    # Mount created PDFs directory
+    # Add session middleware if not already added
+    from starlette.middleware.sessions import SessionMiddleware as SM
+    has_session = any(isinstance(middleware, SM) for middleware in app.user_middleware)
+    if not has_session:
+        app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
+
+    # Create creadas directory if it doesn't exist
     creadas_dir = os.path.join(project_root, "creadas")
     os.makedirs(creadas_dir, exist_ok=True)
-    app.mount("/creadas", StaticFiles(directory=creadas_dir), name="creadas")
-    
+
     # Include web router
     app.include_router(web_router)
     
