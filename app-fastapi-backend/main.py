@@ -370,7 +370,7 @@ async def save_billing(
     emisor_email: str = Form(...),
     emisor_ciudad: str = Form(...),
     cuenta_bancolombia: str = Form(...),
-    nequi_daviplata: str = Form(...),
+    nequi_daviplata: str = Form(default="0000000000"),
     nota_pago: str = Form(...),
     firma: str = Form(...),
     user: str = Depends(auth.login_required)
