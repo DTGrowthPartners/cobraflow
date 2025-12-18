@@ -129,7 +129,7 @@ User=usuario
 Group=usuario
 WorkingDirectory=/opt/cobraflow/app-fastapi-backend
 Environment="PATH=/opt/cobraflow/app-fastapi-backend/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-ExecStart=/opt/cobraflow/app-fastapi-backend/venv/bin/python main.py
+ExecStart=/opt/cobraflow/app-fastapi-backend/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000
 Restart=always
 
 [Install]
@@ -144,6 +144,24 @@ Habilita y inicia el servicio:
 sudo systemctl daemon-reload
 sudo systemctl start cobraflow
 sudo systemctl enable cobraflow
+```
+
+## Verificación del servicio
+
+Para verificar que el servicio está funcionando correctamente:
+
+```bash
+sudo systemctl status cobraflow
+```
+
+## Comando alternativo para desarrollo
+
+Si necesitas ejecutar el servidor manualmente para pruebas:
+
+```bash
+cd /opt/cobraflow/app-fastapi-backend
+source venv/bin/activate
+uvicorn main:app --host 127.0.0.1 --port 8000
 ```
 
 ## Paso 11: Configurar Firewall
