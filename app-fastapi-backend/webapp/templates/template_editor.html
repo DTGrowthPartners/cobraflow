@@ -1,0 +1,725 @@
+{% extends "base.html" %}
+
+{% block title %}Editor de Plantilla - CobraFlow{% endblock %}
+
+{% block content %}
+<style>
+    .editor-wrapper {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 2rem 1rem;
+    }
+
+    .editor-container {
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
+    .editor-header {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .editor-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a202c;
+        margin: 0 0 0.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .editor-header h1::before {
+        content: "✏️";
+        font-size: 2rem;
+    }
+
+    .editor-subtitle {
+        color: #718096;
+        margin: 0;
+    }
+
+    .editor-layout {
+        display: grid;
+        grid-template-columns: 400px 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    /* Panel de controles */
+    .controls-panel {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+        position: sticky;
+        top: 2rem;
+    }
+
+    .controls-panel h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin: 0 0 1.5rem 0;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .control-section {
+        margin-bottom: 2rem;
+    }
+
+    .control-section h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #4a5568;
+        margin: 0 0 1rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .control-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .control-group label {
+        display: block;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .control-group input[type="text"],
+    .control-group input[type="email"],
+    .control-group input[type="number"],
+    .control-group textarea,
+    .control-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .control-group input:focus,
+    .control-group textarea:focus,
+    .control-group select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .color-control {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+    }
+
+    .color-control input[type="color"] {
+        width: 60px;
+        height: 45px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .color-control input[type="text"] {
+        flex: 1;
+    }
+
+    /* Preview panel */
+    .preview-panel {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .preview-header h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin: 0;
+    }
+
+    .preview-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    /* Template preview */
+    .template-preview {
+        width: 100%;
+        aspect-ratio: 8.5 / 11;
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 3rem 2.5rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .template-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 3px solid;
+    }
+
+    .template-logo {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        font-weight: 700;
+    }
+
+    .template-company {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .template-subtitle {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .template-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-box {
+        padding: 1rem;
+        border-radius: 8px;
+        background: #f7fafc;
+        border: 1px solid #e2e8f0;
+    }
+
+    .info-box h4 {
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 0 0 0.75rem 0;
+        opacity: 0.7;
+    }
+
+    .info-box p {
+        margin: 0.25rem 0;
+        font-size: 0.95rem;
+    }
+
+    .template-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1.5rem;
+    }
+
+    .template-table th {
+        background: #f7fafc;
+        padding: 0.75rem;
+        text-align: left;
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid;
+    }
+
+    .template-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 0.95rem;
+    }
+
+    .template-total {
+        text-align: right;
+        margin-top: 1rem;
+    }
+
+    .total-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-right: 1rem;
+    }
+
+    .total-amount {
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    .template-footer {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 2px solid #e2e8f0;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #718096;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+        font-size: 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e0;
+    }
+
+    .btn-success {
+        background: #48bb78;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #38a169;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 1024px) {
+        .editor-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .controls-panel {
+            position: static;
+            max-height: none;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .editor-wrapper {
+            padding: 1rem 0.5rem;
+        }
+
+        .editor-header {
+            padding: 1.5rem;
+        }
+
+        .editor-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .preview-panel {
+            padding: 1rem;
+        }
+
+        .template-preview {
+            padding: 2rem 1.5rem;
+        }
+
+        .template-info {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+    }
+</style>
+
+<div class="editor-wrapper">
+    <div class="editor-container">
+        <!-- Header -->
+        <div class="editor-header">
+            <h1>Editor Visual de Plantilla</h1>
+            <p class="editor-subtitle">Personaliza tu plantilla de cuenta de cobro en tiempo real</p>
+        </div>
+
+        <div class="editor-layout">
+            <!-- Controls Panel -->
+            <div class="controls-panel">
+                <h3>Controles de Personalización</h3>
+
+                <!-- Colores -->
+                <div class="control-section">
+                    <h4>🎨 Colores</h4>
+
+                    <div class="control-group">
+                        <label>Color Principal</label>
+                        <div class="color-control">
+                            <input type="color" id="primary-color" value="#667eea" onchange="updatePreview()">
+                            <input type="text" id="primary-color-text" value="#667eea" maxlength="7"
+                                   oninput="syncColorFromText('primary')" placeholder="#667eea">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Color de Borde</label>
+                        <div class="color-control">
+                            <input type="color" id="border-color" value="#e2e8f0" onchange="updatePreview()">
+                            <input type="text" id="border-color-text" value="#e2e8f0" maxlength="7"
+                                   oninput="syncColorFromText('border')" placeholder="#e2e8f0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información de la Empresa -->
+                <div class="control-section">
+                    <h4>🏢 Tu Empresa</h4>
+
+                    <div class="control-group">
+                        <label>Nombre de la Empresa</label>
+                        <input type="text" id="company-name" value="CobraFlow" oninput="updatePreview()">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Subtítulo</label>
+                        <input type="text" id="company-subtitle" value="Cuenta de Cobro" oninput="updatePreview()">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Logo (Iniciales)</label>
+                        <input type="text" id="company-logo" value="CF" maxlength="3" oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <!-- Datos del Emisor -->
+                <div class="control-section">
+                    <h4>👤 Datos del Emisor</h4>
+
+                    <div class="control-group">
+                        <label>Nombre Completo</label>
+                        <input type="text" id="emisor-nombre" value="Juan Pérez" oninput="updatePreview()">
+                    </div>
+
+                    <div class="control-group">
+                        <label>NIT / Cédula</label>
+                        <input type="text" id="emisor-nit" value="1234567890" oninput="updatePreview()">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Dirección</label>
+                        <input type="text" id="emisor-direccion" value="Calle 123 #45-67" oninput="updatePreview()">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Teléfono</label>
+                        <input type="text" id="emisor-telefono" value="+57 300 123 4567" oninput="updatePreview()">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Email</label>
+                        <input type="email" id="emisor-email" value="juan@example.com" oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <!-- Datos del Cliente -->
+                <div class="control-section">
+                    <h4>🎯 Datos del Cliente</h4>
+
+                    <div class="control-group">
+                        <label>Nombre del Cliente</label>
+                        <input type="text" id="cliente-nombre" value="Empresa Cliente S.A.S" oninput="updatePreview()">
+                    </div>
+
+                    <div class="control-group">
+                        <label>NIT Cliente</label>
+                        <input type="text" id="cliente-nit" value="9876543210" oninput="updatePreview()">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Dirección Cliente</label>
+                        <input type="text" id="cliente-direccion" value="Avenida 10 #20-30" oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="control-section">
+                    <button class="btn btn-primary" style="width: 100%;" onclick="saveTemplate()">
+                        💾 Guardar Plantilla
+                    </button>
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: 0.75rem;" onclick="resetTemplate()">
+                        🔄 Restaurar Valores
+                    </button>
+                </div>
+            </div>
+
+            <!-- Preview Panel -->
+            <div class="preview-panel">
+                <div class="preview-header">
+                    <h3>Vista Previa</h3>
+                    <div class="preview-actions">
+                        <button class="btn btn-success" onclick="downloadPDF()">
+                            📄 Descargar PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="template-preview" id="template-preview">
+                    <!-- Header -->
+                    <div class="template-header" id="template-header">
+                        <div class="template-logo" id="template-logo">CF</div>
+                        <div class="template-company" id="template-company">CobraFlow</div>
+                        <div class="template-subtitle" id="template-subtitle">Cuenta de Cobro</div>
+                    </div>
+
+                    <!-- Info Boxes -->
+                    <div class="template-info">
+                        <div class="info-box">
+                            <h4>Emitido Por</h4>
+                            <p><strong id="preview-emisor-nombre">Juan Pérez</strong></p>
+                            <p>NIT: <span id="preview-emisor-nit">1234567890</span></p>
+                            <p id="preview-emisor-direccion">Calle 123 #45-67</p>
+                            <p id="preview-emisor-telefono">+57 300 123 4567</p>
+                            <p id="preview-emisor-email">juan@example.com</p>
+                        </div>
+
+                        <div class="info-box">
+                            <h4>Facturar A</h4>
+                            <p><strong id="preview-cliente-nombre">Empresa Cliente S.A.S</strong></p>
+                            <p>NIT: <span id="preview-cliente-nit">9876543210</span></p>
+                            <p id="preview-cliente-direccion">Avenida 10 #20-30</p>
+                        </div>
+                    </div>
+
+                    <!-- Services Table -->
+                    <table class="template-table" id="template-table">
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                                <th style="text-align: center;">Cantidad</th>
+                                <th style="text-align: right;">Precio Unit.</th>
+                                <th style="text-align: right;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Desarrollo de Sitio Web</td>
+                                <td style="text-align: center;">1</td>
+                                <td style="text-align: right;">$2,500,000</td>
+                                <td style="text-align: right;">$2,500,000</td>
+                            </tr>
+                            <tr>
+                                <td>Diseño Gráfico</td>
+                                <td style="text-align: center;">1</td>
+                                <td style="text-align: right;">$800,000</td>
+                                <td style="text-align: right;">$800,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Total -->
+                    <div class="template-total">
+                        <span class="total-label">Total:</span>
+                        <span class="total-amount" id="template-total">$3,300,000</span>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="template-footer">
+                        <p>Generado con CobraFlow - cobraflow.co</p>
+                        <p>Fecha: {{ "now" | date: "%d/%m/%Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sincronizar color picker con input de texto
+    function syncColorFromText(type) {
+        const textInput = document.getElementById(`${type}-color-text`);
+        const colorInput = document.getElementById(`${type}-color`);
+
+        let value = textInput.value.trim();
+        if (value && !value.startsWith('#')) {
+            value = '#' + value;
+            textInput.value = value;
+        }
+
+        if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+            colorInput.value = value;
+            updatePreview();
+        }
+    }
+
+    // Actualizar vista previa en tiempo real
+    function updatePreview() {
+        // Colores
+        const primaryColor = document.getElementById('primary-color').value;
+        const borderColor = document.getElementById('border-color').value;
+
+        document.getElementById('primary-color-text').value = primaryColor.toUpperCase();
+        document.getElementById('border-color-text').value = borderColor.toUpperCase();
+
+        // Aplicar colores
+        const header = document.getElementById('template-header');
+        header.style.borderColor = primaryColor;
+
+        const logo = document.getElementById('template-logo');
+        logo.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -20)} 100%)`;
+
+        const table = document.getElementById('template-table');
+        const tableHeaders = table.querySelectorAll('th');
+        tableHeaders.forEach(th => {
+            th.style.borderColor = primaryColor;
+        });
+
+        document.getElementById('template-total').style.color = primaryColor;
+
+        // Textos de empresa
+        document.getElementById('template-logo').textContent = document.getElementById('company-logo').value || 'CF';
+        document.getElementById('template-company').textContent = document.getElementById('company-name').value || 'CobraFlow';
+        document.getElementById('template-subtitle').textContent = document.getElementById('company-subtitle').value || 'Cuenta de Cobro';
+
+        // Datos del emisor
+        document.getElementById('preview-emisor-nombre').textContent = document.getElementById('emisor-nombre').value || '';
+        document.getElementById('preview-emisor-nit').textContent = document.getElementById('emisor-nit').value || '';
+        document.getElementById('preview-emisor-direccion').textContent = document.getElementById('emisor-direccion').value || '';
+        document.getElementById('preview-emisor-telefono').textContent = document.getElementById('emisor-telefono').value || '';
+        document.getElementById('preview-emisor-email').textContent = document.getElementById('emisor-email').value || '';
+
+        // Datos del cliente
+        document.getElementById('preview-cliente-nombre').textContent = document.getElementById('cliente-nombre').value || '';
+        document.getElementById('preview-cliente-nit').textContent = document.getElementById('cliente-nit').value || '';
+        document.getElementById('preview-cliente-direccion').textContent = document.getElementById('cliente-direccion').value || '';
+    }
+
+    // Función auxiliar para ajustar color
+    function adjustColor(color, amount) {
+        const num = parseInt(color.replace("#", ""), 16);
+        const r = Math.max(0, Math.min(255, (num >> 16) + amount));
+        const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amount));
+        const b = Math.max(0, Math.min(255, (num & 0x0000FF) + amount));
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+
+    // Guardar plantilla
+    async function saveTemplate() {
+        const templateData = {
+            primaryColor: document.getElementById('primary-color').value,
+            borderColor: document.getElementById('border-color').value,
+            companyName: document.getElementById('company-name').value,
+            companySubtitle: document.getElementById('company-subtitle').value,
+            companyLogo: document.getElementById('company-logo').value,
+            emisorNombre: document.getElementById('emisor-nombre').value,
+            emisorNit: document.getElementById('emisor-nit').value,
+            emisorDireccion: document.getElementById('emisor-direccion').value,
+            emisorTelefono: document.getElementById('emisor-telefono').value,
+            emisorEmail: document.getElementById('emisor-email').value,
+            clienteNombre: document.getElementById('cliente-nombre').value,
+            clienteNit: document.getElementById('cliente-nit').value,
+            clienteDireccion: document.getElementById('cliente-direccion').value
+        };
+
+        // Guardar en localStorage por ahora
+        localStorage.setItem('customTemplate', JSON.stringify(templateData));
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Plantilla Guardada',
+            text: 'Tu plantilla personalizada ha sido guardada correctamente',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+
+    // Restaurar valores por defecto
+    function resetTemplate() {
+        document.getElementById('primary-color').value = '#667eea';
+        document.getElementById('border-color').value = '#e2e8f0';
+        document.getElementById('company-name').value = 'CobraFlow';
+        document.getElementById('company-subtitle').value = 'Cuenta de Cobro';
+        document.getElementById('company-logo').value = 'CF';
+        document.getElementById('emisor-nombre').value = 'Juan Pérez';
+        document.getElementById('emisor-nit').value = '1234567890';
+        document.getElementById('emisor-direccion').value = 'Calle 123 #45-67';
+        document.getElementById('emisor-telefono').value = '+57 300 123 4567';
+        document.getElementById('emisor-email').value = 'juan@example.com';
+        document.getElementById('cliente-nombre').value = 'Empresa Cliente S.A.S';
+        document.getElementById('cliente-nit').value = '9876543210';
+        document.getElementById('cliente-direccion').value = 'Avenida 10 #20-30';
+
+        updatePreview();
+    }
+
+    // Descargar PDF (placeholder)
+    function downloadPDF() {
+        Swal.fire({
+            icon: 'info',
+            title: 'Próximamente',
+            text: 'La funcionalidad de descarga estará disponible próximamente'
+        });
+    }
+
+    // Cargar plantilla guardada al iniciar
+    window.addEventListener('DOMContentLoaded', function() {
+        const savedTemplate = localStorage.getItem('customTemplate');
+        if (savedTemplate) {
+            const data = JSON.parse(savedTemplate);
+            document.getElementById('primary-color').value = data.primaryColor || '#667eea';
+            document.getElementById('border-color').value = data.borderColor || '#e2e8f0';
+            document.getElementById('company-name').value = data.companyName || 'CobraFlow';
+            document.getElementById('company-subtitle').value = data.companySubtitle || 'Cuenta de Cobro';
+            document.getElementById('company-logo').value = data.companyLogo || 'CF';
+            document.getElementById('emisor-nombre').value = data.emisorNombre || '';
+            document.getElementById('emisor-nit').value = data.emisorNit || '';
+            document.getElementById('emisor-direccion').value = data.emisorDireccion || '';
+            document.getElementById('emisor-telefono').value = data.emisorTelefono || '';
+            document.getElementById('emisor-email').value = data.emisorEmail || '';
+            document.getElementById('cliente-nombre').value = data.clienteNombre || '';
+            document.getElementById('cliente-nit').value = data.clienteNit || '';
+            document.getElementById('cliente-direccion').value = data.clienteDireccion || '';
+        }
+        updatePreview();
+    });
+
+    // Sincronizar colores cuando cambia el color picker
+    document.getElementById('primary-color').addEventListener('input', updatePreview);
+    document.getElementById('border-color').addEventListener('input', updatePreview);
+</script>
+{% endblock %}

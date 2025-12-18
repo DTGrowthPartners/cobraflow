@@ -22,6 +22,8 @@
             </div>
             {% if request.session.user %}
             <div class="main-header-right">
+                <a href="/dashboard" class="btn btn-ghost">Dashboard</a>
+                <a href="/template-editor" class="btn btn-ghost">✏️ Editor de Plantilla</a>
                 <div class="user-pill">
                     <span class="user-avatar">{{ request.session.user[0]|upper }}</span>
                     <span class="user-name">{{ request.session.user }}</span>

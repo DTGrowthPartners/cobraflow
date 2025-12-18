@@ -90,6 +90,15 @@ async def dashboard(request: Request, user: str = Depends(auth.login_required)):
     })
 
 
+@web_router.get("/template-editor", response_class=HTMLResponse)
+async def template_editor(request: Request, user: str = Depends(auth.login_required)):
+    """Visual template editor page - requires authentication."""
+    return templates.TemplateResponse("template_editor.html", {
+        "request": request,
+        "user": user
+    })
+
+
 @web_router.post("/dashboard/generate", response_class=HTMLResponse)
 async def generate_invoice_request(request: Request, user: str = Depends(auth.login_required)):
     """Generate invoice from dashboard form."""
