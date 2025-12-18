@@ -246,14 +246,16 @@
     </div>
 
     <!-- Sección Inferior: Historial (ancho completo) -->
-    <div class="dashboard-bottom">
+    <div class="dashboard-bottom" id="historial-section">
         <div class="card" id="historial">
+            <h2 data-subtitle="Historial reciente de archivos generados" style="display: flex; justify-content: space-between; align-items: center;">
+                Historial de Cuentas Generadas
+                {% if history %}
+                <button onclick="deleteSelectedInvoices()" class="btn btn-danger">Eliminar Seleccionados</button>
+                {% endif %}
+            </h2>
             {% if history %}
-        <h2 data-subtitle="Historial reciente de archivos generados" style="display: flex; justify-content: space-between;">
-            Historial de Cuentas Generadas
-            <button onclick="deleteSelectedInvoices()" class="btn btn-danger">Eliminar Seleccionados</button>
-        </h2>
-        <div class="history-list">
+            <div class="history-list">
                 <table>
                     <thead>
                         <tr>
@@ -281,8 +283,9 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
             {% else %}
-                <p>Aún no se han generado cuentas de cobro.</p>
+            <p>Aún no se han generado cuentas de cobro.</p>
             {% endif %}
         </div>
     </div>
@@ -845,6 +848,8 @@
 .dashboard-bottom {
     width: 100%;
     margin-top: 40px;
+    display: block;
+    visibility: visible;
 }
 
 .history-list {
@@ -1204,14 +1209,33 @@ input#primary-color, input#secondary-color {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
+
+    .dashboard-bottom {
+        display: block !important;
+        visibility: visible !important;
+        margin-top: 24px;
+        padding: 0;
+    }
+
+    #historial {
+        display: block !important;
+    }
 }
 </style>
 
 <script>
     let serviceCounter = 1;
-    const API_BASE_URL = "{{ api_base_url }}";
+    const API_BASE_URL = "{{ api_base_url if api_base_url else '' }}";
     let modalClickHandlers = {};
     let modalKeyHandlers = {};
+
+    // Helper function to build API URLs
+    function getApiUrl(endpoint) {
+        if (!endpoint.startsWith('/')) {
+            endpoint = '/' + endpoint;
+        }
+        return API_BASE_URL ? API_BASE_URL + endpoint : endpoint;
+    }
 
     // === WIZARD FUNCTIONS ===
     function toggleStep(stepId) {
@@ -1250,7 +1274,7 @@ input#primary-color, input#secondary-color {
         }
 
         try {
-            const response = await fetch(API_BASE_URL + '/api/add_client', {
+            const response = await fetch(getApiUrl('/api/add_client'), {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: `nickname=${encodeURIComponent(nickname)}&nombre_completo=${encodeURIComponent(name)}&direccion=${encodeURIComponent(address)}&nit=${encodeURIComponent(nit)}`
@@ -1269,7 +1293,10 @@ input#primary-color, input#secondary-color {
     }
 
     function scrollToHistory() {
-        document.getElementById('historial').scrollIntoView({ behavior: 'smooth' });
+        const historialElement = document.getElementById('historial-section') || document.getElementById('historial');
+        if (historialElement) {
+            historialElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
 
     async function saveBillingDataWizard() {
@@ -1296,7 +1323,7 @@ input#primary-color, input#secondary-color {
         };
 
         try {
-            const response = await fetch(API_BASE_URL + '/api/save_billing', {
+            const response = await fetch(getApiUrl('/api/save_billing'), {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: new URLSearchParams(data)
@@ -1315,7 +1342,7 @@ input#primary-color, input#secondary-color {
 
     async function loadBillingDataWizard() {
         try {
-            const response = await fetch(API_BASE_URL + '/api/get_billing');
+            const response = await fetch(getApiUrl('/api/get_billing'));
             const data = await response.json();
 
             document.getElementById('emisor-nombre-wizard').value = data.emisor_nombre || '';
@@ -1497,7 +1524,7 @@ input#primary-color, input#secondary-color {
         }
 
         try {
-            const response = await fetch(API_BASE_URL + '/api/add_client', {
+            const response = await fetch(getApiUrl('/api/add_client'), {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: `nickname=${encodeURIComponent(nickname)}&nombre_completo=${encodeURIComponent(name)}&direccion=${encodeURIComponent(address)}&nit=${encodeURIComponent(nit)}`
@@ -1526,7 +1553,7 @@ input#primary-color, input#secondary-color {
         }
 
         try {
-            const response = await fetch(API_BASE_URL + '/api/add_service', {
+            const response = await fetch(getApiUrl('/api/add_service'), {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: `nombre=${encodeURIComponent(name)}&descripcion=${encodeURIComponent(desc)}&categoria=${encodeURIComponent(cat)}`
@@ -1548,10 +1575,10 @@ input#primary-color, input#secondary-color {
         try {
             let response;
             if (type === 'client') {
-                response = await fetch(API_BASE_URL + '/api/get_clients');
+                response = await fetch(getApiUrl('/api/get_clients'));
                 document.getElementById('list-title').textContent = 'Clientes';
             } else if (type === 'service') {
-                response = await fetch(API_BASE_URL + '/api/get_services');
+                response = await fetch(getApiUrl('/api/get_services'));
                 document.getElementById('list-title').textContent = 'Servicios';
             }
 
@@ -1648,7 +1675,7 @@ input#primary-color, input#secondary-color {
 
     async function loadClientData(nickname) {
         try {
-            const response = await fetch(API_BASE_URL + '/api/get_clients');
+            const response = await fetch(getApiUrl('/api/get_clients'));
             const data = await response.json();
             const client = data.clients.find(c => c.nickname === nickname);
             if (client) {
@@ -1663,7 +1690,7 @@ input#primary-color, input#secondary-color {
 
     async function loadServiceData(index) {
         try {
-            const response = await fetch(API_BASE_URL + '/api/get_services');
+            const response = await fetch(getApiUrl('/api/get_services'));
             const data = await response.json();
             const service = data.services[index];
             if (service) {
@@ -1776,7 +1803,7 @@ input#primary-color, input#secondary-color {
         };
 
         try {
-            const response = await fetch(API_BASE_URL + '/api/save_billing', {
+            const response = await fetch(getApiUrl('/api/save_billing'), {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: new URLSearchParams(data)
@@ -1795,7 +1822,7 @@ input#primary-color, input#secondary-color {
 
     async function loadBillingDataToModal() {
         try {
-            const response = await fetch(API_BASE_URL + '/api/get_billing');
+            const response = await fetch(getApiUrl('/api/get_billing'));
             const data = await response.json();
 
             document.getElementById('modal-emisor-nombre').value = data.emisor_nombre || '';
@@ -1847,7 +1874,7 @@ input#primary-color, input#secondary-color {
 
     async function loadCurrentBase() {
         try {
-            const response = await fetch(API_BASE_URL + '/api/get_base');
+            const response = await fetch(getApiUrl('/api/get_base'));
             const data = await response.json();
             const currentBase = data.base;
             selectedBase = currentBase;
@@ -1876,7 +1903,7 @@ input#primary-color, input#secondary-color {
             toggleColorPickers(currentBase);
             toggleEmpresaField(currentBase);
 
-            const colorResponse = await fetch(API_BASE_URL + '/api/get_colors');
+            const colorResponse = await fetch(getApiUrl('/api/get_colors'));
             const colorData = await colorResponse.json();
             selectedPrimaryColor = colorData.primary;
             selectedSecondaryColor = colorData.secondary;
@@ -1949,7 +1976,7 @@ input#primary-color, input#secondary-color {
 
         if (selectedBase) {
             try {
-                const response = await fetch(API_BASE_URL + '/api/set_base', {
+                const response = await fetch(getApiUrl('/api/set_base'), {
                     method: 'POST',
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                     body: `base_name=${encodeURIComponent(selectedBase)}`
@@ -1972,7 +1999,7 @@ input#primary-color, input#secondary-color {
         }
 
         try {
-            const response = await fetch(API_BASE_URL + '/api/set_colors', {
+            const response = await fetch(getApiUrl('/api/set_colors'), {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: body
@@ -2015,7 +2042,7 @@ input#primary-color, input#secondary-color {
         if (!result.isConfirmed) return;
 
         try {
-            const response = await fetch(API_BASE_URL + '/api/delete_invoice', {
+            const response = await fetch(getApiUrl('/api/delete_invoice'), {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: `filename=${encodeURIComponent(filename)}`
@@ -2068,7 +2095,7 @@ input#primary-color, input#secondary-color {
         if (!result.isConfirmed) return;
 
         try {
-            const response = await fetch(API_BASE_URL + '/api/delete_multiple_invoices', {
+            const response = await fetch(getApiUrl('/api/delete_multiple_invoices'), {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: `filenames=${encodeURIComponent(filenames.join(','))}`
@@ -2095,7 +2122,7 @@ input#primary-color, input#secondary-color {
     // === INIT ===
     async function loadEmpresaFieldVisibility() {
         try {
-            const response = await fetch(API_BASE_URL + '/api/get_base');
+            const response = await fetch(getApiUrl('/api/get_base'));
             const data = await response.json();
             const currentBase = data.base;
             toggleEmpresaField(currentBase);
