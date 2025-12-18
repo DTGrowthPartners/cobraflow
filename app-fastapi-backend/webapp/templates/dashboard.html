@@ -1178,9 +1178,15 @@ input#primary-color, input#secondary-color {
     }
 
     async function saveBillingDataWizard() {
-        const banco = 'Bancolombia'; // Valor predeterminado
-        const tipoCuenta = 'Ahorro';
-        const numeroCuenta = '78841707710'; // Valor predeterminado
+        const banco = document.getElementById('emisor-banco-wizard').value;
+        const tipoCuenta = document.getElementById('emisor-tipo-cuenta-wizard').value;
+        const numeroCuenta = document.getElementById('emisor-numero-cuenta-wizard').value;
+
+        // Validar campos obligatorios
+        if (!banco || !tipoCuenta || !numeroCuenta) {
+            Swal.fire('Por favor completa todos los campos bancarios (Banco, Tipo de Cuenta y Número de Cuenta)');
+            return;
+        }
 
         const data = {
             emisor_nombre: document.getElementById('emisor-nombre-wizard').value,
@@ -1221,6 +1227,19 @@ input#primary-color, input#secondary-color {
             document.getElementById('emisor-cedula-wizard').value = data.emisor_cedula || '';
             document.getElementById('emisor-telefono-wizard').value = data.emisor_telefono || '';
             document.getElementById('emisor-email-wizard').value = data.emisor_email || '';
+            document.getElementById('emisor-ciudad-wizard').value = data.emisor_ciudad || '';
+            document.getElementById('emisor-nota-wizard').value = data.nota_pago || '';
+            document.getElementById('emisor-firma-wizard').value = data.firma || '';
+
+            // Cargar datos bancarios
+            if (data.cuenta_bancolombia) {
+                const parts = data.cuenta_bancolombia.split(' - ');
+                if (parts.length === 3) {
+                    document.getElementById('emisor-banco-wizard').value = parts[0];
+                    document.getElementById('emisor-tipo-cuenta-wizard').value = parts[1];
+                    document.getElementById('emisor-numero-cuenta-wizard').value = parts[2];
+                }
+            }
 
             Swal.fire('Datos cargados correctamente');
         } catch (error) {
