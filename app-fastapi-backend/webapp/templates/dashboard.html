@@ -490,11 +490,21 @@
             <div class="color-pickers">
                 <div class="form-group">
                     <label for="primary-color">Color Primario:</label>
-                    <input type="color" id="primary-color" value="#005F99">
+                    <div class="color-input-wrapper">
+                        <input type="color" id="primary-color" value="#005F99" oninput="updateColorText('primary')">
+                        <input type="text" id="primary-color-text" class="color-text-input" value="#005F99"
+                               placeholder="#005F99" pattern="^#[0-9A-Fa-f]{6}$" maxlength="7"
+                               oninput="updateColorFromText('primary')">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="secondary-color">Color Secundario:</label>
-                    <input type="color" id="secondary-color" value="#FFFFFF">
+                    <div class="color-input-wrapper">
+                        <input type="color" id="secondary-color" value="#FFFFFF" oninput="updateColorText('secondary')">
+                        <input type="text" id="secondary-color-text" class="color-text-input" value="#FFFFFF"
+                               placeholder="#FFFFFF" pattern="^#[0-9A-Fa-f]{6}$" maxlength="7"
+                               oninput="updateColorFromText('secondary')">
+                    </div>
                 </div>
             </div>
             <div class="form-group" style="margin-top: 20px;">
@@ -975,10 +985,37 @@ table th {
     flex: 1;
 }
 
+.color-input-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
 input#primary-color, input#secondary-color {
-    width: 100%;
-    height: 40px;
-    border: solid 1px #FEFEFE;
+    width: 60px;
+    height: 45px;
+    border: solid 2px #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.color-text-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+.color-text-input:focus {
+    outline: none;
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .management-item {
@@ -1219,6 +1256,48 @@ input#primary-color, input#secondary-color {
 
     #historial {
         display: block !important;
+    }
+
+    /* Mobile color picker improvements */
+    .color-pickers {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .color-input-wrapper {
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+    }
+
+    input#primary-color, input#secondary-color {
+        width: 100%;
+        height: 60px;
+        border-width: 3px;
+        border-radius: 12px;
+        cursor: pointer;
+    }
+
+    .color-text-input {
+        width: 100%;
+        padding: 14px 16px;
+        font-size: 1rem;
+        border-width: 3px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .base-preview {
+        width: 120px;
+        height: 160px;
+    }
+
+    .base-options {
+        gap: 12px;
+    }
+
+    .base-option {
+        padding: 8px;
     }
 }
 </style>
@@ -1961,14 +2040,16 @@ input#primary-color, input#secondary-color {
             selectedSecondaryColor = colorData.secondary;
             document.getElementById('primary-color').value = selectedPrimaryColor;
             document.getElementById('secondary-color').value = selectedSecondaryColor;
+            document.getElementById('primary-color-text').value = selectedPrimaryColor.toUpperCase();
+            document.getElementById('secondary-color-text').value = selectedSecondaryColor.toUpperCase();
         } catch (error) {
             console.error('Error cargando base:', error);
         }
     }
 
     function toggleColorPickers(baseName) {
-        const primaryPicker = document.getElementById('primary-color').parentElement;
-        const secondaryPicker = document.getElementById('secondary-color').parentElement;
+        const primaryPicker = document.getElementById('primary-color').parentElement.parentElement;
+        const secondaryPicker = document.getElementById('secondary-color').parentElement.parentElement;
 
         if (baseName === 'base.jpg') {
             primaryPicker.style.display = 'none';
@@ -2072,11 +2153,47 @@ input#primary-color, input#secondary-color {
         }
     }
 
+    // Color picker synchronization functions
+    function updateColorText(type) {
+        const colorInput = document.getElementById(`${type}-color`);
+        const textInput = document.getElementById(`${type}-color-text`);
+        textInput.value = colorInput.value.toUpperCase();
+        if (type === 'primary') {
+            selectedPrimaryColor = colorInput.value;
+        } else {
+            selectedSecondaryColor = colorInput.value;
+        }
+    }
+
+    function updateColorFromText(type) {
+        const textInput = document.getElementById(`${type}-color-text`);
+        const colorInput = document.getElementById(`${type}-color`);
+        let value = textInput.value.trim();
+
+        // Auto-add # if missing
+        if (value && !value.startsWith('#')) {
+            value = '#' + value;
+            textInput.value = value;
+        }
+
+        // Validate hex color
+        if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+            colorInput.value = value;
+            if (type === 'primary') {
+                selectedPrimaryColor = value;
+            } else {
+                selectedSecondaryColor = value;
+            }
+        }
+    }
+
     document.getElementById('primary-color').addEventListener('input', function() {
         selectedPrimaryColor = this.value;
+        updateColorText('primary');
     });
     document.getElementById('secondary-color').addEventListener('input', function() {
         selectedSecondaryColor = this.value;
+        updateColorText('secondary');
     });
 
     // === INVOICE FUNCTIONS ===

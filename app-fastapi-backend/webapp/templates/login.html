@@ -622,6 +622,8 @@ function togglePassword() {
 function fillDemoCredentials() {
     document.getElementById('email').value = 'demo@dtgrowthpartners.com';
     document.getElementById('password').value = 'demo123';
+    // Enviar el formulario automáticamente
+    document.querySelector('.login-form').submit();
 }
 </script>
 {% endblock %}
