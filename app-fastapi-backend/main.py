@@ -7,6 +7,11 @@ from pydantic import BaseModel, Field
 from generador import generar_cuenta_de_cobro
 from datetime import datetime
 import json
+from fastapi import Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from pathlib import Path
 
 app = FastAPI(
     title="API de Cuentas de Cobro",
@@ -28,6 +33,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Configurar archivos estáticos y plantillas
+BASE_DIR = Path(__file__).resolve().parent
+
+# Servir archivos estáticos: /static/...
+app.mount(
+    "/static",
+    StaticFiles(directory=BASE_DIR / "webapp" / "static"),
+    name="static"
+)
+
+# Plantillas: webapp/templates/*.html
+templates = Jinja2Templates(directory=str(BASE_DIR / "webapp" / "templates"))
 
 class Servicio(BaseModel):
     descripcion: str = Field(..., example="Desarrollo de landing page")
@@ -124,6 +142,6 @@ async def crear_cuenta_simple(solicitud: SolicitudCuenta):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Ocurrió un error inesperado: {e}")
 
-@app.get("/")
-def read_root():
-    return {"mensaje": "Bienvenido a la API de Cuentas de Cobro. Dirígete a /docs para ver la documentación."}
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
