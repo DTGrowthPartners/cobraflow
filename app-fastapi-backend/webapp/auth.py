@@ -1,6 +1,8 @@
 from fastapi import Request, HTTPException
 from typing import Optional
 from starlette.responses import RedirectResponse
+from fastapi import Request, HTTPException
+from typing import Optional
 
 # --- CREDENCIALES DE DEMO (Hardcoded) ---
 DEMO_USER = "demo@dtgrowthpartners.com"
@@ -29,12 +31,9 @@ def get_current_user(request: Request) -> Optional[str]:
     """
     return request.session.get("user")
 
+
 def login_required(request: Request):
-    """
-    Dependencia de FastAPI para proteger rutas.
-    Si el usuario no está autenticado, redirige al login.
-    """
-    user = get_current_user(request)
+    user = request.session.get("user")
     if not user:
-        return RedirectResponse(url="/login", status_code=302)
+        raise HTTPException(status_code=303, headers={"Location": "/login"})
     return user
