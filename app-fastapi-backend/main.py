@@ -14,7 +14,9 @@ from pathlib import Path
 app = FastAPI(
     title="API de Cuentas de Cobro",
     description="Una API para generar cuentas de cobro en formato PDF.",
-    version="3.0.0"
+    version="3.0.0",
+    docs_url="/api/docs",  # Mover documentación a /api/docs
+    redoc_url="/api/redoc"  # Mover redoc a /api/redoc
 )
 
 # Configurar CORS para permitir requests desde el frontend
