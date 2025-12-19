@@ -103,6 +103,19 @@ async def logout(request: Request):
     auth.logout_user(request)
     return RedirectResponse(url="/login", status_code=302)
 
+@app.get("/template-editor", response_class=HTMLResponse)
+async def template_editor_page(request: Request, user: str = Depends(auth.login_required)):
+    return templates.TemplateResponse("template_editor.html", {"request": request, "user": user})
+
+# Aliases comunes (por si se accede por nombre de archivo o con guion bajo)
+@app.get("/template_editor", include_in_schema=False)
+async def template_editor_alias(request: Request, user: str = Depends(auth.login_required)):
+    return RedirectResponse(url="/template-editor", status_code=302)
+
+@app.get("/template_editor.html", include_in_schema=False)
+async def template_editor_html_alias(request: Request, user: str = Depends(auth.login_required)):
+    return RedirectResponse(url="/template-editor", status_code=302)
+
 # --- RUTAS API ---
 @app.post("/api/add_service")
 async def add_service(

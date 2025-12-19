@@ -3,10 +3,27 @@
 {% block title %}Editor de Plantilla - CobraFlow{% endblock %}
 
 {% block content %}
+<!-- Intro.js CSS -->
+<link rel="stylesheet" href="https://unpkg.com/intro.js/introjs.css">
+
 <style>
+    :root {
+        --primary-color: #262627;
+        --secondary-color: #9B7FB8;
+    }
+    .introjs-button.introjs-nextbutton {
+        color: white !important;
+    }
+    .introjs-skipbutton {
+    color: #718096;
+    top: 20px;
+    right: 30px;
+    font-size: 1.2em;
+}
+
     .editor-wrapper {
         min-height: 100vh;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: #f5f5f5;
         padding: 2rem 1rem;
     }
 
@@ -56,7 +73,7 @@
         border-radius: 16px;
         padding: 2rem;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        max-height: calc(100vh - 200px);
+        max-height: 100%;
         overflow-y: auto;
         position: sticky;
         top: 2rem;
@@ -97,27 +114,6 @@
         font-size: 0.9rem;
     }
 
-    .control-group input[type="text"],
-    .control-group input[type="email"],
-    .control-group input[type="number"],
-    .control-group textarea,
-    .control-group select {
-        width: 100%;
-        padding: 0.75rem;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-    }
-
-    .control-group input:focus,
-    .control-group textarea:focus,
-    .control-group select:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
     .color-control {
         display: flex;
         gap: 0.75rem;
@@ -134,6 +130,10 @@
 
     .color-control input[type="text"] {
         flex: 1;
+        padding: 0.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 0.95rem;
     }
 
     /* Preview panel */
@@ -165,128 +165,332 @@
         gap: 0.75rem;
     }
 
-    /* Template preview */
+    /* ========== DOCUMENTO - Diseño Turquesa Moderno ========== */
     .template-preview {
-        width: 100%;
-        aspect-ratio: 8.5 / 11;
-        background: white;
-        border: 2px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 3rem 2.5rem;
+        width: min(210mm, 100%);
+        min-height: 297mm;
+        margin: 0 auto;
+        background: #ffffff;
+        border: none;
+        border-radius: 0;
+        padding: 0;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        color: #333;
+        line-height: 1.6;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
+    .doc-foreground {
+        position: relative;
+        z-index: 1;
+        min-height: 297mm;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Header turquesa superior */
     .template-header {
+        background: linear-gradient(135deg, #4ECDC4 0%, #44A9A3 100%);
+        height: 80px;
+        margin: 0;
+        padding: 0;
+        border: none;
+    }
+
+    /* Logo y nombre de empresa */
+    .doc-brand {
         text-align: center;
-        margin-bottom: 2rem;
-        padding-bottom: 1.5rem;
-        border-bottom: 3px solid;
+        padding: 30px 0 10px 0;
     }
 
     .template-logo {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 1rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 3rem;
-        font-weight: 700;
+        display: none;
     }
 
     .template-company {
-        font-size: 1.8rem;
+        font-size: 32px;
         font-weight: 700;
-        margin: 0 0 0.5rem 0;
+        color: #4ECDC4;
+        letter-spacing: 2px;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Título principal - Cuenta de Cobro */
+    .main-title-wrapper {
+        text-align: center;
+        margin: 30px 0;
     }
 
     .template-subtitle {
-        font-size: 1.1rem;
+        font-size: 24px;
+        color: #4ECDC4;
         font-weight: 600;
         margin: 0;
-        text-transform: uppercase;
-        letter-spacing: 2px;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 10px;
     }
 
+    .template-subtitle:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #4ECDC4, transparent);
+    }
+
+    .doc-body {
+        padding: 0 50px 40px;
+        flex: 1;
+    }
+
+    /* Información de contacto (turquesa) */
+    .contact-info-section {
+        color: #4ECDC4;
+        font-size: 14px;
+        margin-bottom: 25px;
+        line-height: 1.8;
+    }
+
+    .contact-info-section p {
+        margin: 2px 0;
+    }
+
+    /* Sección de información del emisor y cliente */
     .template-info {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        margin-bottom: 2rem;
+        display: block;
+        margin-bottom: 25px;
+        font-size: 14px;
+        line-height: 1.9;
     }
 
     .info-box {
-        padding: 1rem;
-        border-radius: 8px;
-        background: #f7fafc;
-        border: 1px solid #e2e8f0;
+        padding: 0;
+        background: transparent;
+        border: 0;
+        margin-bottom: 15px;
     }
 
     .info-box h4 {
-        font-size: 0.85rem;
         font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin: 0 0 0.75rem 0;
-        opacity: 0.7;
+        color: #333;
+        margin: 0 0 10px 0;
+        font-size: 14px;
     }
 
     .info-box p {
-        margin: 0.25rem 0;
-        font-size: 0.95rem;
+        margin: 5px 0;
+        font-size: 14px;
+        color: #666;
     }
 
+    .info-box p strong {
+        color: #333;
+        font-weight: 600;
+        min-width: 120px;
+        display: inline-block;
+    }
+
+    /* Tabla de servicios moderna */
     .template-table {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 1.5rem;
+        margin: 25px 0;
+        box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+        border: none;
+    }
+
+    .template-table thead {
+        background: linear-gradient(135deg, #818181 0%, #44A9A3 100%);
+        color: white;
     }
 
     .template-table th {
-        background: #f7fafc;
-        padding: 0.75rem;
+        padding: 15px;
         text-align: left;
-        font-weight: 700;
-        font-size: 0.9rem;
-        text-transform: uppercase;
+        font-weight: 600;
+        font-size: 13px;
         letter-spacing: 0.5px;
-        border-bottom: 2px solid;
+        border: none;
+    }
+
+    .template-table th:nth-child(3),
+    .template-table th:nth-child(4),
+    .template-table th:nth-child(5) {
+        text-align: right;
+    }
+
+    .template-table tbody tr {
+        border-bottom: 1px solid #e0e0e0;
+        transition: background 0.2s;
+    }
+
+    .template-table tbody tr:hover {
+        background: #f9f9f9;
     }
 
     .template-table td {
-        padding: 0.75rem;
-        border-bottom: 1px solid #e2e8f0;
-        font-size: 0.95rem;
+        padding: 15px;
+        font-size: 14px;
+        color: #555;
+        border: none;
     }
 
+    /* Total destacado */
     .template-total {
         text-align: right;
-        margin-top: 1rem;
-    }
-
-    .total-label {
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-right: 1rem;
-    }
-
-    .total-amount {
-        font-size: 1.8rem;
+        margin-top: 0;
+        padding: 15px;
+        background: #f5f5f5;
         font-weight: 700;
     }
 
+    .total-label {
+        font-size: 15px;
+        font-weight: 700;
+        margin-right: 15px;
+        color: #333;
+    }
+
+    .total-amount {
+        font-size: 18px;
+        font-weight: 700;
+        color: #4ECDC4;
+    }
+
+    /* Sección de pago */
+    .payment-section {
+        margin: 25px 0;
+        font-size: 14px;
+    }
+
+    .payment-section h4 {
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .payment-section p {
+        color: #666;
+        line-height: 1.8;
+        margin: 5px 0;
+    }
+
+    /* Sección de notas */
+    .notes-section {
+        margin: 25px 0;
+        font-size: 14px;
+    }
+
+    .notes-section h4 {
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    /* Footer con diseño diagonal */
     .template-footer {
-        margin-top: 2rem;
-        padding-top: 1.5rem;
-        border-top: 2px solid #e2e8f0;
+        position: relative;
+        height: 80px;
+        margin-top: auto;
+        overflow: hidden;
+        border: none;
+        padding: 0;
+    }
+
+    .template-footer:before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40%;
+        height: 100%;
+        background: var(--secondary-color);
+        clip-path: polygon(0 0, 100% 100%, 0 100%);
+        transition: background 0.3s ease;
+    }
+
+    .template-footer:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 70%;
+        height: 100%;
+        background: var(--primary-color);
+        clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+        transition: background 0.3s ease;
+    }
+
+    /* Contenteditable styling */
+    [contenteditable="true"] {
+        outline: none;
+        transition: .4s;
+        border-radius: 4px;
+        position: relative;
+        padding: 3px 8px;
+
+    }
+
+    #cliente-nit, #cliente-nombre{
+        transition: .4s;
+    }
+
+
+    #cliente-nit:hover, #cliente-nombre:hover, #project-description:hover {
+        background: rgb(255, 255, 255);
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        transform: translateY(-1px)scale(1.01) !important;
+        transition: .4s;
+    }
+
+    [contenteditable="true"]:hover {
+        background: rgb(255, 255, 255);
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        cursor: text;
+        transform: translateY(-1px)scale(1.01);
+        transition: .4s;
+    }
+
+    [contenteditable="true"]:focus {
+        background: rgba(78, 205, 196, 0.08);
+        box-shadow: rgba(78, 205, 196, 0.3) 0px 8px 24px;
+        cursor: text;
+        transform: translateY(-1px);
+    }
+
+    [contenteditable="true"]:empty:before {
+        content: attr(data-placeholder);
+        color: #cbd5e0;
+        font-style: italic;
+    }
+
+    /* Service remove button */
+    .service-remove {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        line-height: 17px;
         text-align: center;
-        font-size: 0.9rem;
-        color: #718096;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .service-remove:hover {
+        transform: scale(1.1);
     }
 
     /* Buttons */
@@ -304,13 +508,13 @@
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #4ECDC4 0%, #44A9A3 100%);
         color: white;
     }
 
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
     }
 
     .btn-secondary {
@@ -361,12 +565,92 @@
         }
 
         .template-preview {
-            padding: 2rem 1.5rem;
+            width: 100%;
         }
 
-        .template-info {
-            grid-template-columns: 1fr;
-            gap: 1rem;
+        .doc-body {
+            padding: 0 25px 30px;
+        }
+
+        .template-company {
+            font-size: 24px;
+        }
+
+        .template-subtitle {
+            font-size: 18px;
+        }
+    }
+
+    /* Print / PDF */
+    @page {
+        size: A4;
+        margin: 0;
+    }
+
+    @media print {
+        body {
+            background: #ffffff !important;
+        }
+
+        .container {
+            max-width: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .editor-container {
+            max-width: none !important;
+            margin: 0 !important;
+        }
+
+        .editor-layout {
+            display: block !important;
+        }
+
+        header.main-header,
+        footer.main-footer,
+        .editor-header,
+        .controls-panel,
+        .preview-header,
+        .service-remove {
+            display: none !important;
+        }
+
+        .editor-wrapper,
+        .preview-panel {
+            padding: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            border: 0 !important;
+        }
+
+        .template-preview {
+            width: 210mm !important;
+            min-height: 297mm !important;
+            margin: 0 !important;
+            border: 0 !important;
+            box-shadow: none !important;
+        }
+
+        [contenteditable="true"]:hover,
+        [contenteditable="true"]:focus {
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        thead {
+            display: table-header-group;
+            box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+        }
+
+        tr {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .template-table th:first-child,
+        .template-table td:first-child {
+            display: none !important;
         }
     }
 </style>
@@ -375,13 +659,22 @@
     <div class="editor-container">
         <!-- Header -->
         <div class="editor-header">
-            <h1>Editor Visual de Plantilla</h1>
-            <p class="editor-subtitle">Personaliza tu plantilla de cuenta de cobro en tiempo real</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>Editor Visual de Plantilla</h1>
+                    <p class="editor-subtitle">Personaliza tu plantilla de cuenta de cobro en tiempo real</p>
+                </div>
+                <button class="btn btn-secondary" onclick="startTour()" style="height: fit-content;">
+                    ❓ Tour Guiado
+                </button>
+            </div>
         </div>
 
         <div class="editor-layout">
             <!-- Controls Panel -->
-            <div class="controls-panel">
+            <div class="controls-panel"
+                 data-intro="Aquí puedes personalizar los colores de tu plantilla y gestionar los servicios. Todos los cambios se aplican en tiempo real."
+                 data-step="1">
                 <h3>Controles de Personalización</h3>
 
                 <!-- Colores -->
@@ -391,90 +684,65 @@
                     <div class="control-group">
                         <label>Color Principal</label>
                         <div class="color-control">
-                            <input type="color" id="primary-color" value="#667eea" onchange="updatePreview()">
-                            <input type="text" id="primary-color-text" value="#667eea" maxlength="7"
-                                   oninput="syncColorFromText('primary')" placeholder="#667eea">
+                            <input type="color" id="primary-color" value="#262627" onchange="applyColors()">
+                            <input type="text" id="primary-color-text" value="#262627" maxlength="7"
+                                   oninput="syncColorFromText('primary')" placeholder="#262627">
                         </div>
                     </div>
 
                     <div class="control-group">
-                        <label>Color de Borde</label>
+                        <label>Color Secundario</label>
                         <div class="color-control">
-                            <input type="color" id="border-color" value="#e2e8f0" onchange="updatePreview()">
-                            <input type="text" id="border-color-text" value="#e2e8f0" maxlength="7"
-                                   oninput="syncColorFromText('border')" placeholder="#e2e8f0">
+                            <input type="color" id="purple-color" value="#9B7FB8" onchange="applyColors()">
+                            <input type="text" id="purple-color-text" value="#9B7FB8" maxlength="7"
+                                   oninput="syncColorFromText('purple')" placeholder="#9B7FB8">
                         </div>
                     </div>
                 </div>
 
-                <!-- Información de la Empresa -->
+                <!-- Tipografía -->
                 <div class="control-section">
-                    <h4>🏢 Tu Empresa</h4>
+                    <h4>📝 Tipografía</h4>
 
                     <div class="control-group">
-                        <label>Nombre de la Empresa</label>
-                        <input type="text" id="company-name" value="CobraFlow" oninput="updatePreview()">
-                    </div>
-
-                    <div class="control-group">
-                        <label>Subtítulo</label>
-                        <input type="text" id="company-subtitle" value="Cuenta de Cobro" oninput="updatePreview()">
-                    </div>
-
-                    <div class="control-group">
-                        <label>Logo (Iniciales)</label>
-                        <input type="text" id="company-logo" value="CF" maxlength="3" oninput="updatePreview()">
+                        <label>Fuente del Documento</label>
+                        <select id="font-family" onchange="applyFont()" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem;">
+                            <option value="Arial, Helvetica, sans-serif">Arial</option>
+                            <option value="'Times New Roman', Times, serif">Times New Roman</option>
+                            <option value="'Courier New', Courier, monospace">Courier New</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                            <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                            <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
+                            <option value="Impact, fantasy">Impact</option>
+                            <option value="'Lucida Console', monospace">Lucida Console</option>
+                            <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" selected>System (Recomendado)</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- Datos del Emisor -->
-                <div class="control-section">
-                    <h4>👤 Datos del Emisor</h4>
-
-                    <div class="control-group">
-                        <label>Nombre Completo</label>
-                        <input type="text" id="emisor-nombre" value="Juan Pérez" oninput="updatePreview()">
-                    </div>
-
-                    <div class="control-group">
-                        <label>NIT / Cédula</label>
-                        <input type="text" id="emisor-nit" value="1234567890" oninput="updatePreview()">
-                    </div>
-
-                    <div class="control-group">
-                        <label>Dirección</label>
-                        <input type="text" id="emisor-direccion" value="Calle 123 #45-67" oninput="updatePreview()">
-                    </div>
-
-                    <div class="control-group">
-                        <label>Teléfono</label>
-                        <input type="text" id="emisor-telefono" value="+57 300 123 4567" oninput="updatePreview()">
-                    </div>
-
-                    <div class="control-group">
-                        <label>Email</label>
-                        <input type="email" id="emisor-email" value="juan@example.com" oninput="updatePreview()">
+                <!-- Instrucciones -->
+                <div class="control-section" style="display: none;">
+                    <div style="background: #e8f9f8; padding: 1rem; border-radius: 8px; border-left: 4px solid #4ECDC4;">
+                        <h4 style="margin: 0 0 0.5rem 0; color: #4ECDC4;">💡 Modo de Edición</h4>
+                        <p style="margin: 0; font-size: 0.85rem; color: #4a5568; line-height: 1.5;">
+                            Haz clic directamente sobre cualquier texto del documento para editarlo en tiempo real.
+                            Los cambios se aplicarán automáticamente.
+                        </p>
                     </div>
                 </div>
 
-                <!-- Datos del Cliente -->
+                <!-- Tabla de servicios dinámica -->
                 <div class="control-section">
-                    <h4>🎯 Datos del Cliente</h4>
-
-                    <div class="control-group">
-                        <label>Nombre del Cliente</label>
-                        <input type="text" id="cliente-nombre" value="Empresa Cliente S.A.S" oninput="updatePreview()">
-                    </div>
-
-                    <div class="control-group">
-                        <label>NIT Cliente</label>
-                        <input type="text" id="cliente-nit" value="9876543210" oninput="updatePreview()">
-                    </div>
-
-                    <div class="control-group">
-                        <label>Dirección Cliente</label>
-                        <input type="text" id="cliente-direccion" value="Avenida 10 #20-30" oninput="updatePreview()">
-                    </div>
+                    <h4>📋 Gestión de Servicios</h4>
+                    <button class="btn btn-secondary" id="add-service-btn" style="width: 100%;" onclick="addServiceRow()"
+                            data-intro="Usa este botón para agregar más servicios a tu cuenta de cobro. Puedes agregar tantos como necesites."
+                            data-step="5">
+                        ➕ Agregar Servicio
+                    </button>
+                    <p style="font-size: 0.85rem; color: #718096; margin-top: 0.5rem;">
+                        Edita directamente en la tabla del documento
+                    </p>
                 </div>
 
                 <!-- Acciones -->
@@ -493,75 +761,101 @@
                 <div class="preview-header">
                     <h3>Vista Previa</h3>
                     <div class="preview-actions">
-                        <button class="btn btn-success" onclick="downloadPDF()">
+                        <button class="btn btn-success" onclick="downloadPDF()" style="cursor: not-allowed; opacity: 0.7;" title="Función en desarrollo - Usa Ctrl+P para imprimir">
                             📄 Descargar PDF
                         </button>
                     </div>
                 </div>
 
-                <div class="template-preview" id="template-preview">
-                    <!-- Header -->
-                    <div class="template-header" id="template-header">
-                        <div class="template-logo" id="template-logo">CF</div>
-                        <div class="template-company" id="template-company">CobraFlow</div>
-                        <div class="template-subtitle" id="template-subtitle">Cuenta de Cobro</div>
-                    </div>
+                <div class="template-preview" id="template-preview"
+                     data-intro="Este es tu documento de cuenta de cobro. Puedes hacer clic en cualquier texto para editarlo directamente."
+                     data-step="2">
+                    <div class="doc-foreground">
+                        <!-- Header turquesa -->
+                        <header class="template-header" id="template-header"></header>
 
-                    <!-- Info Boxes -->
-                    <div class="template-info">
-                        <div class="info-box">
-                            <h4>Emitido Por</h4>
-                            <p><strong id="preview-emisor-nombre">Juan Pérez</strong></p>
-                            <p>NIT: <span id="preview-emisor-nit">1234567890</span></p>
-                            <p id="preview-emisor-direccion">Calle 123 #45-67</p>
-                            <p id="preview-emisor-telefono">+57 300 123 4567</p>
-                            <p id="preview-emisor-email">juan@example.com</p>
+                        <!-- Logo/Nombre empresa -->
+                        <div class="doc-brand">
+                            <div class="template-company" id="template-company" contenteditable="true" data-placeholder="NOMBRE EMPRESA">COBRAFLOW</div>
                         </div>
 
-                        <div class="info-box">
-                            <h4>Facturar A</h4>
-                            <p><strong id="preview-cliente-nombre">Empresa Cliente S.A.S</strong></p>
-                            <p>NIT: <span id="preview-cliente-nit">9876543210</span></p>
-                            <p id="preview-cliente-direccion">Avenida 10 #20-30</p>
-                        </div>
-                    </div>
+                        <main class="doc-body">
+                            <!-- Título principal -->
+                            <div class="main-title-wrapper">
+                                <h1 class="template-subtitle" id="template-subtitle" contenteditable="true" data-placeholder="CUENTA DE COBRO">CUENTA DE COBRO</h1>
+                            </div>
 
-                    <!-- Services Table -->
-                    <table class="template-table" id="template-table">
-                        <thead>
-                            <tr>
-                                <th>Descripción</th>
-                                <th style="text-align: center;">Cantidad</th>
-                                <th style="text-align: right;">Precio Unit.</th>
-                                <th style="text-align: right;">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Desarrollo de Sitio Web</td>
-                                <td style="text-align: center;">1</td>
-                                <td style="text-align: right;">$2,500,000</td>
-                                <td style="text-align: right;">$2,500,000</td>
-                            </tr>
-                            <tr>
-                                <td>Diseño Gráfico</td>
-                                <td style="text-align: center;">1</td>
-                                <td style="text-align: right;">$800,000</td>
-                                <td style="text-align: right;">$800,000</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            <!-- Información de contacto -->
+                            <div class="contact-info-section">
+                                <p contenteditable="true" data-placeholder="Teléfono" id="contact-phone">+57 300 123 4567</p>
+                                <p contenteditable="true" data-placeholder="Email" id="contact-email">contacto@cobraflow.co</p>
+                                <p contenteditable="true" data-placeholder="Ciudad" id="contact-city">Cartagena, Colombia</p>
+                            </div>
 
-                    <!-- Total -->
-                    <div class="template-total">
-                        <span class="total-label">Total:</span>
-                        <span class="total-amount" id="template-total">$3,300,000</span>
-                    </div>
+                            <!-- Información del cliente y emisor -->
+                            <section class="template-info" aria-label="Información del documento">
+                                <div class="info-box">
+                                    <h4>Información del Cliente</h4>
+                                    <p><strong>Cliente:</strong> <span contenteditable="true" data-placeholder="Nombre del cliente" id="cliente-nombre"
+                                        data-intro="Los campos como este son editables. Haz clic sobre ellos para cambiar el contenido. Verás un efecto visual cuando pases el mouse."
+                                        data-step="3">Empresa Cliente S.A.S</span></p>
+                                    <p><strong>NIT:</strong> <span contenteditable="true" data-placeholder="NIT" id="cliente-nit">900123456-7</span></p>
+                                    <p><strong>Fecha:</strong> <span id="doc-date">17/12/2025</span></p>
+                                </div>
 
-                    <!-- Footer -->
-                    <div class="template-footer">
-                        <p>Generado con CobraFlow - cobraflow.co</p>
-                        <p>Fecha: {{ "now" | date: "%d/%m/%Y" }}</p>
+                                <div class="info-box">
+                                    <h4>Servicio / Proyecto</h4>
+                                    <p contenteditable="true" data-placeholder="Descripción del servicio o proyecto" id="project-description">Consultoría y desarrollo de software empresarial</p>
+                                </div>
+                            </section>
+
+                            <!-- Tabla de servicios -->
+                            <table class="template-table" id="template-table" aria-label="Servicios"
+                                   data-intro="En esta tabla puedes agregar, editar o eliminar servicios. Los totales se calculan automáticamente."
+                                   data-step="4">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 8%;"></th>
+                                        <th style="width: 40%;">Descripción</th>
+                                        <th style="text-align: center; width: 12%;">Cantidad</th>
+                                        <th style="text-align: right; width: 20%;">Precio Unitario</th>
+                                        <th style="text-align: right; width: 20%;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="services-tbody">
+                                    <tr>
+                                        <td style="text-align: center;"><a class="service-remove" onclick="removeServiceRow(this)">✖</a></td>
+                                        <td contenteditable="true" data-placeholder="Descripción del servicio">Consultoría Empresarial</td>
+                                        <td style="text-align: center;" contenteditable="true" class="quantity-cell" data-placeholder="1">1</td>
+                                        <td style="text-align: right;" contenteditable="true" class="price-cell" data-prefix="$" data-placeholder="0">3,590,000</td>
+                                        <td style="text-align: right;" class="total-cell"><span data-prefix>$</span><span class="row-total">3,590,000</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Total -->
+                            <section class="template-total" aria-label="Total">
+                                <span class="total-label">Total General</span>
+                                <span class="total-amount" id="template-total">$3,590,000</span>
+                            </section>
+
+                            <!-- Información de pago -->
+                            <div class="payment-section">
+                                <h4>Páguese A:</h4>
+                                <p><strong>Nombre:</strong> <span contenteditable="true" data-placeholder="Nombre" id="payment-name">Juan Pérez</span></p>
+                                <p><strong>Cédula:</strong> <span contenteditable="true" data-placeholder="Cédula" id="payment-id">1234567890</span></p>
+                                <p><strong>Cuenta:</strong> <span contenteditable="true" data-placeholder="Banco - Tipo - Número" id="payment-account">Bancolombia - Ahorro - 12345678901</span></p>
+                            </div>
+
+                            <!-- Nota -->
+                            <div class="notes-section">
+                                <h4>Nota:</h4>
+                                <p contenteditable="true" data-placeholder="Nota adicional" id="note-text">Se solicita que el pago sea realizado a la mayor brevedad posible.</p>
+                            </div>
+                        </main>
+
+                        <!-- Footer diagonal -->
+                        <footer class="template-footer" aria-label="Footer"></footer>
                     </div>
                 </div>
             </div>
@@ -570,7 +864,26 @@
 </div>
 
 <script>
-    // Sincronizar color picker con input de texto
+    // ==================== UTILITY FUNCTIONS ====================
+
+    function formatNumber(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function parseNumber(str) {
+        return parseFloat(str.replace(/[^\d.-]/g, '')) || 0;
+    }
+
+    function adjustColor(color, amount) {
+        const num = parseInt(color.replace("#", ""), 16);
+        const r = Math.max(0, Math.min(255, (num >> 16) + amount));
+        const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amount));
+        const b = Math.max(0, Math.min(255, (num & 0x0000FF) + amount));
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+
+    // ==================== COLOR MANAGEMENT ====================
+
     function syncColorFromText(type) {
         const textInput = document.getElementById(`${type}-color-text`);
         const colorInput = document.getElementById(`${type}-color`);
@@ -583,80 +896,190 @@
 
         if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
             colorInput.value = value;
-            updatePreview();
+            applyColors();
         }
     }
 
-    // Actualizar vista previa en tiempo real
-    function updatePreview() {
-        // Colores
+    function applyColors() {
         const primaryColor = document.getElementById('primary-color').value;
-        const borderColor = document.getElementById('border-color').value;
+        const secondaryColor = document.getElementById('purple-color').value;
 
         document.getElementById('primary-color-text').value = primaryColor.toUpperCase();
-        document.getElementById('border-color-text').value = borderColor.toUpperCase();
+        document.getElementById('purple-color-text').value = secondaryColor.toUpperCase();
 
-        // Aplicar colores
+        // Actualizar CSS variables
+        document.documentElement.style.setProperty('--primary-color', primaryColor);
+        document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+
+        // Aplicar color principal
         const header = document.getElementById('template-header');
-        header.style.borderColor = primaryColor;
+        header.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -20)} 100%)`;
 
-        const logo = document.getElementById('template-logo');
-        logo.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -20)} 100%)`;
+        const companyName = document.getElementById('template-company');
+        companyName.style.color = primaryColor;
 
-        const table = document.getElementById('template-table');
-        const tableHeaders = table.querySelectorAll('th');
-        tableHeaders.forEach(th => {
-            th.style.borderColor = primaryColor;
+        const subtitle = document.getElementById('template-subtitle');
+        subtitle.style.color = primaryColor;
+
+        const contactSection = document.querySelector('.contact-info-section');
+        contactSection.style.color = primaryColor;
+
+        const tableHeaders = document.querySelectorAll('.template-table thead');
+        tableHeaders.forEach(thead => {
+            thead.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -20)} 100%)`;
         });
 
         document.getElementById('template-total').style.color = primaryColor;
-
-        // Textos de empresa
-        document.getElementById('template-logo').textContent = document.getElementById('company-logo').value || 'CF';
-        document.getElementById('template-company').textContent = document.getElementById('company-name').value || 'CobraFlow';
-        document.getElementById('template-subtitle').textContent = document.getElementById('company-subtitle').value || 'Cuenta de Cobro';
-
-        // Datos del emisor
-        document.getElementById('preview-emisor-nombre').textContent = document.getElementById('emisor-nombre').value || '';
-        document.getElementById('preview-emisor-nit').textContent = document.getElementById('emisor-nit').value || '';
-        document.getElementById('preview-emisor-direccion').textContent = document.getElementById('emisor-direccion').value || '';
-        document.getElementById('preview-emisor-telefono').textContent = document.getElementById('emisor-telefono').value || '';
-        document.getElementById('preview-emisor-email').textContent = document.getElementById('emisor-email').value || '';
-
-        // Datos del cliente
-        document.getElementById('preview-cliente-nombre').textContent = document.getElementById('cliente-nombre').value || '';
-        document.getElementById('preview-cliente-nit').textContent = document.getElementById('cliente-nit').value || '';
-        document.getElementById('preview-cliente-direccion').textContent = document.getElementById('cliente-direccion').value || '';
     }
 
-    // Función auxiliar para ajustar color
-    function adjustColor(color, amount) {
-        const num = parseInt(color.replace("#", ""), 16);
-        const r = Math.max(0, Math.min(255, (num >> 16) + amount));
-        const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amount));
-        const b = Math.max(0, Math.min(255, (num & 0x0000FF) + amount));
-        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    // ==================== FONT MANAGEMENT ====================
+
+    function applyFont() {
+        const fontFamily = document.getElementById('font-family').value;
+        const preview = document.getElementById('template-preview');
+        preview.style.fontFamily = fontFamily;
     }
 
-    // Guardar plantilla
-    async function saveTemplate() {
+    // ==================== TABLE CALCULATIONS ====================
+
+    function calculateRowTotal(row) {
+        const quantityCell = row.querySelector('.quantity-cell');
+        const priceCell = row.querySelector('.price-cell');
+        const totalCell = row.querySelector('.row-total');
+
+        if (!quantityCell || !priceCell || !totalCell) return 0;
+
+        const quantity = parseNumber(quantityCell.textContent);
+        const price = parseNumber(priceCell.textContent);
+        const total = quantity * price;
+
+        totalCell.textContent = formatNumber(total);
+        return total;
+    }
+
+    function calculateGrandTotal() {
+        let grandTotal = 0;
+        const rows = document.querySelectorAll('#services-tbody tr');
+
+        rows.forEach(row => {
+            grandTotal += calculateRowTotal(row);
+        });
+
+        document.getElementById('template-total').textContent = '$' + formatNumber(grandTotal);
+    }
+
+    // ==================== SERVICE ROW MANAGEMENT ====================
+
+    function addServiceRow() {
+        const tbody = document.getElementById('services-tbody');
+        const newRow = document.createElement('tr');
+
+        newRow.innerHTML = `
+            <td style="text-align: center;"><a class="service-remove" onclick="removeServiceRow(this)">✖</a></td>
+            <td contenteditable="true" data-placeholder="Descripción del servicio">Nuevo servicio</td>
+            <td style="text-align: center;" contenteditable="true" class="quantity-cell" data-placeholder="1">1</td>
+            <td style="text-align: right;" contenteditable="true" class="price-cell" data-prefix="$" data-placeholder="0">0</td>
+            <td style="text-align: right;" class="total-cell"><span data-prefix>$</span><span class="row-total">0</span></td>
+        `;
+
+        tbody.appendChild(newRow);
+        attachCellListeners(newRow);
+        calculateGrandTotal();
+    }
+
+    function removeServiceRow(button) {
+        const tbody = document.getElementById('services-tbody');
+        const rows = tbody.querySelectorAll('tr');
+
+        if (rows.length <= 1) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No se puede eliminar',
+                text: 'Debe haber al menos un servicio en la tabla',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            return;
+        }
+
+        const row = button.closest('tr');
+        row.remove();
+        calculateGrandTotal();
+    }
+
+    // ==================== CONTENTEDITABLE HANDLERS ====================
+
+    function attachCellListeners(row) {
+        const quantityCell = row.querySelector('.quantity-cell');
+        const priceCell = row.querySelector('.price-cell');
+
+        if (quantityCell) {
+            quantityCell.addEventListener('input', function() {
+                calculateRowTotal(row);
+                calculateGrandTotal();
+            });
+
+            quantityCell.addEventListener('blur', function() {
+                const value = parseNumber(this.textContent);
+                this.textContent = value > 0 ? value : 1;
+                calculateRowTotal(row);
+                calculateGrandTotal();
+            });
+        }
+
+        if (priceCell) {
+            priceCell.addEventListener('input', function() {
+                calculateRowTotal(row);
+                calculateGrandTotal();
+            });
+
+            priceCell.addEventListener('blur', function() {
+                const value = parseNumber(this.textContent);
+                this.textContent = formatNumber(value);
+                calculateRowTotal(row);
+                calculateGrandTotal();
+            });
+
+            priceCell.addEventListener('focus', function() {
+                const value = parseNumber(this.textContent);
+                this.textContent = value;
+            });
+        }
+    }
+
+    // ==================== SAVE & LOAD ====================
+
+    function saveTemplate() {
         const templateData = {
             primaryColor: document.getElementById('primary-color').value,
-            borderColor: document.getElementById('border-color').value,
-            companyName: document.getElementById('company-name').value,
-            companySubtitle: document.getElementById('company-subtitle').value,
-            companyLogo: document.getElementById('company-logo').value,
-            emisorNombre: document.getElementById('emisor-nombre').value,
-            emisorNit: document.getElementById('emisor-nit').value,
-            emisorDireccion: document.getElementById('emisor-direccion').value,
-            emisorTelefono: document.getElementById('emisor-telefono').value,
-            emisorEmail: document.getElementById('emisor-email').value,
-            clienteNombre: document.getElementById('cliente-nombre').value,
-            clienteNit: document.getElementById('cliente-nit').value,
-            clienteDireccion: document.getElementById('cliente-direccion').value
+            secondaryColor: document.getElementById('purple-color').value,
+            fontFamily: document.getElementById('font-family').value,
+            companyName: document.getElementById('template-company').textContent,
+            subtitle: document.getElementById('template-subtitle').textContent,
+            contactPhone: document.getElementById('contact-phone').textContent,
+            contactEmail: document.getElementById('contact-email').textContent,
+            contactCity: document.getElementById('contact-city').textContent,
+            clienteNombre: document.getElementById('cliente-nombre').textContent,
+            clienteNit: document.getElementById('cliente-nit').textContent,
+            projectDescription: document.getElementById('project-description').textContent,
+            paymentName: document.getElementById('payment-name').textContent,
+            paymentId: document.getElementById('payment-id').textContent,
+            paymentAccount: document.getElementById('payment-account').textContent,
+            noteText: document.getElementById('note-text').textContent,
+            services: []
         };
 
-        // Guardar en localStorage por ahora
+        document.querySelectorAll('#services-tbody tr').forEach((row, index) => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length >= 5) {
+                templateData.services.push({
+                    description: cells[1].textContent,
+                    quantity: cells[2].textContent,
+                    price: cells[3].textContent
+                });
+            }
+        });
+
         localStorage.setItem('customTemplate', JSON.stringify(templateData));
 
         Swal.fire({
@@ -668,58 +1091,236 @@
         });
     }
 
-    // Restaurar valores por defecto
     function resetTemplate() {
-        document.getElementById('primary-color').value = '#667eea';
-        document.getElementById('border-color').value = '#e2e8f0';
-        document.getElementById('company-name').value = 'CobraFlow';
-        document.getElementById('company-subtitle').value = 'Cuenta de Cobro';
-        document.getElementById('company-logo').value = 'CF';
-        document.getElementById('emisor-nombre').value = 'Juan Pérez';
-        document.getElementById('emisor-nit').value = '1234567890';
-        document.getElementById('emisor-direccion').value = 'Calle 123 #45-67';
-        document.getElementById('emisor-telefono').value = '+57 300 123 4567';
-        document.getElementById('emisor-email').value = 'juan@example.com';
-        document.getElementById('cliente-nombre').value = 'Empresa Cliente S.A.S';
-        document.getElementById('cliente-nit').value = '9876543210';
-        document.getElementById('cliente-direccion').value = 'Avenida 10 #20-30';
+        document.getElementById('primary-color').value = '#262627';
+        document.getElementById('purple-color').value = '#9B7FB8';
+        document.getElementById('font-family').value = '-apple-system, BlinkMacSystemFont, \'Segoe UI\', sans-serif';
+        document.getElementById('template-company').textContent = 'COBRAFLOW';
+        document.getElementById('template-subtitle').textContent = 'CUENTA DE COBRO';
+        document.getElementById('contact-phone').textContent = '+57 300 123 4567';
+        document.getElementById('contact-email').textContent = 'contacto@cobraflow.co';
+        document.getElementById('contact-city').textContent = 'Cartagena, Colombia';
+        document.getElementById('cliente-nombre').textContent = 'Empresa Cliente S.A.S';
+        document.getElementById('cliente-nit').textContent = '900123456-7';
+        document.getElementById('project-description').textContent = 'Consultoría y desarrollo de software empresarial';
+        document.getElementById('payment-name').textContent = 'Juan Pérez';
+        document.getElementById('payment-id').textContent = '1234567890';
+        document.getElementById('payment-account').textContent = 'Bancolombia - Ahorro - 12345678901';
+        document.getElementById('note-text').textContent = 'Se solicita que el pago sea realizado a la mayor brevedad posible.';
 
-        updatePreview();
+        const tbody = document.getElementById('services-tbody');
+        tbody.innerHTML = `
+            <tr>
+                <td style="text-align: center;"><a class="service-remove" onclick="removeServiceRow(this)">✖</a></td>
+                <td contenteditable="true" data-placeholder="Descripción del servicio">Consultoría Empresarial</td>
+                <td style="text-align: center;" contenteditable="true" class="quantity-cell" data-placeholder="1">1</td>
+                <td style="text-align: right;" contenteditable="true" class="price-cell" data-prefix="$" data-placeholder="0">3,590,000</td>
+                <td style="text-align: right;" class="total-cell"><span data-prefix>$</span><span class="row-total">3,590,000</span></td>
+            </tr>
+        `;
+
+        initializeTable();
+        applyColors();
+        applyFont();
     }
 
-    // Descargar PDF (placeholder)
     function downloadPDF() {
-        Swal.fire({
-            icon: 'info',
-            title: 'Próximamente',
-            text: 'La funcionalidad de descarga estará disponible próximamente'
-        });
+        window.print();
     }
 
-    // Cargar plantilla guardada al iniciar
-    window.addEventListener('DOMContentLoaded', function() {
-        const savedTemplate = localStorage.getItem('customTemplate');
-        if (savedTemplate) {
-            const data = JSON.parse(savedTemplate);
-            document.getElementById('primary-color').value = data.primaryColor || '#667eea';
-            document.getElementById('border-color').value = data.borderColor || '#e2e8f0';
-            document.getElementById('company-name').value = data.companyName || 'CobraFlow';
-            document.getElementById('company-subtitle').value = data.companySubtitle || 'Cuenta de Cobro';
-            document.getElementById('company-logo').value = data.companyLogo || 'CF';
-            document.getElementById('emisor-nombre').value = data.emisorNombre || '';
-            document.getElementById('emisor-nit').value = data.emisorNit || '';
-            document.getElementById('emisor-direccion').value = data.emisorDireccion || '';
-            document.getElementById('emisor-telefono').value = data.emisorTelefono || '';
-            document.getElementById('emisor-email').value = data.emisorEmail || '';
-            document.getElementById('cliente-nombre').value = data.clienteNombre || '';
-            document.getElementById('cliente-nit').value = data.clienteNit || '';
-            document.getElementById('cliente-direccion').value = data.clienteDireccion || '';
+    // ==================== INITIALIZATION ====================
+
+    function initializeTable() {
+        const rows = document.querySelectorAll('#services-tbody tr');
+        rows.forEach(row => {
+            attachCellListeners(row);
+            calculateRowTotal(row);
+        });
+        calculateGrandTotal();
+    }
+
+    // Prevenir Enter en campos editables
+    document.addEventListener('keydown', function(e) {
+        if (e.target.matches('[contenteditable]') && e.key === 'Enter') {
+            e.preventDefault();
+            e.target.blur();
         }
-        updatePreview();
     });
 
-    // Sincronizar colores cuando cambia el color picker
-    document.getElementById('primary-color').addEventListener('input', updatePreview);
-    document.getElementById('border-color').addEventListener('input', updatePreview);
+    window.addEventListener('DOMContentLoaded', function() {
+        // Establecer fecha actual
+        const now = new Date();
+        const dateStr = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
+        document.getElementById('doc-date').textContent = dateStr;
+
+        // Cargar plantilla guardada
+        const savedTemplate = localStorage.getItem('customTemplate');
+        if (savedTemplate) {
+            try {
+                const data = JSON.parse(savedTemplate);
+
+                document.getElementById('primary-color').value = data.primaryColor || '#262627';
+                document.getElementById('purple-color').value = data.secondaryColor || data.purpleColor || '#9B7FB8';
+                document.getElementById('font-family').value = data.fontFamily || '-apple-system, BlinkMacSystemFont, \'Segoe UI\', sans-serif';
+                document.getElementById('template-company').textContent = data.companyName || 'COBRAFLOW';
+                document.getElementById('template-subtitle').textContent = data.subtitle || 'CUENTA DE COBRO';
+                document.getElementById('contact-phone').textContent = data.contactPhone || '';
+                document.getElementById('contact-email').textContent = data.contactEmail || '';
+                document.getElementById('contact-city').textContent = data.contactCity || '';
+                document.getElementById('cliente-nombre').textContent = data.clienteNombre || '';
+                document.getElementById('cliente-nit').textContent = data.clienteNit || '';
+                document.getElementById('project-description').textContent = data.projectDescription || '';
+                document.getElementById('payment-name').textContent = data.paymentName || '';
+                document.getElementById('payment-id').textContent = data.paymentId || '';
+                document.getElementById('payment-account').textContent = data.paymentAccount || '';
+                document.getElementById('note-text').textContent = data.noteText || '';
+
+                if (data.services && data.services.length > 0) {
+                    const tbody = document.getElementById('services-tbody');
+                    tbody.innerHTML = '';
+
+                    data.services.forEach(service => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td style="text-align: center;"><a class="service-remove" onclick="removeServiceRow(this)">✖</a></td>
+                            <td contenteditable="true" data-placeholder="Descripción del servicio">${service.description || ''}</td>
+                            <td style="text-align: center;" contenteditable="true" class="quantity-cell" data-placeholder="1">${service.quantity || 1}</td>
+                            <td style="text-align: right;" contenteditable="true" class="price-cell" data-prefix="$" data-placeholder="0">${service.price || 0}</td>
+                            <td style="text-align: right;" class="total-cell"><span data-prefix>$</span><span class="row-total">0</span></td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+            } catch (e) {
+                console.error('Error loading template:', e);
+            }
+        }
+
+        initializeTable();
+        applyColors();
+        applyFont();
+
+        document.getElementById('primary-color').addEventListener('input', applyColors);
+        document.getElementById('purple-color').addEventListener('input', applyColors);
+
+        // Verificar si es la primera vez que el usuario visita
+        const hasSeenTour = localStorage.getItem('hasSeenEditorTour');
+        if (!hasSeenTour) {
+            setTimeout(() => {
+                startTour();
+                localStorage.setItem('hasSeenEditorTour', 'true');
+            }, 500);
+        }
+    });
+
+    // ==================== INTRO.JS TOUR ====================
+
+    function startTour() {
+        introJs().setOptions({
+            steps: [
+                {
+                    element: document.querySelector('.controls-panel'),
+                    intro: "🎨 <strong>Panel de Controles</strong><br>Aquí puedes personalizar los colores de tu plantilla y gestionar los servicios. Todos los cambios se aplican en tiempo real.",
+                    position: 'right'
+                },
+                {
+                    element: document.querySelector('.template-preview'),
+                    intro: "📄 <strong>Vista Previa del Documento</strong><br>Este es tu documento de cuenta de cobro. Puedes hacer clic en cualquier texto para editarlo directamente.",
+                    position: 'left'
+                },
+                {
+                    element: document.getElementById('cliente-nombre'),
+                    intro: "✏️ <strong>Campos Editables</strong><br>Los campos como este son editables. Haz clic sobre ellos para cambiar el contenido. Verás un efecto visual cuando pases el mouse.",
+                    position: 'top'
+                },
+                {
+                    element: document.getElementById('template-table'),
+                    intro: "📊 <strong>Tabla de Servicios</strong><br>En esta tabla puedes agregar, editar o eliminar servicios. Los totales se calculan automáticamente al modificar cantidad o precio.",
+                    position: 'top'
+                },
+                {
+                    element: document.getElementById('add-service-btn'),
+                    intro: "➕ <strong>Agregar Servicios</strong><br>Usa este botón para agregar más servicios a tu cuenta de cobro. Puedes agregar tantos como necesites y cada uno se calculará automáticamente.",
+                    position: 'right'
+                },
+                {
+                    intro: "✅ <strong>¡Listo!</strong><br>Ya puedes empezar a personalizar tu cuenta de cobro. Usa el botón '❓ Tour Guiado' en cualquier momento para volver a ver esta guía."
+                }
+            ],
+            nextLabel: 'Siguiente',
+            prevLabel: 'Anterior',
+            doneLabel: 'Finalizar',
+            skipLabel: 'Saltar',
+            showProgress: true,
+            showBullets: false,
+            exitOnOverlayClick: false,
+            scrollToElement: true,
+            overlayOpacity: 0.7,
+            tooltipClass: 'customTooltip'
+        }).start();
+    }
 </script>
+
+<!-- Intro.js JavaScript -->
+<script src="https://unpkg.com/intro.js/intro.js"></script>
+
+<style>
+    /* Personalización de Intro.js */
+    .introjs-tooltip {
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        min-width: 350px;
+        max-width: 450px;
+    }
+
+    .introjs-tooltiptext {
+        font-size: 15px;
+        line-height: 1.6;
+        padding: 15px 20px;
+    }
+
+    .introjs-button {
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-weight: 600;
+        text-shadow: none;
+        transition: all 0.2s ease;
+    }
+
+    .introjs-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .introjs-nextbutton {
+        background: linear-gradient(135deg, #262627 0%, #1a1a1b 100%);
+        border: none;
+    }
+
+    .introjs-prevbutton {
+        background: #e2e8f0;
+        color: #2d3748;
+        border: none;
+    }
+
+    .introjs-skipbutton {
+        color: #718096;
+    }
+
+    .introjs-progressbar {
+        background: linear-gradient(135deg, #262627 0%, #1a1a1b 100%);
+    }
+
+    .introjs-helperLayer {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid #262627;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), 0 0 20px rgba(38, 38, 39, 0.5);
+        border-radius: 8px;
+    }
+
+    .introjs-tooltipReferenceLayer * {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    }
+</style>
+
 {% endblock %}

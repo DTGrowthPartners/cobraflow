@@ -98,6 +98,14 @@ async def template_editor(request: Request, user: str = Depends(auth.login_requi
         "user": user
     })
 
+@web_router.get("/template_editor", include_in_schema=False)
+async def template_editor_alias(request: Request, user: str = Depends(auth.login_required)):
+    return RedirectResponse(url="/template-editor", status_code=302)
+
+@web_router.get("/template_editor.html", include_in_schema=False)
+async def template_editor_html_alias(request: Request, user: str = Depends(auth.login_required)):
+    return RedirectResponse(url="/template-editor", status_code=302)
+
 
 @web_router.post("/dashboard/generate", response_class=HTMLResponse)
 async def generate_invoice_request(request: Request, user: str = Depends(auth.login_required)):
