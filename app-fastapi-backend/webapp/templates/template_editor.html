@@ -204,7 +204,7 @@
     /* Logo y nombre de empresa */
     .doc-brand {
         text-align: center;
-        padding: 30px 0 10px 0;
+        padding: 10px;
     }
 
     .template-logo {
@@ -223,7 +223,7 @@
     /* Título principal - Cuenta de Cobro */
     .main-title-wrapper {
         text-align: center;
-        margin: 30px 0;
+        margin: 20px 0;
     }
 
     .template-subtitle {
@@ -251,13 +251,20 @@
         flex: 1;
     }
 
-    /* Información de contacto (turquesa) */
+
     .contact-info-section {
-        color: #4ECDC4;
-        font-size: 14px;
-        margin-bottom: 25px;
-        line-height: 1.8;
-    }
+    color: #55e9df;
+    font-size: 14px;
+    margin-bottom: 25px;
+    line-height: 1.8;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    background-color: #fffafa;
+    font-weight: 600;
+    
+}
 
     .contact-info-section p {
         margin: 2px 0;
@@ -302,7 +309,7 @@
     .template-table {
         width: 100%;
         border-collapse: collapse;
-        margin: 25px 0;
+        margin: 8px 0;
         box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
         border: none;
     }
@@ -761,7 +768,7 @@
                 <div class="preview-header">
                     <h3>Vista Previa</h3>
                     <div class="preview-actions">
-                        <button class="btn btn-success" onclick="downloadPDF()" style="cursor: not-allowed; opacity: 0.7;" title="Función en desarrollo - Usa Ctrl+P para imprimir">
+                        <button class="btn btn-success" onclick="downloadPDF()" title="Función en desarrollo - Usa Ctrl+P para imprimir">
                             📄 Descargar PDF
                         </button>
                     </div>
@@ -784,12 +791,12 @@
                             <div class="main-title-wrapper">
                                 <h1 class="template-subtitle" id="template-subtitle" contenteditable="true" data-placeholder="CUENTA DE COBRO">CUENTA DE COBRO</h1>
                             </div>
-
+                             
                             <!-- Información de contacto -->
                             <div class="contact-info-section">
-                                <p contenteditable="true" data-placeholder="Teléfono" id="contact-phone">+57 300 123 4567</p>
+                                <p contenteditable="true" data-placeholder="Teléfono" id="contact-phone" style="border-right:solid 1px #eeeeee ;">+57 300 123 4567</p>
                                 <p contenteditable="true" data-placeholder="Email" id="contact-email">contacto@cobraflow.co</p>
-                                <p contenteditable="true" data-placeholder="Ciudad" id="contact-city">Cartagena, Colombia</p>
+                                <p contenteditable="true" data-placeholder="Ciudad" id="contact-city"  style="border-left:solid 1px #eeeeee ;">Cartagena, Colombia</p>
                             </div>
 
                             <!-- Información del cliente y emisor -->

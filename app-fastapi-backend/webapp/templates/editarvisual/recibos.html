@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es" >
+<head>
+  <meta charset="UTF-8">
+  <title> Cotizacion ArteVisual</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="license" href="https://www.opensource.org/licenses/mit-license/">
+
+</head>
+	<body>
+		<header>
+			<h1 class="nombre-factura" contenteditable>Recibo N⁰</h1>
+			<address contenteditable id="datos-cliente" >
+				<h3 class="title-client">Datos del cliente</h3>
+				<p>Nombre:</p>
+				<p>Teléfono: </p>
+				<p>NIT o CC: </p>
+				<p>Dirección: Cartagena de indias. </p>
+				
+				
+			</address>
+			<span><img alt="" src="img/fundisalud-horizontal.png" class="logo-factura"><input type="file" accept="image/*"><p class="natalia" style="text-align: right; padding-right: 12px;"> <br>
+				<br> <br>
+			<br>	NIT 900117979-3 <br>Olaya Herrera, Sector Progreso 2Do piso<br>
+				Arjona,Bolívar, Barrio San José, Calle San José.
+				<br>
+				</p></span>
+			
+		</header>
+		<article>
+			<h1 >Datos</h1>
+			<address contenteditable>
+				<p> Whatsapp</p>
+				<img id="codigoqr" src="./codigoqr.png" width="140px"> 
+			</address>
+			<table class="meta">
+				<tr>
+					<th><span contenteditable>NIT</span></th>
+					<td><span contenteditable> 900117979-3 </span></td>
+				</tr>
+				
+				<tr>
+					<th><span contenteditable>Fecha y hora</span></th>
+					<td><input type="datetime-local"></td>
+				</tr>
+				<tr>
+					<th><span contenteditable>Valor total (COP)</span></th>
+					<td><span id="prefix" contenteditable>$</span><span></span></td>
+				</tr>
+			</table>
+			<table class="inventory">
+				<thead>
+					<tr>
+						<th><span contenteditable>Item</span></th>
+						<th><span contenteditable>Descripción</span></th>
+						<th><span contenteditable>Precio</span></th>
+						<th><span contenteditable>Cantidad</span></th>
+						<th><span contenteditable>Total</span></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><a class="cut">-</a><span contenteditable>
+
+							<select name="servicios">
+								<option value="MATRICULA">MATRICULA</option>
+								<option value="ABONO SEMANAL">ABONO SEMANAL</option>
+								<option value="ABONO QUINCENAL">ABONO QUINCENAL</option>
+								<option value="PENSION">PENSION MENSUAL</option>
+								<option value="INSCRIPCION">INSCRIPCION</option>
+								<option value="CERTIFICADO">CERTIFICADO</option>
+								<option value="CONSTANCIA">CONSTANCIA</option>
+								<option value="DERECHO A GRADO">DERECHO A GRADO</option>
+								<option value="SEMINARIO">SEMINARIO</option>
+								<option value="DIPLOMADO">DIPLOMADO</option>
+								<option value="CURSOS">CURSOS</option>
+								<option value="SIMPOSIOS">SIMPOSIOS</option>
+								<option value="SUPLETORIO">SUPLETORIO</option>
+								<option value="NIVELACIONES">NIVELACIONES</option>
+								<option value="ACTUALIZACIONES">ACTUALIZACIONES</option>
+								<option value="COPIA ACTA">COPIA ACTA</option>
+								<option value="COPIA DIPLOMA">COPIA DIPLOMA</option>
+								<option value="HOMOLOGACIONES">HOMOLOGACIONES</option>
+								<option value="CARNET">CARNET</option>
+								<option value="POLIZA DE RIESGO">POLIZA DE RIESGO</option>
+								<option value="ARL">ARL</option>
+								<option value="POLIZA ESTUDIANTIL">POLIZA ESTUDIANTIL</option>
+								<option value="PRACTICAS">PRACTICAS</option>
+								<option value="GORRA">GORRA</option>
+								<option value="CAMISETA">CAMISETA</option>
+								<option value="UNIFORME">UNIFORME</option>
+							</select>
+							
+							
+		
+						</span></td>
+						<td><span contenteditable>Descripción</span></td>
+						<td><span data-prefix>$</span><span contenteditable></span></td>
+						<td><span contenteditable>1</span></td>
+						<td><span data-prefix>$</span><span></span></td>
+					</tr>
+					<tr>
+						<td><a class="cut">-</a><span contenteditable>
+
+							<select name="servicios">
+								<option value="MATRICULA">MATRICULA</option>
+								<option value="ABONO SEMANAL">ABONO SEMANAL</option>
+								<option value="ABONO QUINCENAL">ABONO QUINCENAL</option>
+								<option value="PENSION">PENSION MENSUAL</option>
+								<option value="INSCRIPCION">INSCRIPCION</option>
+								<option value="CERTIFICADO">CERTIFICADO</option>
+								<option value="CONSTANCIA">CONSTANCIA</option>
+								<option value="DERECHO A GRADO">DERECHO A GRADO</option>
+								<option value="SEMINARIO">SEMINARIO</option>
+								<option value="DIPLOMADO">DIPLOMADO</option>
+								<option value="CURSOS">CURSOS</option>
+								<option value="SIMPOSIOS">SIMPOSIOS</option>
+								<option value="SUPLETORIO">SUPLETORIO</option>
+								<option value="NIVELACIONES">NIVELACIONES</option>
+								<option value="ACTUALIZACIONES">ACTUALIZACIONES</option>
+								<option value="COPIA ACTA">COPIA ACTA</option>
+								<option value="COPIA DIPLOMA">COPIA DIPLOMA</option>
+								<option value="HOMOLOGACIONES">HOMOLOGACIONES</option>
+								<option value="CARNET">CARNET</option>
+								<option value="POLIZA DE RIESGO">POLIZA DE RIESGO</option>
+								<option value="ARL">ARL</option>
+								<option value="POLIZA ESTUDIANTIL">POLIZA ESTUDIANTIL</option>
+								<option value="PRACTICAS">PRACTICAS</option>
+								<option value="GORRA">GORRA</option>
+								<option value="CAMISETA">CAMISETA</option>
+								<option value="UNIFORME">UNIFORME</option>
+							</select>
+							
+							
+		
+						</span></td>
+						<td><span contenteditable>Descripción</span></td>
+						<td><span data-prefix>$</span><span contenteditable></span></td>
+						<td><span contenteditable>1</span></td>
+						<td><span data-prefix>$</span><span></span></td>
+					</tr>
+					<tr>
+						<td><a class="cut">-</a><span contenteditable>
+
+							<select name="servicios">
+								<option value="MATRICULA">MATRICULA</option>
+								<option value="ABONO SEMANAL">ABONO SEMANAL</option>
+								<option value="ABONO QUINCENAL">ABONO QUINCENAL</option>
+								<option value="PENSION">PENSION MENSUAL</option>
+								<option value="INSCRIPCION">INSCRIPCION</option>
+								<option value="CERTIFICADO">CERTIFICADO</option>
+								<option value="CONSTANCIA">CONSTANCIA</option>
+								<option value="DERECHO A GRADO">DERECHO A GRADO</option>
+								<option value="SEMINARIO">SEMINARIO</option>
+								<option value="DIPLOMADO">DIPLOMADO</option>
+								<option value="CURSOS">CURSOS</option>
+								<option value="SIMPOSIOS">SIMPOSIOS</option>
+								<option value="SUPLETORIO">SUPLETORIO</option>
+								<option value="NIVELACIONES">NIVELACIONES</option>
+								<option value="ACTUALIZACIONES">ACTUALIZACIONES</option>
+								<option value="COPIA ACTA">COPIA ACTA</option>
+								<option value="COPIA DIPLOMA">COPIA DIPLOMA</option>
+								<option value="HOMOLOGACIONES">HOMOLOGACIONES</option>
+								<option value="CARNET">CARNET</option>
+								<option value="POLIZA DE RIESGO">POLIZA DE RIESGO</option>
+								<option value="ARL">ARL</option>
+								<option value="POLIZA ESTUDIANTIL">POLIZA ESTUDIANTIL</option>
+								<option value="PRACTICAS">PRACTICAS</option>
+								<option value="GORRA">GORRA</option>
+								<option value="CAMISETA">CAMISETA</option>
+								<option value="UNIFORME">UNIFORME</option>
+							</select>
+							
+		
+						</span></td>
+						<td><span contenteditable>Descripción</span></td>
+						<td><span data-prefix>$</span><span contenteditable></span></td>
+						<td><span contenteditable>1</span></td>
+						<td><span data-prefix>$</span><span></span></td>
+					</tr>
+					<tr>
+						<td><a class="cut">-</a><span contenteditable>
+							<select name="servicios">
+								<option value="MATRICULA">MATRICULA</option>
+								<option value="ABONO SEMANAL">ABONO SEMANAL</option>
+								<option value="ABONO QUINCENAL">ABONO QUINCENAL</option>
+								<option value="PENSION">PENSION MENSUAL</option>
+								<option value="INSCRIPCION">INSCRIPCION</option>
+								<option value="CERTIFICADO">CERTIFICADO</option>
+								<option value="CONSTANCIA">CONSTANCIA</option>
+								<option value="DERECHO A GRADO">DERECHO A GRADO</option>
+								<option value="SEMINARIO">SEMINARIO</option>
+								<option value="DIPLOMADO">DIPLOMADO</option>
+								<option value="CURSOS">CURSOS</option>
+								<option value="SIMPOSIOS">SIMPOSIOS</option>
+								<option value="SUPLETORIO">SUPLETORIO</option>
+								<option value="NIVELACIONES">NIVELACIONES</option>
+								<option value="ACTUALIZACIONES">ACTUALIZACIONES</option>
+								<option value="COPIA ACTA">COPIA ACTA</option>
+								<option value="COPIA DIPLOMA">COPIA DIPLOMA</option>
+								<option value="HOMOLOGACIONES">HOMOLOGACIONES</option>
+								<option value="CARNET">CARNET</option>
+								<option value="POLIZA DE RIESGO">POLIZA DE RIESGO</option>
+								<option value="ARL">ARL</option>
+								<option value="POLIZA ESTUDIANTIL">POLIZA ESTUDIANTIL</option>
+								<option value="PRACTICAS">PRACTICAS</option>
+								<option value="GORRA">GORRA</option>
+								<option value="CAMISETA">CAMISETA</option>
+								<option value="UNIFORME">UNIFORME</option>
+							</select>
+							
+		
+						</span></td>
+						<td><span contenteditable>Descripción</span></td>
+						<td><span data-prefix>$</span><span contenteditable></span></td>
+						<td><span contenteditable>1</span></td>
+						<td><span data-prefix>$</span><span></span></td>
+					</tr>
+				</tbody>
+			</table>
+			<a class="add">+</a>
+			<table class="balance">
+				<tr>
+					<th><span contenteditable>Total</span></th>
+					<td><span data-prefix>$</span><span></span></td>
+				</tr>
+				<tr>
+					<th><span contenteditable>Descuento</span></th>
+					<td><span data-prefix>$</span><span contenteditable></span></td>
+				</tr>
+				<tr>
+					<th><span contenteditable>Total a pagar</span></th>
+					<td><span data-prefix>$</span><span></span></td>
+				</tr>
+			</table>
+		</article>
+		<aside>
+			<h1 style="font-size:12px"><span contenteditable>Notas adicionales <br></span></h1>
+		</aside>
+        <p class="infotext" contenteditable></p><br>
+	
+<table style="font-size:11px" class="tabla-banco" width="550"  style="border-top:2px solid;border-color:#18456f;margin-top:0px;">
+<tbody>
+<tr>
+<td width="180"><strong><img src="img/pagos/davivienda.png" alt="" class="bancos"></strong></td>
+<td width="180"><strong><img src="img/pagos/nequi.png" alt="" class="bancos"></strong></td>
+</tr>
+<tr>
+<td>Ahorros: <strong>14070363-8</strong> / NIT: 900117979-3 </td>
+<td>312 605 6744</td>
+</tr>
+</tbody>
+</table>
+<br>
+<br>
+<canvas></canvas>
+<script>
+	const canvas = document.querySelector("canvas");
+	const ctx = canvas.getContext('2d');
+
+	// for intro motion
+	let mouseMoved = false;
+
+	const pointer = {
+		x: .5 * window.innerWidth,
+		y: .5 * window.innerHeight,
+	}
+	const params = {
+		pointsNumber: 40,
+		widthFactor: .3,
+		mouseThreshold: .6,
+		spring: .4,
+		friction: .5
+	};
+
+	const trail = new Array(params.pointsNumber);
+	for (let i = 0; i < params.pointsNumber; i++) {
+		trail[i] = {
+			x: pointer.x,
+			y: pointer.y,
+			dx: 0,
+			dy: 0,
+		}
+	}
+
+	window.addEventListener("click", e => {
+		updateMousePosition(e.pageX, e.pageY);
+	});
+	window.addEventListener("mousemove", e => {
+		mouseMoved = true;
+		updateMousePosition(e.pageX, e.pageY);
+	});
+	window.addEventListener("touchmove", e => {
+		mouseMoved = true;
+		updateMousePosition(e.targetTouches[0].pageX, e.targetTouches[0].pageY);
+	});
+
+	function updateMousePosition(eX, eY) {
+		pointer.x = eX;
+		pointer.y = eY;
+	}
+
+	setupCanvas();
+	update(0);
+	window.addEventListener("resize", setupCanvas);
+
+
+	function update(t) {
+
+		// for intro motion
+		if (!mouseMoved) {
+			pointer.x = (.5 + .3 * Math.cos(.002 * t) * (Math.sin(.005 * t))) * window.innerWidth;
+			pointer.y = (.5 + .2 * (Math.cos(.005 * t)) + .1 * Math.cos(.01 * t)) * window.innerHeight;
+		}
+
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		trail.forEach((p, pIdx) => {
+			const prev = pIdx === 0 ? pointer : trail[pIdx - 1];
+			const spring = pIdx === 0 ? .4 * params.spring : params.spring;
+			p.dx += (prev.x - p.x) * spring;
+			p.dy += (prev.y - p.y) * spring;
+			p.dx *= params.friction;
+			p.dy *= params.friction;
+			p.x += p.dx;
+			p.y += p.dy;
+		});
+
+		ctx.lineCap = "round";
+		ctx.strokeStyle = "#234292"; // Cambia el color del trazo a blanco
+		ctx.beginPath();
+		ctx.moveTo(trail[0].x, trail[0].y);
+
+		for (let i = 1; i < trail.length - 1; i++) {
+			const xc = .5 * (trail[i].x + trail[i + 1].x);
+			const yc = .5 * (trail[i].y + trail[i + 1].y);
+			ctx.quadraticCurveTo(trail[i].x, trail[i].y, xc, yc);
+			ctx.lineWidth = params.widthFactor * (params.pointsNumber - i);
+			ctx.stroke();
+		}
+		ctx.lineTo(trail[trail.length - 1].x, trail[trail.length - 1].y);
+		ctx.stroke();
+
+		window.requestAnimationFrame(update);
+	}
+
+	function setupCanvas() {
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+	}
+</script>
+
+</body>
+
+<!-- partial -->
+  <script  src="js/script.js"></script>
+  <script  src="js/script2.js"></script>
+  
+  
+
+
+</html>
+
+

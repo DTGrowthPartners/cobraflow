@@ -6,7 +6,9 @@
       "Bash(git push:*)",
       "Bash(git add:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\nfix: correct billing data save/load in wizard form\n\nChanges:\n- Fixed saveBillingDataWizard() to read values from form fields instead of hardcoded values\n- Added validation for required bank fields (banco, tipo de cuenta, número)\n- Fixed loadBillingDataWizard() to load all fields including bank data\n- Now properly splits cuenta_bancolombia to populate individual fields\n\nThis fixes the 422 error when saving billing data from the dashboard wizard.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n)\")",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(python test_routes.py:*)"
     ]
   }
 }
