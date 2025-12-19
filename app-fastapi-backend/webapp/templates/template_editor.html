@@ -549,6 +549,12 @@
     }
 
     /* Mobile responsive */
+    @media (max-width: 1200px) {
+        .editor-layout {
+            grid-template-columns: 350px 1fr;
+        }
+    }
+
     @media (max-width: 1024px) {
         .editor-layout {
             grid-template-columns: 1fr;
@@ -557,6 +563,12 @@
         .controls-panel {
             position: static;
             max-height: none;
+            order: 2;
+            margin-top: 2rem;
+        }
+
+        .preview-panel {
+            order: 1;
         }
     }
 
@@ -573,12 +585,23 @@
             font-size: 1.5rem;
         }
 
+        .editor-header h1::before {
+            font-size: 1.5rem;
+        }
+
+        .editor-subtitle {
+            font-size: 0.9rem;
+        }
+
         .preview-panel {
             padding: 1rem;
         }
 
         .template-preview {
             width: 100%;
+            min-height: auto;
+            transform: scale(0.95);
+            transform-origin: top center;
         }
 
         .doc-body {
@@ -591,6 +614,174 @@
 
         .template-subtitle {
             font-size: 18px;
+        }
+
+        .contact-info-section {
+            flex-direction: column;
+            gap: 5px;
+            padding: 10px;
+        }
+
+        .contact-info-section p {
+            border: none !important;
+            text-align: center;
+        }
+
+        .template-info {
+            font-size: 13px;
+        }
+
+        .info-box p {
+            font-size: 13px;
+        }
+
+        .template-table {
+            font-size: 12px;
+        }
+
+        .template-table th,
+        .template-table td {
+            padding: 8px 4px;
+            font-size: 12px;
+        }
+
+        .template-total {
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .total-label {
+            font-size: 14px;
+        }
+
+        .total-amount {
+            font-size: 16px;
+        }
+
+        .payment-section,
+        .notes-section {
+            font-size: 13px;
+        }
+
+        .control-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.65rem 1.25rem;
+            font-size: 0.9rem;
+        }
+
+        .color-control input[type="color"] {
+            width: 50px;
+            height: 40px;
+        }
+
+        .color-control input[type="text"] {
+            padding: 0.65rem;
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .editor-wrapper {
+            padding: 0.5rem 0.25rem;
+        }
+
+        .editor-header {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .editor-header h1 {
+            font-size: 1.25rem;
+        }
+
+        .editor-header > div {
+            flex-direction: column !important;
+            gap: 1rem;
+            align-items: flex-start !important;
+        }
+
+        .controls-panel,
+        .preview-panel {
+            padding: 1rem;
+            border-radius: 12px;
+        }
+
+        .template-preview {
+            transform: scale(0.85);
+        }
+
+        .doc-body {
+            padding: 0 20px 25px;
+        }
+
+        .template-company {
+            font-size: 20px;
+        }
+
+        .template-subtitle {
+            font-size: 16px;
+        }
+
+        .template-header {
+            height: 60px;
+        }
+
+        .template-footer {
+            height: 60px;
+        }
+
+        .template-table th:nth-child(1),
+        .template-table td:nth-child(1) {
+            width: 10%;
+        }
+
+        .template-table th:nth-child(2),
+        .template-table td:nth-child(2) {
+            width: 35%;
+        }
+
+        .template-table th,
+        .template-table td {
+            padding: 6px 3px;
+            font-size: 11px;
+        }
+
+        .service-remove {
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            line-height: 14px;
+        }
+
+        .btn {
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .control-group label {
+            font-size: 0.85rem;
+        }
+
+        .preview-header {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .preview-header h3 {
+            font-size: 1.1rem;
+        }
+
+        .preview-actions {
+            width: 100%;
+        }
+
+        .preview-actions .btn {
+            width: 100%;
+            justify-content: center;
         }
     }
 
