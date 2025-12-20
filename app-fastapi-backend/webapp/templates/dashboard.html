@@ -225,22 +225,48 @@
             </form>
         </div>
 
-        <!-- UX CAMBIO: Sidebar simplificado (25%) - Solo gestión avanzada -->
+        <!-- UX CAMBIO: Sidebar con opciones expandidas -->
         <aside class="sidebar-simple desktop-only">
             <div class="sidebar-card">
-                <h3>Gestión Avanzada</h3>
-                <p class="sidebar-description">Administra tus clientes, servicios y configuraciones</p>
-                <button type="button" onclick="openManagementModal()" class="btn btn-ghost btn-block">
-                    ⚙️ Abrir gestión
-                </button>
+                <h3>Gestión de Clientes</h3>
+                <div class="sidebar-actions">
+                    <button type="button" onclick="openManagementActionDirect('add-client')" class="btn btn-ghost btn-block sidebar-btn">
+                        ➕ Añadir Cliente
+                    </button>
+                    <button type="button" onclick="openManagementActionDirect('edit-client')" class="btn btn-ghost btn-block sidebar-btn">
+                        ✏️ Editar/Eliminar Cliente
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <h3>Gestión de Servicios</h3>
+                <div class="sidebar-actions">
+                    <button type="button" onclick="openManagementActionDirect('add-service')" class="btn btn-ghost btn-block sidebar-btn">
+                        ➕ Añadir Servicio
+                    </button>
+                    <button type="button" onclick="openManagementActionDirect('edit-service')" class="btn btn-ghost btn-block sidebar-btn">
+                        ✏️ Editar/Eliminar Servicio
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <h3>Configuración</h3>
+                <div class="sidebar-actions">
+                    <button type="button" onclick="openManagementActionDirect('billing-data')" class="btn btn-ghost btn-block sidebar-btn">
+                        💳 Datos de Facturación
+                    </button>
+                </div>
             </div>
 
             <div class="sidebar-card">
                 <h3>Historial</h3>
-                <p class="sidebar-description">Ver cuentas generadas</p>
-                <a href="#historial" class="btn btn-ghost btn-block" onclick="scrollToHistory()">
-                    📄 Ver historial
-                </a>
+                <div class="sidebar-actions">
+                    <a href="#historial" class="btn btn-ghost btn-block sidebar-btn" onclick="scrollToHistory()">
+                        📄 Ver Cuentas Generadas
+                    </a>
+                </div>
             </div>
         </aside>
     </div>
@@ -839,6 +865,27 @@
     font-size: 0.9rem;
     color: var(--text-secondary);
     margin: 0 0 16px 0;
+}
+
+.sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.sidebar-btn {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.sidebar-btn:hover {
+    background-color: var(--color-primary-light, #f0f9ff);
+    border-color: var(--color-primary, #005F99);
+    transform: translateX(4px);
 }
 
 /* === Add More Button === */
@@ -1614,6 +1661,22 @@ input#primary-color, input#secondary-color {
                 document.getElementById('billing-data-section').style.display = 'block';
                 loadBillingDataToModal();
                 break;
+        }
+    }
+
+    // Open management modal with a specific action pre-selected
+    function openManagementActionDirect(action) {
+        document.getElementById('management-modal').style.display = 'block';
+        document.getElementById('management-type').value = action;
+        handleManagementAction();
+        setupModalCloseHandlers('management-modal');
+    }
+
+    // Scroll to history section
+    function scrollToHistory() {
+        const historySection = document.getElementById('historial');
+        if (historySection) {
+            historySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
 
