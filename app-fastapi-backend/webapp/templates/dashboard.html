@@ -4,9 +4,54 @@
 
 {% block content %}
 <div class="dashboard-wrapper">
-    <!-- UX CAMBIO: Flujo principal como wizard en columna principal -->
+    <!-- UX CAMBIO: Layout invertido - Sidebar izquierdo, wizard derecho -->
     <div class="dashboard-layout">
-        <!-- Columna principal: Wizard de generación (75%) -->
+        <!-- Columna izquierda: Sidebar de gestión (300px) -->
+        <aside class="sidebar-simple desktop-only">
+            <div class="sidebar-card">
+                <h3>Gestión de Clientes</h3>
+                <div class="sidebar-actions">
+                    <button type="button" onclick="openManagementActionDirect('add-client')" class="btn btn-ghost btn-block sidebar-btn">
+                        ➕ Añadir Cliente
+                    </button>
+                    <button type="button" onclick="openManagementActionDirect('edit-client')" class="btn btn-ghost btn-block sidebar-btn">
+                        ✏️ Editar/Eliminar Cliente
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <h3>Gestión de Servicios</h3>
+                <div class="sidebar-actions">
+                    <button type="button" onclick="openManagementActionDirect('add-service')" class="btn btn-ghost btn-block sidebar-btn">
+                        ➕ Añadir Servicio
+                    </button>
+                    <button type="button" onclick="openManagementActionDirect('edit-service')" class="btn btn-ghost btn-block sidebar-btn">
+                        ✏️ Editar/Eliminar Servicio
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <h3>Configuración</h3>
+                <div class="sidebar-actions">
+                    <button type="button" onclick="openManagementActionDirect('billing-data')" class="btn btn-ghost btn-block sidebar-btn">
+                        💳 Datos de Facturación
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <h3>Historial</h3>
+                <div class="sidebar-actions">
+                    <a href="#historial" class="btn btn-ghost btn-block sidebar-btn" onclick="scrollToHistory()">
+                        📄 Ver Cuentas Generadas
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Columna derecha: Wizard de generación -->
         <div class="wizard-container">
             <div class="wizard-header">
                 <h1>Generar Cuenta de Cobro</h1>
@@ -224,51 +269,6 @@
                 </div>
             </form>
         </div>
-
-        <!-- UX CAMBIO: Sidebar con opciones expandidas -->
-        <aside class="sidebar-simple desktop-only">
-            <div class="sidebar-card">
-                <h3>Gestión de Clientes</h3>
-                <div class="sidebar-actions">
-                    <button type="button" onclick="openManagementActionDirect('add-client')" class="btn btn-ghost btn-block sidebar-btn">
-                        ➕ Añadir Cliente
-                    </button>
-                    <button type="button" onclick="openManagementActionDirect('edit-client')" class="btn btn-ghost btn-block sidebar-btn">
-                        ✏️ Editar/Eliminar Cliente
-                    </button>
-                </div>
-            </div>
-
-            <div class="sidebar-card">
-                <h3>Gestión de Servicios</h3>
-                <div class="sidebar-actions">
-                    <button type="button" onclick="openManagementActionDirect('add-service')" class="btn btn-ghost btn-block sidebar-btn">
-                        ➕ Añadir Servicio
-                    </button>
-                    <button type="button" onclick="openManagementActionDirect('edit-service')" class="btn btn-ghost btn-block sidebar-btn">
-                        ✏️ Editar/Eliminar Servicio
-                    </button>
-                </div>
-            </div>
-
-            <div class="sidebar-card">
-                <h3>Configuración</h3>
-                <div class="sidebar-actions">
-                    <button type="button" onclick="openManagementActionDirect('billing-data')" class="btn btn-ghost btn-block sidebar-btn">
-                        💳 Datos de Facturación
-                    </button>
-                </div>
-            </div>
-
-            <div class="sidebar-card">
-                <h3>Historial</h3>
-                <div class="sidebar-actions">
-                    <a href="#historial" class="btn btn-ghost btn-block sidebar-btn" onclick="scrollToHistory()">
-                        📄 Ver Cuentas Generadas
-                    </a>
-                </div>
-            </div>
-        </aside>
     </div>
 
     <!-- Sección Inferior: Historial (ancho completo) -->
@@ -586,7 +586,7 @@
 
 .dashboard-layout {
     display: grid;
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: 300px 1fr;
     gap: 32px;
     margin-bottom: 40px;
 }
