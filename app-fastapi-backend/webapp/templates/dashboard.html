@@ -3,6 +3,9 @@
 {% block title %}Dashboard - Generador de Cuentas{% endblock %}
 
 {% block content %}
+<!-- Intro.js CSS -->
+<link rel="stylesheet" href="https://unpkg.com/intro.js/introjs.css">
+
 <div class="dashboard-wrapper">
     <!-- UX CAMBIO: Layout invertido - Sidebar izquierdo, wizard derecho -->
     <div class="dashboard-layout">
@@ -54,8 +57,15 @@
         <!-- Columna derecha: Wizard de generación -->
         <div class="wizard-container">
             <div class="wizard-header">
-                <h1>Generar Cuenta de Cobro</h1>
-                <p class="wizard-subtitle">Completa los siguientes pasos para crear tu cuenta de cobro</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h1>Generar Cuenta de Cobro</h1>
+                        <p class="wizard-subtitle">Completa los siguientes pasos para crear tu cuenta de cobro</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="startDashboardTour()" style="height: fit-content;">
+                        ❓ Tour Guiado
+                    </button>
+                </div>
             </div>
 
             {% if success_message %}
@@ -2363,10 +2373,166 @@ input#primary-color, input#secondary-color {
         }
     }
 
+    // === INTRO.JS TOUR ===
+    function startDashboardTour() {
+        // Verificar si el sidebar está visible (en pantallas grandes)
+        const sidebarVisible = document.querySelector('.sidebar-simple') &&
+                              window.getComputedStyle(document.querySelector('.sidebar-simple')).display !== 'none';
+        
+        const steps = [];
+        
+        // Solo agregar pasos del sidebar si está visible
+        if (sidebarVisible) {
+            steps.push(
+                {
+                    element: document.querySelector('.sidebar-card'),
+                    intro: "👥 <strong>Gestión de Clientes</strong><br>Aquí puedes añadir, editar o eliminar clientes.",
+                    position: 'right'
+                },
+                {
+                    element: document.querySelector('.sidebar-card:nth-child(2)'),
+                    intro: "💼 <strong>Gestión de Servicios</strong><br>Administra los servicios que ofreces.",
+                    position: 'right'
+                }
+            );
+        }
+        
+        // Abrir la sección de Personalización antes de mostrar el tour
+        const personalizacionHeader = document.querySelector('.wizard-step:nth-child(4) .step-header');
+        if (personalizacionHeader) {
+            personalizacionHeader.click();
+        }
+        
+        // Ir directamente al paso de Personalización
+        const personalizacionStep = document.querySelector('.wizard-step:nth-child(4)');
+        if (personalizacionStep) {
+            steps.push(
+                {
+                    element: personalizacionStep,
+                    intro: "🎨 <strong>Personalización</strong><br>Aquí puedes cambiar la plantilla del PDF y seleccionar la fuente.",
+                    position: 'bottom'
+                }
+            );
+        }
+        
+        // Botón de cambiar plantilla
+        const cambiarPlantillaBtn = document.querySelector('.btn-secondary[onclick="openBaseModal()"]');
+        if (cambiarPlantillaBtn) {
+            steps.push(
+                {
+                    element: cambiarPlantillaBtn,
+                    intro: "📄 <strong>Cambiar Plantilla del PDF</strong><br>Haz clic aquí para seleccionar una plantilla diferente para tus cuentas de cobro.",
+                    position: 'bottom'
+                }
+            );
+        }
+        
+        // Finalizar
+        steps.push(
+            {
+                intro: "✅ <strong>¡Listo!</strong><br>Ya puedes empezar a generar cuentas de cobro. Usa el botón '❓ Tour Guiado' en cualquier momento para volver a ver esta guía."
+            }
+        );
+        
+        // Usar introJs.tour() en lugar de introJs() (versión actualizada)
+        introJs.tour().setOptions({
+            steps: steps,
+            nextLabel: 'Siguiente',
+            prevLabel: 'Anterior',
+            doneLabel: 'Finalizar',
+            skipLabel: 'Saltar',
+            showProgress: true,
+            showBullets: false,
+            exitOnOverlayClick: false,
+            scrollToElement: true,
+            overlayOpacity: 0.7,
+            tooltipClass: 'customTooltip'
+        }).start();
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         loadEmpresaFieldVisibility();
+        
+        // Verificar si es la primera vez que el usuario visita el dashboard
+        const hasSeenDashboardTour = localStorage.getItem('hasSeenDashboardTour');
+        if (!hasSeenDashboardTour) {
+            setTimeout(() => {
+                startDashboardTour();
+                localStorage.setItem('hasSeenDashboardTour', 'true');
+            }, 1000);
+        }
     });
 </script>
+
+<!-- Intro.js JavaScript -->
+<script src="https://unpkg.com/intro.js/intro.js"></script>
+
+<style>
+    /* Personalización de Intro.js */
+    .introjs-tooltip {
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        min-width: 350px;
+        max-width: 450px;
+    }
+
+    .introjs-tooltiptext {
+        font-size: 15px;
+        line-height: 1.6;
+        padding: 15px 20px;
+    }
+
+    .introjs-button {
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-weight: 600;
+        text-shadow: none;
+        transition: all 0.2s ease;
+    }
+
+    .introjs-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .introjs-button.introjs-nextbutton {
+        color: white !important;
+    }
+
+    .introjs-nextbutton {
+        background: linear-gradient(135deg, #262627 0%, #1a1a1b 100%);
+        border: none;
+        color: white !important;
+    }
+
+    .introjs-prevbutton {
+        background: #e2e8f0;
+        color: #2d3748;
+        border: none;
+    }
+
+    .introjs-skipbutton {
+        color: #718096;
+        top: 20px;
+        right: 30px;
+        font-size: 1.2em;
+    }
+
+    .introjs-progressbar {
+        background: linear-gradient(135deg, #262627 0%, #1a1a1b 100%);
+    }
+
+    .introjs-helperLayer {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid #262627;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), 0 0 20px rgba(38, 38, 39, 0.5);
+        border-radius: 8px;
+    }
+
+    .introjs-tooltipReferenceLayer * {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    }
+</style>
 
 {% endblock %}
 
