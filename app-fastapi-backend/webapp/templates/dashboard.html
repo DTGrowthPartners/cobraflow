@@ -2397,14 +2397,19 @@ input#primary-color, input#secondary-color {
             );
         }
         
+        // Calcular el índice correcto para el paso de Personalización
+        // Si el sidebar está visible, es el paso 4 (índice 2 en el array)
+        // Si el sidebar no está visible (mobile), es el paso 1 (índice 0 en el array)
+        const personalizacionIndex = sidebarVisible ? 4 : 1;
+        
         // Abrir la sección de Personalización antes de mostrar el tour
-        const personalizacionHeader = document.querySelector('.wizard-step:nth-child(4) .step-header');
+        const personalizacionHeader = document.querySelector(`.wizard-step:nth-child(${personalizacionIndex}) .step-header`);
         if (personalizacionHeader) {
             personalizacionHeader.click();
         }
         
         // Ir directamente al paso de Personalización
-        const personalizacionStep = document.querySelector('.wizard-step:nth-child(4)');
+        const personalizacionStep = document.querySelector(`.wizard-step:nth-child(${personalizacionIndex})`);
         if (personalizacionStep) {
             steps.push(
                 {
