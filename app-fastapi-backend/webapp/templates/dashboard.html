@@ -256,7 +256,7 @@
                             <h3>Personalización</h3>
                             <p>Opcional: Ajusta plantilla y fuente del PDF</p>
                         </div>
-                        <span class="collapse-icon">+</span>
+                        <span class="collapse-icon" id="personalizacion-icon">+</span>
                     </div>
                     <div class="step-content step-collapsed" id="step-personalizacion">
                         <div class="form-group-wizard">
@@ -2397,25 +2397,55 @@ input#primary-color, input#secondary-color {
             );
         }
         
-        // Calcular el índice correcto para el paso de Personalización
-        // Si el sidebar está visible, es el paso 4 (índice 2 en el array)
-        // Si el sidebar no está visible (mobile), es el paso 1 (índice 0 en el array)
-        const personalizacionIndex = sidebarVisible ? 4 : 1;
+        // En mobile, mostrar todos los pasos importantes del wizard
+        if (!sidebarVisible) {
+            // Paso 1: Seleccionar Cliente
+            const paso1 = document.querySelector('.wizard-step:nth-child(1)');
+            if (paso1) {
+                steps.push({
+                    element: paso1,
+                    intro: "✏️ <strong>Paso 1: Seleccionar Cliente</strong><br>Elige o añade rápidamente un cliente para tu cuenta de cobro.",
+                    position: 'top'
+                });
+            }
+            
+            // Paso 2: Servicios a Facturar
+            const paso2 = document.querySelector('.wizard-step:nth-child(2)');
+            if (paso2) {
+                steps.push({
+                    element: paso2,
+                    intro: "💼 <strong>Paso 2: Servicios a Facturar</strong><br>Agrega los servicios que vas a cobrar. Puedes añadir múltiples servicios si es necesario.",
+                    position: 'top'
+                });
+            }
+            
+            // Paso 3: Datos del Emisor (abrirlo primero)
+            const paso3Header = document.querySelector('.wizard-step:nth-child(3) .step-header');
+            if (paso3Header) {
+                paso3Header.click();
+            }
+            const paso3 = document.querySelector('.wizard-step:nth-child(3)');
+            if (paso3) {
+                steps.push({
+                    element: paso3,
+                    intro: "📋 <strong>Paso 3: Tus Datos de Facturación</strong><br>Verifica o actualiza tus datos como emisor. Puedes guardarlos para usarlos después.",
+                    position: 'top'
+                });
+            }
+        }
         
-        // Abrir la sección de Personalización antes de mostrar el tour
-        const personalizacionHeader = document.querySelector(`.wizard-step:nth-child(${personalizacionIndex}) .step-header`);
+        // Paso 4: Personalización
+        const personalizacionHeader = document.querySelector('.wizard-step:nth-child(4) .step-header');
         if (personalizacionHeader) {
             personalizacionHeader.click();
         }
-        
-        // Ir directamente al paso de Personalización
-        const personalizacionStep = document.querySelector(`.wizard-step:nth-child(${personalizacionIndex})`);
+        const personalizacionStep = document.querySelector('.wizard-step:nth-child(4)');
         if (personalizacionStep) {
             steps.push(
                 {
                     element: personalizacionStep,
-                    intro: "🎨 <strong>Personalización</strong><br>Aquí puedes cambiar la plantilla del PDF y seleccionar la fuente.",
-                    position: 'bottom'
+                    intro: "🎨 <strong>Paso 4: Personalización</strong><br>Aquí puedes cambiar la plantilla del PDF y seleccionar la fuente para tu cuenta de cobro.",
+                    position: 'top'
                 }
             );
         }
@@ -2573,6 +2603,19 @@ input#primary-color, input#secondary-color {
             document.querySelector('.mobile-navbar').style.display = 'block';
         } else {
             document.querySelector('.mobile-navbar').style.display = 'none';
+        }
+    });
+
+    // Abrir automáticamente el paso de "Personalización" en mobile
+    window.addEventListener('DOMContentLoaded', function() {
+        if (window.innerWidth <= 768) {
+            const personalizacionContent = document.getElementById('step-personalizacion');
+            const personalizacionIcon = document.getElementById('personalizacion-icon');
+
+            if (personalizacionContent && personalizacionIcon) {
+                personalizacionContent.classList.remove('step-collapsed');
+                personalizacionIcon.textContent = '−';
+            }
         }
     });
 </script>
