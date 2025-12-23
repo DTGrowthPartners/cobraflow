@@ -23,11 +23,11 @@
     <div class="container">
         <header class="main-header">
             <div class="main-header-left">
-                <a href="/" class="app-logo" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
-                    <div style="width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
-                        <span style="color: white; font-weight: bold; font-size: 1.25rem;">C</span>
+                <a href="/" class="app-logo" style="display: flex; align-items: center; gap: 0.3rem; text-decoration: none;">
+                    <div style="width: 24px; height: 24px; border-radius: 6px;  background: linear-gradient(135deg, hsl(245, 75%, 60%) 0%, hsl(280, 75%, 55%) 100%); display: flex; align-items: center; justify-content: center;">
+                        <span style="color: white; font-weight: bold; font-size: 1rem;">C</span>
                     </div>
-                    <span style="font-weight: bold; font-size: 1.25rem; color: #1a202c;">CobraFlow</span>
+                    <span style="font-weight: bold; font-size: 1rem; color: #1a202c;">CobraFlow</span>
                 </a>
             </div>
             {% if request.session.user %}
@@ -52,22 +52,22 @@
         <div class="mobile-menu-overlay" id="mobile-menu-overlay">
             <div class="mobile-menu-content">
                 <div class="mobile-menu-header">
-                    <div class="app-logo" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
-                        <div style="width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
-                            <span style="color: white; font-weight: bold; font-size: 1.25rem;">C</span>
+                    <div class="app-logo" style="display: flex; align-items: center; gap: 0.3rem; text-decoration: none;">
+                        <div style="width: 24px; height: 24px; border-radius: 6px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                            <span style="color: white; font-weight: bold; font-size: 1rem;">C</span>
                         </div>
-                        <span style="font-weight: bold; font-size: 1.25rem; color: #1a202c;">CobraFlow</span>
+                        <span style="font-weight: bold; font-size: 1rem; color: #1a202c;">CobraFlow</span>
                     </div>
                     <button class="mobile-menu-close" id="mobile-menu-close">✕</button>
                 </div>
                 <nav class="mobile-menu-nav">
-                     <div class="mobile-user-pill">
+                    <div class="mobile-user-pill">
                         <span class="user-avatar">{{ request.session.user[0]|upper }}</span>
                         <span class="user-name">{{ request.session.user }}</span>
                     </div>
                     <a href="/dashboard" class="mobile-menu-item">Dashboard</a>
                     <a href="/template-editor" class="mobile-menu-item">Editor de Plantilla</a>
-                   
+                    
                     <a href="/logout" class="mobile-menu-item" id="salir">Salir</a>
                 </nav>
             </div>

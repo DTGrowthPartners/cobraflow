@@ -114,13 +114,15 @@ h4 {
     justify-content: space-between;
     align-items: center;
     background: var(--bg-white);
-    padding: 20px 50px;
+    padding: 12px 20px;
     border-radius: var(--radius-xl);
     border: 1px solid var(--border-light);
     box-shadow: var(--shadow-sm);
     margin-bottom: 0px;
     position: relative;
     z-index: 100;
+    width: 100%;
+    box-sizing: border-box;
 
 }
 
@@ -967,12 +969,13 @@ table {
     }
 
     .main-header {
-        padding: 12px 16px;
+        padding: 8px 12px;
         margin-bottom: 0;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
         gap: 0;
+        min-height: 56px;
     }
 
     .main-header-left {
@@ -996,9 +999,9 @@ table {
     }
 
     .main-header-left {
-        width: 100%;
+        width: auto;
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
     }
 
     .app-logo img {
@@ -1007,36 +1010,34 @@ table {
     }
 
     .main-header-right {
-        width: 100%;
-        justify-content: center;
-        padding-top: 8px;
-        border-top: 1px solid var(--border-light);
+        display: flex;
+        align-items: center;
         gap: 8px;
     }
 
     .user-pill {
-        padding: 6px 12px;
+        padding: 4px 8px;
         flex-shrink: 0;
     }
 
     .user-name {
-        font-size: 0.8rem;
-        max-width: 100px;
+        font-size: 0.7rem;
+        max-width: 80px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     .user-avatar {
-        width: 28px;
-        height: 28px;
-        font-size: 0.75rem;
+        width: 24px;
+        height: 24px;
+        font-size: 0.65rem;
     }
 
     .btn-ghost {
         flex-shrink: 0;
-        padding: 6px 12px;
-        font-size: 0.8rem;
+        padding: 4px 8px;
+        font-size: 0.7rem;
     }
 
     .card {
@@ -1209,12 +1210,13 @@ table {
 
 @media (max-width: 640px) {
     .main-header {
-        padding: 10px 12px;
+        padding: 6px 10px;
         margin-bottom: 0px;
+        min-height: 48px;
     }
 
     .app-logo img {
-        max-width: 80px;
+        max-width: 60px;
     }
 
     .main-header-right {
@@ -1222,24 +1224,24 @@ table {
     }
 
     .user-pill {
-        padding: 4px 8px;
-        gap: 4px;
+        padding: 2px 6px;
+        gap: 2px;
     }
 
     .user-name {
-        font-size: 0.7rem;
-        max-width: 60px;
+        font-size: 0.6rem;
+        max-width: 50px;
     }
 
     .user-avatar {
-        width: 22px;
-        height: 22px;
-        font-size: 0.6rem;
+        width: 18px;
+        height: 18px;
+        font-size: 0.5rem;
     }
 
     .btn-ghost {
-        padding: 4px 8px;
-        font-size: 0.7rem;
+        padding: 2px 6px;
+        font-size: 0.6rem;
     }
 
     .btn {
@@ -1317,6 +1319,346 @@ table {
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+/* ===== NUEVOS ESTILOS PARA MEJORAS UX ===== */
+
+/* 1. Buscador inteligente de clientes */
+.client-search-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.client-search-wrapper input[type="text"] {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    border: 1.5px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+    background: var(--bg-white);
+}
+
+.client-search-wrapper input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.client-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    max-height: 320px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.client-results {
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.client-result-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.client-result-item:last-child {
+    border-bottom: none;
+}
+
+.client-result-item:hover {
+    background-color: var(--gray-50);
+}
+
+.client-result-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.client-result-nit {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.client-result-empty {
+    padding: 16px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.client-add-new {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    background-color: var(--gray-50);
+    border-top: 1px solid var(--border-light);
+    transition: background-color 0.15s ease;
+    color: var(--primary-purple);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.client-add-new:hover {
+    background-color: var(--gray-100);
+}
+
+.client-add-new .add-icon {
+    font-size: 18px;
+}
+
+.selected-client {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background-color: var(--success-bg);
+    border: 1.5px solid var(--success-green);
+    border-radius: var(--radius-md);
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.btn-clear-selection {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 8px;
+    transition: color 0.15s ease;
+}
+
+.btn-clear-selection:hover {
+    color: var(--text-primary);
+}
+
+/* 2. Retenciones */
+.retenciones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.retencion-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background-color: var(--gray-50);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+}
+
+.retencion-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.retencion-nombre {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.retencion-porcentaje {
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 4px 8px;
+    background-color: var(--gray-100);
+    border-radius: var(--radius-sm);
+}
+
+.retencion-input {
+    width: 80px;
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-sm);
+    text-align: right;
+}
+
+.retenciones-summary {
+    margin-top: 20px;
+    padding: 16px;
+    background-color: var(--gray-50);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.summary-row-small {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.summary-total {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 2px solid var(--border-medium);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--primary-purple);
+}
+
+.retenciones-detail {
+    margin: 8px 0;
+}
+
+/* 3. Monto en texto */
+.monto-texto-box {
+    margin-top: 16px;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--bg-white) 100%);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+}
+
+.monto-numero {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.label-monto {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.monto-value {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-purple);
+}
+
+.monto-value-letras {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-style: italic;
+    line-height: 1.5;
+}
+
+/* 4. Vista previa */
+.preview-card {
+    background: var(--bg-white);
+    border: 2px solid var(--primary-purple-light);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+}
+
+.preview-section {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.preview-section:last-child {
+    border-bottom: none;
+}
+
+.preview-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.preview-text {
+    font-size: 15px;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.preview-text-secondary {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 8px 0 0 0;
+    font-style: italic;
+}
+
+.preview-total-amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary-purple);
+}
+
+/* 5. Botones CTA mejorados */
+#btn-ver-preview {
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+#btn-generar {
+    width: 100%;
+}
+
+/* 6. Responsive mobile-first adjustments */
+@media (max-width: 768px) {
+    .client-dropdown {
+        max-height: 280px;
+    }
+
+    .preview-card {
+        padding: 16px;
+    }
+
+    .monto-value {
+        font-size: 20px;
+    }
+
+    .monto-value-letras {
+        font-size: 14px;
+    }
+
+    .retencion-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .retencion-input {
+        width: 100%;
+    }
 }
 
 
