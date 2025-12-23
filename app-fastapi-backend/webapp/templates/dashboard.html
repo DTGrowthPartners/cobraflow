@@ -296,7 +296,7 @@
             {% if history %}
             <div class="invoices-list">
                 {% for item in history %}
-                <div class="invoice-card" onclick="window.location.href='{{ item.url }}'">
+                <div class="invoice-card" onclick="window.open('{{ item.url }}', '_blank')">
                     <div class="invoice-header">
                         <div class="invoice-client">
                             <h3>{{ item.client_name }}</h3>
