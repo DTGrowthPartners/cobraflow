@@ -58,7 +58,12 @@ def generate_invoice_service(
     cuenta_bancolombia: str = "78841707710",
     nequi_daviplata: str = "+57 3007189383",
     nota_pago: str = "Se solicita que el pago sea realizado a la mayor brevedad posible",
-    firma: str = "Dairo Tralasviña,"
+    firma: str = "Dairo Tralasviña,",
+    tipo_operacion: str = "natural-natural",
+    moneda: str = "COP",
+    plazo_pago: str = "30",
+    texto_legal: str = "",
+    retenciones: list = []
 ) -> str:
     """
     Llama a la función principal para generar el PDF de la cuenta de cobro.
@@ -90,7 +95,12 @@ def generate_invoice_service(
         cuenta_bancolombia=cuenta_bancolombia,
         nequi_daviplata=nequi_daviplata,
         nota_pago=nota_pago,
-        firma=firma
+        firma=firma,
+        tipo_operacion=tipo_operacion,
+        moneda=moneda,
+        plazo_pago=plazo_pago,
+        texto_legal=texto_legal,
+        retenciones=retenciones
     )
     
     return pdf_path

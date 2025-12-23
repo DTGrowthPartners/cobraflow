@@ -110,14 +110,51 @@ async def template_editor_html_alias(request: Request, user: str = Depends(auth.
 @web_router.post("/dashboard/generate", response_class=HTMLResponse)
 async def generate_invoice_request(request: Request, user: str = Depends(auth.login_required)):
     """Generate invoice from dashboard form."""
+    print("="*80)
+    print("DEBUG WEB_ROUTES - INICIO DE GENERATE_INVOICE_REQUEST")
+    print("="*80)
     form_data = await request.form()
-    
+    print(f"DEBUG WEB_ROUTES - Form data keys: {list(form_data.keys())}")
+
     try:
         # Extract form data
         nickname_cliente = form_data.get("nickname_cliente")
         servicio_proyecto = form_data.get("servicio_proyecto")
         nombre_empresa = ""
         fuente_seleccionada = form_data.get("fuente_seleccionada", "HelveticaNeue.ttf")
+
+        # Extract new fields
+        tipo_operacion = form_data.get("tipo_operacion", "natural-natural")
+        moneda = form_data.get("moneda", "COP")
+        plazo_pago = form_data.get("plazo_pago", "30")
+        texto_legal = form_data.get("texto_legal", "")
+
+        # DEBUG: Imprimir valores recibidos
+        print(f"DEBUG - tipo_operacion: {tipo_operacion}")
+        print(f"DEBUG - moneda: {moneda}")
+        print(f"DEBUG - plazo_pago: {plazo_pago}")
+        print(f"DEBUG - texto_legal: {texto_legal[:100] if texto_legal else 'VACIO'}")
+        print(f"DEBUG - retenciones_json: {retenciones_json}")
+        print(f"DEBUG - retenciones parseadas: {retenciones}")
+        
+        # Forzar valores por defecto si no se reciben correctamente
+        if not plazo_pago or plazo_pago == "30":
+            print("ADVERTENCIA: plazo_pago no se recibió correctamente, usando valor por defecto")
+            plazo_pago = "30"
+        
+        if not isinstance(retenciones, list):
+            print("ADVERTENCIA: retenciones no es una lista válida, inicializando como vacía")
+            retenciones = []
+
+        # Parse retenciones
+        retenciones_json = form_data.get("retenciones_aplicadas", "[]")
+        print(f"DEBUG - retenciones_json: {retenciones_json}")
+        try:
+            retenciones = json.loads(retenciones_json) if retenciones_json else []
+            print(f"DEBUG - retenciones parseadas: {retenciones}")
+        except Exception as e:
+            print(f"DEBUG - Error parseando retenciones: {e}")
+            retenciones = []
         
         # Load saved billing data
         billing_path = os.path.join(project_root, "billing_data.json")
@@ -185,7 +222,12 @@ async def generate_invoice_request(request: Request, user: str = Depends(auth.lo
             cuenta_bancolombia=cuenta_bancolombia,
             nequi_daviplata=nequi_daviplata,
             nota_pago=nota_pago,
-            firma=firma
+            firma=firma,
+            tipo_operacion=tipo_operacion,
+            moneda=moneda,
+            plazo_pago=plazo_pago,
+            texto_legal=texto_legal,
+            retenciones=retenciones
         )
         
         pdf_filename = os.path.basename(pdf_path)

@@ -17,6 +17,64 @@ def hex_to_rgb(hex_color):
     hex_color = hex_color.lstrip('#')
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
+def numero_a_letras(numero, moneda="COP"):
+    """
+    Convierte un número a letras en español con formato legal/financiero.
+    """
+    unidades = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve']
+    decenas = ['', 'diez', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa']
+    especiales = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve']
+    centenas = ['', 'ciento', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos']
+
+    nombre_moneda = "pesos colombianos" if moneda == "COP" else "dólares estadounidenses"
+
+    numero = int(numero)
+    if numero == 0:
+        return f"Cero {nombre_moneda}"
+
+    def convertir_grupo(n):
+        if n == 0:
+            return ''
+        if n == 100:
+            return 'cien'
+
+        texto = ''
+        c = n // 100
+        d = (n % 100) // 10
+        u = n % 10
+
+        if c > 0:
+            texto += centenas[c] + ' '
+
+        if d == 1 and u != 0:
+            texto += especiales[u]
+        else:
+            if d == 2 and u != 0:
+                texto += 'veinti' + unidades[u]
+            else:
+                texto += decenas[d]
+                if d > 2 and u != 0:
+                    texto += ' y '
+                if u != 0:
+                    texto += unidades[u]
+
+        return texto.strip()
+
+    millones = numero // 1000000
+    miles = (numero % 1000000) // 1000
+    cientos = numero % 1000
+
+    resultado = ''
+    if millones > 0:
+        resultado += 'un millón ' if millones == 1 else convertir_grupo(millones) + ' millones '
+    if miles > 0:
+        resultado += 'mil ' if miles == 1 else convertir_grupo(miles) + ' mil '
+    if cientos > 0:
+        resultado += convertir_grupo(cientos) + ' '
+
+    resultado += nombre_moneda
+    return resultado.strip().capitalize()
+
 
 def get_top_colors(image, exclude_white=True, top=2):
     colors = image.getcolors(image.size[0] * image.size[1])
@@ -33,7 +91,7 @@ def get_top_colors(image, exclude_white=True, top=2):
             break
     return filtered
 
-def generar_cuenta_de_cobro(nombre_cliente: str, identificacion: str, servicios: list, concepto: str, fecha: str, servicio_proyecto: str = None, nombre_empresa: str = "", fuente_seleccionada: str = "HelveticaNeue.ttf", emisor_nombre: str = "Dairo Tralasviña", emisor_cedula: str = "1143397563", emisor_telefono: str = "+57 3007189383", emisor_email: str = "Dairo@dtgrowthpartners.com", emisor_ciudad: str = "Cartagena, Colombia", cuenta_bancolombia: str = "78841707710", nequi_daviplata: str = "+57 3007189383", nota_pago: str = "Se solicita que el pago sea realizado a la mayor brevedad posible", firma: str = "Dairo Tralasviña,") -> str:
+def generar_cuenta_de_cobro(nombre_cliente: str, identificacion: str, servicios: list, concepto: str, fecha: str, servicio_proyecto: str = None, nombre_empresa: str = "", fuente_seleccionada: str = "HelveticaNeue.ttf", emisor_nombre: str = "Dairo Tralasviña", emisor_cedula: str = "1143397563", emisor_telefono: str = "+57 3007189383", emisor_email: str = "Dairo@dtgrowthpartners.com", emisor_ciudad: str = "Cartagena, Colombia", cuenta_bancolombia: str = "78841707710", nequi_daviplata: str = "+57 3007189383", nota_pago: str = "Se solicita que el pago sea realizado a la mayor brevedad posible", firma: str = "Dairo Tralasviña,", tipo_operacion: str = "natural-natural", moneda: str = "COP", plazo_pago: str = "30", texto_legal: str = "", retenciones: list = []) -> str:
     """
     Genera una cuenta de cobro en formato PDF con una tabla detallada de servicios.
 
@@ -48,6 +106,13 @@ def generar_cuenta_de_cobro(nombre_cliente: str, identificacion: str, servicios:
     Returns:
         La ruta del archivo PDF generado.
     """
+    # DEBUG: Imprimir parámetros recibidos
+    print(f"DEBUG GENERADOR - plazo_pago recibido: '{plazo_pago}'")
+    print(f"DEBUG GENERADOR - tipo_operacion recibido: '{tipo_operacion}'")
+    print(f"DEBUG GENERADOR - moneda recibida: '{moneda}'")
+    print(f"DEBUG GENERADOR - retenciones recibidas: {retenciones}")
+    print(f"DEBUG GENERADOR - texto_legal recibido: '{texto_legal[:100] if texto_legal else 'VACIO'}'")
+
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     # --- GENERACIÓN DEL PDF ---
@@ -333,11 +398,62 @@ def generar_cuenta_de_cobro(nombre_cliente: str, identificacion: str, servicios:
         c.drawRightString(margen_izquierdo + sum(col_widths[:3]) - 10, text_y, f"$ {servicio['precio_unitario']:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
         c.drawRightString(margen_izquierdo + sum(col_widths) - 10, text_y, f"$ {total_servicio:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
 
+    # Calcular retenciones según lo enviado desde el frontend
+    simbolo_moneda = "$" if moneda == "COP" else "US$"
+    subtotal = total_general
+    retenciones_dict = {}
+
+    print(f"DEBUG GENERADOR - Procesando retenciones en PDF")
+    print(f"DEBUG GENERADOR - Subtotal: {subtotal}")
+    print(f"DEBUG GENERADOR - Retenciones recibidas para procesar: {retenciones}")
+
+    # Usar retenciones enviadas desde el frontend
+    if retenciones:
+        print(f"DEBUG GENERADOR - Hay {len(retenciones)} retenciones")
+        for ret in retenciones:
+            nombre = ret.get('nombre', '')
+            porcentaje = float(ret.get('porcentaje', 0))
+            valor_retencion = (subtotal * porcentaje) / 100
+            print(f"DEBUG GENERADOR - Retención: {nombre} ({porcentaje}%) = {valor_retencion}")
+            retenciones_dict[f"{nombre} ({porcentaje}%)"] = valor_retencion
+    else:
+        print(f"DEBUG GENERADOR - NO HAY RETENCIONES para aplicar")
+
+    total_retenciones = sum(retenciones_dict.values())
+    total_final = subtotal - total_retenciones
+    print(f"DEBUG GENERADOR - Total retenciones: {total_retenciones}")
+    print(f"DEBUG GENERADOR - Total final: {total_final}")
+
+    # Dibujar subtotal
     current_y -= row_height
     c.grid([margen_izquierdo, margen_izquierdo + sum(col_widths)], [current_y, current_y + row_height])
     c.setFont(bold_font, 10)
-    c.drawString(margen_izquierdo + col_widths[0] + col_widths[1] + 10, current_y + 6, "Total General")
-    c.drawRightString(margen_izquierdo + sum(col_widths) - 10, current_y + 6, f"$ {total_general:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+    c.drawString(margen_izquierdo + col_widths[0] + col_widths[1] + 10, current_y + 6, "Subtotal")
+    c.drawRightString(margen_izquierdo + sum(col_widths) - 10, current_y + 6, f"{simbolo_moneda} {subtotal:,.2f} {moneda}".replace(",", "X").replace(".", ",").replace("X", "."))
+
+    # Dibujar retenciones si existen
+    if retenciones_dict and len(retenciones_dict) > 0:
+        for nombre_retencion, valor_retencion in retenciones_dict.items():
+            current_y -= row_height
+            c.grid([margen_izquierdo, margen_izquierdo + sum(col_widths)], [current_y, current_y + row_height])
+            c.setFont(normal_font, 9)
+            c.drawString(margen_izquierdo + col_widths[0] + col_widths[1] + 10, current_y + 6, f"- {nombre_retencion}")
+            c.drawRightString(margen_izquierdo + sum(col_widths) - 10, current_y + 6, f"-{simbolo_moneda} {valor_retencion:,.2f} {moneda}".replace(",", "X").replace(".", ",").replace("X", "."))
+
+    # Dibujar total final
+    current_y -= row_height
+    c.grid([margen_izquierdo, margen_izquierdo + sum(col_widths)], [current_y, current_y + row_height])
+    c.setFont(bold_font, 11)
+    c.setFillColor(colors.HexColor(primary_color_hex))
+    c.drawString(margen_izquierdo + col_widths[0] + col_widths[1] + 10, current_y + 6, "Total a Recibir")
+    c.drawRightString(margen_izquierdo + sum(col_widths) - 10, current_y + 6, f"{simbolo_moneda} {total_final:,.2f} {moneda}".replace(",", "X").replace(".", ",").replace("X", "."))
+    c.setFillColor(colors.black)
+
+    # Dibujar monto en letras
+    current_y -= row_height
+    c.setFont(italic_font, 9)
+    monto_letras = numero_a_letras(total_final, moneda)
+    c.drawString(margen_izquierdo + 10, current_y + 10, f"SON: {monto_letras}")
     if original_base_name == 'Base3.jpg':
         y = current_y - 30
     elif original_base_name == 'Base4.jpg':
@@ -359,12 +475,33 @@ def generar_cuenta_de_cobro(nombre_cliente: str, identificacion: str, servicios:
     #c.drawString(margen_izquierdo, y, f"Nequi / Daviplata: {nequi_daviplata}")
 
     y -= 30
-    # --- NOTA ---
+    # --- TEXTO LEGAL / CONDICIONES DE PAGO ---
+    print(f"DEBUG GENERADOR - Escribiendo plazo_pago en PDF: '{plazo_pago}' días")
     c.setFont(bold_font, 9)
-    c.drawString(margen_izquierdo, y, "Nota:")
-    nota_width = c.stringWidth("Nota:", bold_font, 9)
-    c.setFont(normal_font, 9)
-    c.drawString(margen_izquierdo + nota_width + 2, y, f" {nota_pago}")
+    c.drawString(margen_izquierdo, y, f"Condiciones de Pago ({plazo_pago} días):")
+    y -= 15
+
+    # Usar texto_legal si está disponible, sino usar nota_pago como fallback
+    texto_a_mostrar = texto_legal if texto_legal else nota_pago
+
+    # Dibujar texto legal con wrapping
+    c.setFont(normal_font, 8)
+    max_width = 500
+    palabras = texto_a_mostrar.split()
+    linea_actual = ""
+
+    for palabra in palabras:
+        prueba = linea_actual + " " + palabra if linea_actual else palabra
+        if c.stringWidth(prueba, normal_font, 8) < max_width:
+            linea_actual = prueba
+        else:
+            c.drawString(margen_izquierdo, y, linea_actual)
+            y -= 12
+            linea_actual = palabra
+
+    if linea_actual:
+        c.drawString(margen_izquierdo, y, linea_actual)
+        y -= 12
 
     y -= 30
     c.setFont(normal_font, 9)

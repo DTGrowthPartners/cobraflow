@@ -83,29 +83,46 @@
                 <div class="alert alert-danger">{{ error_message }}</div>
             {% endif %}
 
-            <form action="/dashboard/generate" method="post" class="wizard-form">
+            <form action="/dashboard/generate" method="post" class="wizard-form" onsubmit="debugFormSubmit(event)">
+                <!-- Campos hidden para retenciones -->
+                <input type="hidden" id="retenciones_aplicadas" name="retenciones_aplicadas" value="">
+
                 <!-- UX CAMBIO: Paso 1 - Seleccionar Cliente -->
                 <div class="wizard-step">
                     <div class="step-header">
                         <span class="step-number">1</span>
                         <div class="step-title">
                             <h3>¿Para quién es la cuenta?</h3>
-                            <p>Selecciona el cliente que recibirá la cuenta de cobro</p>
+                            <p>Busca o crea un nuevo cliente</p>
                         </div>
                     </div>
                     <div class="step-content">
                         <div class="form-group-wizard">
-                            <label for="client">Cliente</label>
-                            <div class="input-with-action">
-                                <select id="client" name="nickname_cliente" required>
-                                    <option value="">-- Selecciona un cliente --</option>
-                                    {% for client in clients %}
-                                        <option value="{{ client.nickname }}">{{ client.nombre_completo }} ({{ client.nit }})</option>
-                                    {% endfor %}
-                                </select>
-                                <button type="button" onclick="quickAddClient()" class="btn-icon" title="Añadir cliente rápido">
-                                    <span>+</span>
-                                </button>
+                            <label for="client-search">Buscar cliente</label>
+                            <div class="client-search-wrapper">
+                                <input
+                                    type="text"
+                                    id="client-search"
+                                    placeholder="Escribe para buscar (ej: Ariel, Aristizábal...)"
+                                    autocomplete="off"
+                                    oninput="filterClients(this.value)"
+                                    onfocus="showClientDropdown()"
+                                >
+                                <input type="hidden" id="client" name="nickname_cliente" required>
+
+                                <div id="client-dropdown" class="client-dropdown" style="display: none;">
+                                    <div id="client-results" class="client-results">
+                                        <!-- Resultados dinámicos -->
+                                    </div>
+                                    <div class="client-add-new" onclick="quickAddClient()">
+                                        <span class="add-icon">➕</span>
+                                        <span>Crear nuevo cliente</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="selected-client-display" class="selected-client" style="display: none;">
+                                <span id="selected-client-name"></span>
+                                <button type="button" onclick="clearClientSelection()" class="btn-clear-selection">✕</button>
                             </div>
                         </div>
                     </div>
@@ -148,16 +165,103 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" onclick="addMoreServices()" class="btn btn-secondary btn-add-more">
-                            <span>+</span> Añadir otro servicio
-                        </button>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button type="button" onclick="addMoreServices()" class="btn btn-secondary btn-add-more">
+                                <span>+</span> Añadir otro servicio
+                            </button>
+                            <button type="button" onclick="openManagementActionDirect('add-service')" class="btn btn-ghost btn-add-more">
+                                ✨ Crear nuevo servicio
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- UX CAMBIO: Paso 3 - Datos del Emisor (Colapsable) -->
+                <!-- NUEVO: Paso 2.5 - Tipo de Operación y Retenciones -->
+                <div class="wizard-step">
+                    <div class="step-header">
+                        <span class="step-number">2.5</span>
+                        <div class="step-title">
+                            <h3>Tipo de operación</h3>
+                            <p>Define la relación comercial y retenciones aplicables</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <div class="form-group-wizard">
+                            <label for="tipo-operacion">Tipo de operación</label>
+                            <select id="tipo-operacion" name="tipo_operacion" required onchange="updateRetenciones()">
+                                <option value="">-- Selecciona el tipo de operación --</option>
+                                <option value="natural-natural">Persona Natural → Persona Natural</option>
+                                <option value="natural-empresa">Persona Natural → Empresa</option>
+                            </select>
+                        </div>
+
+                        <div id="retenciones-container" style="display: none; margin-top: 20px;">
+                            <div class="retenciones-header">
+                                <h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #1a1a1a;">
+                                    Retenciones aplicables
+                                </h4>
+                                <p style="margin: 0 0 16px 0; font-size: 13px; color: #6b7280;">
+                                    Estas retenciones se aplicarán automáticamente según la legislación colombiana
+                                </p>
+                            </div>
+
+                            <div id="retenciones-list" class="retenciones-list">
+                                <!-- Se llenarán dinámicamente -->
+                            </div>
+
+                            <div id="retenciones-summary" class="retenciones-summary" style="display: none;">
+                                <div class="summary-row">
+                                    <span>Subtotal</span>
+                                    <span id="subtotal-display">$0</span>
+                                </div>
+                                <div class="summary-row retenciones-detail" id="retenciones-detail">
+                                    <!-- Detalle de retenciones -->
+                                </div>
+                                <div class="summary-row summary-total">
+                                    <span>Total a recibir</span>
+                                    <span id="total-display">$0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NUEVO: Paso 2.6 - Moneda y conversión a texto -->
+                <div class="wizard-step">
+                    <div class="step-header">
+                        <span class="step-number">2.6</span>
+                        <div class="step-title">
+                            <h3>Moneda y monto</h3>
+                            <p>Selecciona la moneda de la transacción</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <div class="form-group-wizard">
+                            <label for="moneda">Moneda</label>
+                            <select id="moneda" name="moneda" required onchange="updateMonedaDisplay()">
+                                <option value="">-- Selecciona la moneda --</option>
+                                <option value="COP" selected>COP - Pesos colombianos</option>
+                                <option value="USD">USD - Dólares estadounidenses</option>
+                            </select>
+                        </div>
+
+                        <div id="monto-texto-display" class="monto-texto-box" style="display: none;">
+                            <div class="monto-numero">
+                                <span class="label-monto">Monto numérico:</span>
+                                <span id="monto-numero-text" class="monto-value">$0 COP</span>
+                            </div>
+                            <div class="monto-letras">
+                                <span class="label-monto">En letras:</span>
+                                <span id="monto-letras-text" class="monto-value-letras">Cero pesos colombianos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UX CAMBIO: Paso 2.7 - Datos del Emisor (Ahora ANTES de condiciones) -->
                 <div class="wizard-step wizard-step-collapsible">
                     <div class="step-header clickable" onclick="toggleStep('step-emisor')">
-                        <span class="step-number">3</span>
+                        <span class="step-number">2.7</span>
                         <div class="step-title">
                             <h3>Tus datos de facturación</h3>
                             <p>Verifica o actualiza tus datos como emisor</p>
@@ -248,10 +352,46 @@
                     </div>
                 </div>
 
-                <!-- UX CAMBIO: Paso 4 - Personalización (Opcional, Colapsable) -->
+                <!-- NUEVO: Paso 2.8 - Texto legal y plazo de pago (DESPUÉS de datos de facturación) -->
+                <div class="wizard-step">
+                    <div class="step-header">
+                        <span class="step-number">2.8</span>
+                        <div class="step-title">
+                            <h3>Condiciones de pago</h3>
+                            <p>Texto legal y plazo para el pago</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <div class="form-group-wizard">
+                            <label for="plazo-pago">Plazo de pago</label>
+                            <select id="plazo-pago" name="plazo_pago" required onchange="updateTextoLegal()">
+                                <option value="">-- Selecciona el plazo --</option>
+                                <option value="15">15 días</option>
+                                <option value="30" selected>30 días</option>
+                                <option value="60">60 días</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group-wizard">
+                            <label for="texto-legal">Texto legal de la cuenta de cobro</label>
+                            <textarea
+                                id="texto-legal"
+                                name="texto_legal"
+                                rows="4"
+                                placeholder="El texto se generará automáticamente según el plazo seleccionado"
+                                required
+                            ></textarea>
+                            <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+                                Este texto es editable. Personalízalo según tus necesidades.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UX CAMBIO: Paso 3 - Personalización (Opcional, Colapsable) -->
                 <div class="wizard-step wizard-step-collapsed">
                     <div class="step-header clickable" onclick="toggleStep('step-personalizacion')">
-                        <span class="step-number">4</span>
+                        <span class="step-number">3</span>
                         <div class="step-title">
                             <h3>Personalización</h3>
                             <p>Opcional: Ajusta plantilla y fuente del PDF</p>
@@ -269,9 +409,57 @@
                     </div>
                 </div>
 
+                <!-- NUEVO: Vista Previa -->
+                <div id="vista-previa-section" class="wizard-step" style="display: none;">
+                    <div class="step-header">
+                        <span class="step-number">✓</span>
+                        <div class="step-title">
+                            <h3>Vista previa de tu cuenta de cobro</h3>
+                            <p>Revisa que toda la información sea correcta antes de generar el PDF</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <div class="preview-card">
+                            <div class="preview-section">
+                                <h4 class="preview-title">Cliente</h4>
+                                <p id="preview-cliente" class="preview-text">-</p>
+                            </div>
+                            <div class="preview-section">
+                                <h4 class="preview-title">Tipo de operación</h4>
+                                <p id="preview-tipo-operacion" class="preview-text">-</p>
+                            </div>
+                            <div class="preview-section">
+                                <h4 class="preview-title">Servicios</h4>
+                                <div id="preview-servicios" class="preview-text">-</div>
+                            </div>
+                            <div class="preview-section">
+                                <h4 class="preview-title">Monto</h4>
+                                <p id="preview-monto" class="preview-text">-</p>
+                                <p id="preview-monto-letras" class="preview-text-secondary">-</p>
+                            </div>
+                            <div class="preview-section">
+                                <h4 class="preview-title">Retenciones</h4>
+                                <div id="preview-retenciones" class="preview-text">-</div>
+                            </div>
+                            <div class="preview-section">
+                                <h4 class="preview-title">Total a recibir</h4>
+                                <p id="preview-total" class="preview-text preview-total-amount">-</p>
+                            </div>
+                            <div class="preview-section">
+                                <h4 class="preview-title">Condiciones de pago</h4>
+                                <p id="preview-plazo" class="preview-text">-</p>
+                                <p id="preview-texto-legal" class="preview-text-secondary">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- UX CAMBIO: Paso 5 - CTA Principal -->
                 <div class="wizard-cta">
-                    <button type="submit" class="btn btn-primary btn-large">
+                    <button type="button" onclick="showPreview()" class="btn btn-secondary btn-large" id="btn-ver-preview">
+                        Ver Vista Previa
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-large" id="btn-generar" style="display: none;" onclick="debugFormSubmitClick(); recalcularTotales();">
                         <span class="btn-icon-text"></span>
                         Generar Cuenta de Cobro
                     </button>
@@ -1729,7 +1917,7 @@ input#primary-color, input#secondary-color {
         }
     }
 
-    async function loadBillingDataWizard() {
+    async function loadBillingDataWizard(showAlert = true) {
         try {
             const response = await fetch(getApiUrl('/api/get_billing'));
             const data = await response.json();
@@ -1752,9 +1940,13 @@ input#primary-color, input#secondary-color {
                 }
             }
 
-            Swal.fire('Datos cargados correctamente');
+            if (showAlert) {
+                Swal.fire('Datos cargados correctamente');
+            }
         } catch (error) {
-            Swal.fire('Error al cargar datos');
+            if (showAlert) {
+                Swal.fire('Error al cargar datos');
+            }
         }
     }
 
@@ -2712,9 +2904,450 @@ input#primary-color, input#secondary-color {
         }).start();
     }
 
+    // ===== NUEVAS FUNCIONALIDADES =====
+
+    // Lista de clientes (se carga desde el servidor)
+    let allClients = {{ clients|tojson|safe }};
+
+    // === 1. BUSCADOR INTELIGENTE DE CLIENTES ===
+    function filterClients(query) {
+        const resultsContainer = document.getElementById('client-results');
+        const dropdown = document.getElementById('client-dropdown');
+
+        if (!query || query.length < 1) {
+            resultsContainer.innerHTML = '<div class="client-result-empty">Escribe para buscar clientes...</div>';
+            dropdown.style.display = 'block';
+            return;
+        }
+
+        const normalizedQuery = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+        const filtered = allClients.filter(client => {
+            const nombre = (client.nombre_completo || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            const nit = (client.nit || '').toLowerCase();
+            const nickname = (client.nickname || '').toLowerCase();
+
+            return nombre.includes(normalizedQuery) ||
+                   nit.includes(normalizedQuery) ||
+                   nickname.includes(normalizedQuery);
+        });
+
+        if (filtered.length === 0) {
+            resultsContainer.innerHTML = '<div class="client-result-empty">No se encontraron clientes</div>';
+        } else {
+            resultsContainer.innerHTML = filtered.map(client => `
+                <div class="client-result-item" onclick="selectClient('${client.nickname}', '${client.nombre_completo}', '${client.nit}')">
+                    <div class="client-result-name">${client.nombre_completo}</div>
+                    <div class="client-result-nit">${client.nit}</div>
+                </div>
+            `).join('');
+        }
+
+        dropdown.style.display = 'block';
+    }
+
+    function showClientDropdown() {
+        const dropdown = document.getElementById('client-dropdown');
+        const selectedDisplay = document.getElementById('selected-client-display');
+
+        if (selectedDisplay.style.display === 'none') {
+            dropdown.style.display = 'block';
+            filterClients(document.getElementById('client-search').value);
+        }
+    }
+
+    function selectClient(nickname, nombre, nit) {
+        document.getElementById('client').value = nickname;
+        document.getElementById('client-search').value = '';
+        document.getElementById('selected-client-name').textContent = `${nombre} (${nit})`;
+        document.getElementById('selected-client-display').style.display = 'flex';
+        document.getElementById('client-dropdown').style.display = 'none';
+    }
+
+    function clearClientSelection() {
+        document.getElementById('client').value = '';
+        document.getElementById('client-search').value = '';
+        document.getElementById('selected-client-display').style.display = 'none';
+        document.getElementById('client-search').focus();
+    }
+
+    // Cerrar dropdown al hacer click fuera
+    document.addEventListener('click', function(e) {
+        const wrapper = document.querySelector('.client-search-wrapper');
+        const dropdown = document.getElementById('client-dropdown');
+        if (wrapper && !wrapper.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+
+    // === 2. TIPO DE OPERACIÓN Y RETENCIONES ===
+    const retencionesConfig = {
+        'natural-natural': [],
+        'natural-empresa': [
+            { nombre: 'Retención en la Fuente', porcentaje: 10, editable: true },
+            { nombre: 'IVA', porcentaje: 19, editable: true, opcional: true }
+        ]
+    };
+
+    function updateRetenciones() {
+        const tipoOperacion = document.getElementById('tipo-operacion').value;
+        const container = document.getElementById('retenciones-container');
+        const listContainer = document.getElementById('retenciones-list');
+
+        if (!tipoOperacion) {
+            container.style.display = 'none';
+            return;
+        }
+
+        const retenciones = retencionesConfig[tipoOperacion] || [];
+
+        if (retenciones.length === 0) {
+            listContainer.innerHTML = '<p style="color: #6b7280; font-size: 14px;">No aplican retenciones para esta operación</p>';
+        } else {
+            listContainer.innerHTML = retenciones.map((ret, idx) => `
+                <div class="retencion-item">
+                    <div class="retencion-info">
+                        ${ret.opcional ? `
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input
+                                    type="checkbox"
+                                    id="retencion-aplicar-${idx}"
+                                    checked
+                                    onchange="recalcularTotales()"
+                                    style="width: 18px; height: 18px; cursor: pointer;"
+                                >
+                                <span class="retencion-nombre">${ret.nombre}</span>
+                            </label>
+                        ` : `
+                            <span class="retencion-nombre">${ret.nombre}</span>
+                        `}
+                        <span class="retencion-porcentaje">${ret.porcentaje}%</span>
+                    </div>
+                    ${ret.editable ? `
+                        <input
+                            type="number"
+                            class="retencion-input"
+                            id="retencion-${idx}"
+                            value="${ret.porcentaje}"
+                            min="0"
+                            max="100"
+                            step="0.1"
+                            onchange="recalcularTotales()"
+                            ${ret.opcional ? `disabled id="retencion-input-${idx}"` : ''}
+                        >
+                    ` : ''}
+                </div>
+            `).join('');
+
+            // Si hay retenciones opcionales, agregar listeners para habilitar/deshabilitar inputs
+            retenciones.forEach((ret, idx) => {
+                if (ret.opcional) {
+                    const checkbox = document.getElementById(`retencion-aplicar-${idx}`);
+                    const input = document.getElementById(`retencion-input-${idx}`);
+                    if (checkbox && input) {
+                        checkbox.addEventListener('change', function() {
+                            input.disabled = !this.checked;
+                            recalcularTotales();
+                        });
+                    }
+                }
+            });
+        }
+
+        container.style.display = 'block';
+        recalcularTotales();
+    }
+
+    function recalcularTotales() {
+        const tipoOperacion = document.getElementById('tipo-operacion').value;
+        if (!tipoOperacion) return;
+
+        // Calcular subtotal de servicios
+        let subtotal = 0;
+        let serviceNum = 1;
+        while (document.querySelector(`[name="servicio_precio_${serviceNum}"]`)) {
+            const cantidad = parseFloat(document.querySelector(`[name="servicio_cantidad_${serviceNum}"]`).value) || 0;
+            const precio = parseFloat(document.querySelector(`[name="servicio_precio_${serviceNum}"]`).value) || 0;
+            subtotal += cantidad * precio;
+            serviceNum++;
+        }
+
+        const retenciones = retencionesConfig[tipoOperacion] || [];
+        let totalRetenciones = 0;
+        let detalleHTML = '';
+        let retencionesAplicadas = []; // Para enviar al backend
+
+        retenciones.forEach((ret, idx) => {
+            // Verificar si es opcional y si está marcado
+            const aplicar = ret.opcional
+                ? (document.getElementById(`retencion-aplicar-${idx}`)?.checked || false)
+                : true;
+
+            if (!aplicar) return; // Saltar esta retención si no está marcada
+
+            const porcentaje = ret.editable
+                ? (parseFloat(document.getElementById(`retencion-${idx}`)?.value) || 0)
+                : ret.porcentaje;
+
+            const montoRetencion = (subtotal * porcentaje) / 100;
+            totalRetenciones += montoRetencion;
+
+            detalleHTML += `
+                <div class="summary-row-small">
+                    <span>- ${ret.nombre} (${porcentaje}%)</span>
+                    <span>-${formatCurrency(montoRetencion)}</span>
+                </div>
+            `;
+
+            // Guardar para enviar al backend
+            retencionesAplicadas.push({
+                nombre: ret.nombre,
+                porcentaje: porcentaje
+            });
+        });
+
+        const totalFinal = subtotal - totalRetenciones;
+
+        // Actualizar UI
+        document.getElementById('subtotal-display').textContent = formatCurrency(subtotal);
+        document.getElementById('retenciones-detail').innerHTML = detalleHTML;
+        document.getElementById('total-display').textContent = formatCurrency(totalFinal);
+        document.getElementById('retenciones-summary').style.display = 'block';
+
+        // Guardar retenciones en campo hidden para enviar al backend
+        const retencionesJSON = JSON.stringify(retencionesAplicadas);
+        document.getElementById('retenciones_aplicadas').value = retencionesJSON;
+        console.log('DEBUG JS - Retenciones guardadas en campo hidden:', retencionesJSON);
+
+        // Actualizar monto en texto
+        updateMontoTexto(totalFinal);
+    }
+
+    // === 3. MONEDA Y CONVERSIÓN A TEXTO ===
+    function updateMonedaDisplay() {
+        const moneda = document.getElementById('moneda').value;
+        const displayBox = document.getElementById('monto-texto-display');
+
+        if (moneda) {
+            displayBox.style.display = 'block';
+            recalcularTotales();
+        } else {
+            displayBox.style.display = 'none';
+        }
+    }
+
+    function updateMontoTexto(monto) {
+        const moneda = document.getElementById('moneda').value;
+        if (!moneda) return;
+
+        const montoTexto = numeroALetras(monto, moneda);
+        const simbolo = moneda === 'COP' ? '$' : 'US$';
+
+        document.getElementById('monto-numero-text').textContent = `${simbolo}${formatNumber(monto)} ${moneda}`;
+        document.getElementById('monto-letras-text').textContent = montoTexto;
+    }
+
+    function numeroALetras(numero, moneda) {
+        const unidades = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+        const decenas = ['', 'diez', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+        const especiales = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
+        const centenas = ['', 'ciento', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+
+        const nombreMoneda = moneda === 'COP' ? 'pesos colombianos' : 'dólares estadounidenses';
+
+        if (numero === 0) return `Cero ${nombreMoneda}`;
+
+        let resultado = '';
+        const millones = Math.floor(numero / 1000000);
+        const miles = Math.floor((numero % 1000000) / 1000);
+        const cientos = Math.floor(numero % 1000);
+
+        function convertirGrupo(n) {
+            if (n === 0) return '';
+            if (n === 100) return 'cien';
+
+            let texto = '';
+            const c = Math.floor(n / 100);
+            const d = Math.floor((n % 100) / 10);
+            const u = n % 10;
+
+            if (c > 0) texto += centenas[c] + ' ';
+
+            if (d === 1 && u !== 0) {
+                texto += especiales[u];
+            } else {
+                if (d === 2 && u !== 0) {
+                    texto += 'veinti' + unidades[u];
+                } else {
+                    texto += decenas[d];
+                    if (d > 2 && u !== 0) texto += ' y ';
+                    if (u !== 0) texto += unidades[u];
+                }
+            }
+
+            return texto.trim();
+        }
+
+        if (millones > 0) {
+            resultado += millones === 1 ? 'un millón ' : convertirGrupo(millones) + ' millones ';
+        }
+        if (miles > 0) {
+            resultado += miles === 1 ? 'mil ' : convertirGrupo(miles) + ' mil ';
+        }
+        if (cientos > 0) {
+            resultado += convertirGrupo(cientos) + ' ';
+        }
+
+        resultado += nombreMoneda;
+        return resultado.charAt(0).toUpperCase() + resultado.slice(1).trim();
+    }
+
+    // === 4. TEXTO LEGAL EDITABLE ===
+    function updateTextoLegal() {
+        const plazo = document.getElementById('plazo-pago').value;
+        if (!plazo) {
+            document.getElementById('texto-legal').value = '';
+            return;
+        }
+
+        const bancoCuenta = document.getElementById('emisor-numero-cuenta-wizard').value || '[número de cuenta]';
+        const banco = document.getElementById('emisor-banco-wizard').value || '[banco]';
+
+        const texto = `Esta cuenta de cobro representa el cobro formal de los servicios prestados, bajo la modalidad de persona natural. Por favor realizar el pago a la cuenta ${bancoCuenta} del ${banco} dentro del plazo establecido de ${plazo} días.`;
+
+        document.getElementById('texto-legal').value = texto;
+    }
+
+    // === DEBUG FUNCTIONS ===
+    function debugFormSubmit(event) {
+        console.log('=== DEBUG FORM SUBMIT (onsubmit event) ===');
+        console.log('plazo_pago:', document.getElementById('plazo-pago')?.value);
+        console.log('tipo_operacion:', document.getElementById('tipo-operacion')?.value);
+        console.log('moneda:', document.getElementById('moneda')?.value);
+        console.log('texto_legal:', document.getElementById('texto-legal')?.value);
+        console.log('retenciones_aplicadas:', document.getElementById('retenciones_aplicadas')?.value);
+        // No prevenimos el submit, solo logueamos
+        return true;
+    }
+
+    function debugFormSubmitClick() {
+        const plazo = document.getElementById('plazo-pago')?.value;
+        const tipo = document.getElementById('tipo-operacion')?.value;
+        const moneda = document.getElementById('moneda')?.value;
+        const retenciones = document.getElementById('retenciones_aplicadas')?.value;
+
+        console.log('=== DEBUG FORM SUBMIT (button click) ===');
+        console.log('plazo_pago:', plazo);
+        console.log('tipo_operacion:', tipo);
+        console.log('moneda:', moneda);
+        console.log('retenciones_aplicadas:', retenciones);
+    }
+
+    // === 5. VISTA PREVIA ===
+    function showPreview() {
+        // Validar formulario primero
+        const form = document.querySelector('.wizard-form');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        // Cliente
+        const clienteNickname = document.getElementById('client').value;
+        const cliente = allClients.find(c => c.nickname === clienteNickname);
+        document.getElementById('preview-cliente').textContent = cliente
+            ? `${cliente.nombre_completo} - ${cliente.nit}`
+            : 'No seleccionado';
+
+        // Tipo de operación
+        const tipoOpSelect = document.getElementById('tipo-operacion');
+        document.getElementById('preview-tipo-operacion').textContent =
+            tipoOpSelect.options[tipoOpSelect.selectedIndex].text;
+
+        // Servicios
+        let serviciosHTML = '<ul style="margin: 0; padding-left: 20px;">';
+        let serviceNum = 1;
+        while (document.querySelector(`[name="servicio_descripcion_${serviceNum}"]`)) {
+            const desc = document.querySelector(`[name="servicio_descripcion_${serviceNum}"]`).value;
+            const cant = document.querySelector(`[name="servicio_cantidad_${serviceNum}"]`).value;
+            const precio = parseFloat(document.querySelector(`[name="servicio_precio_${serviceNum}"]`).value) || 0;
+            serviciosHTML += `<li>${desc} - Cantidad: ${cant} - ${formatCurrency(precio)}</li>`;
+            serviceNum++;
+        }
+        serviciosHTML += '</ul>';
+        document.getElementById('preview-servicios').innerHTML = serviciosHTML;
+
+        // Monto
+        document.getElementById('preview-monto').textContent =
+            document.getElementById('monto-numero-text').textContent;
+        document.getElementById('preview-monto-letras').textContent =
+            document.getElementById('monto-letras-text').textContent;
+
+        // Retenciones
+        const retencionesDetail = document.getElementById('retenciones-detail').innerHTML;
+        document.getElementById('preview-retenciones').innerHTML =
+            retencionesDetail || '<p style="color: #6b7280;">Sin retenciones</p>';
+
+        // Total
+        document.getElementById('preview-total').textContent =
+            document.getElementById('total-display').textContent;
+
+        // Plazo y texto legal
+        const plazoSelect = document.getElementById('plazo-pago');
+        document.getElementById('preview-plazo').textContent =
+            plazoSelect.options[plazoSelect.selectedIndex].text;
+        document.getElementById('preview-texto-legal').textContent =
+            document.getElementById('texto-legal').value;
+
+        // Mostrar vista previa y botón de generar
+        document.getElementById('vista-previa-section').style.display = 'block';
+        document.getElementById('btn-ver-preview').style.display = 'none';
+        document.getElementById('btn-generar').style.display = 'block';
+
+        // Scroll suave a la vista previa
+        document.getElementById('vista-previa-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // === UTILIDADES ===
+    function formatCurrency(amount) {
+        const moneda = document.getElementById('moneda').value || 'COP';
+        const simbolo = moneda === 'COP' ? '$' : 'US$';
+        return `${simbolo}${formatNumber(amount)}`;
+    }
+
+    function formatNumber(num) {
+        return new Intl.NumberFormat('es-CO').format(Math.round(num));
+    }
+
+    // Escuchar cambios en servicios para recalcular
+    document.addEventListener('input', function(e) {
+        if (e.target.name && (e.target.name.includes('servicio_precio_') || e.target.name.includes('servicio_cantidad_'))) {
+            recalcularTotales();
+        }
+    });
+
     document.addEventListener('DOMContentLoaded', function() {
         loadEmpresaFieldVisibility();
-        
+
+        // Cargar datos de facturación guardados automáticamente (sin mostrar alert)
+        loadBillingDataWizard(false);
+
+        // Inicializar texto legal por defecto (después de cargar datos)
+        setTimeout(() => {
+            updateTextoLegal();
+        }, 100);
+
+        // Actualizar texto legal cuando cambien banco o cuenta
+        const bancoCampo = document.getElementById('emisor-banco-wizard');
+        const cuentaCampo = document.getElementById('emisor-numero-cuenta-wizard');
+
+        if (bancoCampo) {
+            bancoCampo.addEventListener('change', updateTextoLegal);
+        }
+        if (cuentaCampo) {
+            cuentaCampo.addEventListener('input', updateTextoLegal);
+        }
+
         // Verificar si es la primera vez que el usuario visita el dashboard
         const hasSeenDashboardTour = localStorage.getItem('hasSeenDashboardTour');
         if (!hasSeenDashboardTour) {
