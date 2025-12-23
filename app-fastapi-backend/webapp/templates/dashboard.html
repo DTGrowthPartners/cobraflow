@@ -284,47 +284,274 @@
     <!-- Sección Inferior: Historial (ancho completo) -->
     <div class="dashboard-bottom" id="historial-section">
         <div class="card" id="historial">
-            <h2 data-subtitle="Historial reciente de archivos generados" style="display: flex; justify-content: space-between; align-items: center;">
-                Historial de Cuentas Generadas
-                {% if history %}
-                <button onclick="deleteSelectedInvoices()" class="btn btn-danger">Eliminar Seleccionados</button>
-                {% endif %}
-            </h2>
+            <div class="history-header">
+                <h2>Historial</h2>
+                <div class="history-actions">
+                    <div class="search-container">
+                        <input type="text" id="search-invoices" placeholder="Buscar cliente..." class="search-input">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                </div>
+            </div>
             {% if history %}
-            <div class="history-list">
-                <table>
-                    <thead>
-                        <tr>
-                            <th><input type="checkbox" id="select-all" onclick="toggleSelectAll()"></th>
-                            <th>Cliente</th>
-                            <th>Fecha (del archivo)</th>
-                            <th>Archivo</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in history %}
-                        <tr>
-                            <td><input type="checkbox" class="invoice-checkbox" value="{{ item.filename }}"></td>
-                            <td>{{ item.client_name }}</td>
-                            <td>{{ item.date_str }}</td>
-                            <td>{{ item.filename }}</td>
-                            <td>
-                                <a href="{{ item.url }}" target="_blank" class="btn btn-ghost">Ver</a>
-                                <button onclick="deleteInvoice('{{ item.filename }}')" class="btn-remove-service" title="Eliminar factura" style="padding: 8px;">
-                                 <p>Eliminar</p> <img class="basurita" src="/static/basurita.svg" alt="Eliminar" style="width: 20px; height: 20px;">
-                                </button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="invoices-list">
+                {% for item in history %}
+                <div class="invoice-card" onclick="window.location.href='{{ item.url }}'">
+                    <div class="invoice-header">
+                        <div class="invoice-client">
+                            <h3>{{ item.client_name }}</h3>
+                            <p class="invoice-type">Cuenta de cobro</p>
+                        </div>
+                        <div class="invoice-date">
+                            <span class="date-day">{{ item.date_str[:2] }}</span>
+                            <span class="date-month">{{ item.date_str[3:5] }}</span>
+                        </div>
+                    </div>
+                    <div class="invoice-footer">
+                        <span class="invoice-filename">{{ item.filename }}</span>
+                        <button onclick="event.stopPropagation(); deleteInvoice('{{ item.filename }}')" class="invoice-action" title="Eliminar">
+                            <img src="/static/basurita.svg" alt="Eliminar" class="basurita-icon">
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
             {% else %}
-            <p>Aún no se han generado cuentas de cobro.</p>
+            <div class="empty-state">
+                <div class="empty-icon">📄</div>
+                <p class="empty-text">Aún no se han generado cuentas de cobro</p>
+            </div>
             {% endif %}
         </div>
     </div>
+    
+    <style>
+        /* Historial Moderno - Estilos para Mobile */
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        .history-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .search-container {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            background: var(--bg-white);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .invoices-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .invoice-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .invoice-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-purple);
+        }
+        
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+        
+        .invoice-client h3 {
+            margin: 0 0 4px 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+        
+        .invoice-type {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .invoice-date {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-light));
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .date-day {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+        
+        .date-month {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .invoice-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .invoice-filename {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: monospace;
+            word-break: break-all;
+        }
+        
+        .invoice-action {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        
+        .invoice-action:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .basurita-icon {
+            width: 18px;
+            height: 18px;
+            color: #e20613;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .empty-text {
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        /* Estilos para Desktop */
+        @media (min-width: 769px) {
+            .invoices-list {
+                gap: 16px;
+            }
+            
+            .invoice-card {
+                padding: 20px;
+            }
+            
+            .invoice-header {
+                margin-bottom: 16px;
+            }
+            
+            .invoice-client h3 {
+                font-size: 1.1rem;
+            }
+            
+            .invoice-type {
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .invoice-card {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+    
+    <script>
+        // Funcionalidad de búsqueda
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-invoices');
+            const invoiceCards = document.querySelectorAll('.invoice-card');
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    
+                    invoiceCards.forEach(card => {
+                        const clientName = card.querySelector('.invoice-client h3').textContent.toLowerCase();
+                        if (clientName.includes(searchTerm)) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        });
+    </script>
 </div>
 
     <!-- Modal de Gestión (sin cambios funcionales, solo se accede desde sidebar) -->
@@ -657,7 +884,7 @@
 .step-number {
     width: 40px;
     height: 40px;
-    background: var(--primary-purple);
+    background: linear-gradient(135deg, hsl(245, 75%, 60%) 0%, hsl(280, 75%, 55%) 100%);
     color: white;
     border-radius: 50%;
     display: flex;
