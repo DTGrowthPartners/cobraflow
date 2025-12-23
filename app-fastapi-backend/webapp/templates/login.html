@@ -16,7 +16,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -34,7 +34,7 @@
             position: absolute;
             top: -60px;
             left: 0;
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, hsl(245, 75%, 60%) 0%, hsl(280, 75%, 55%) 100%);
             color: white;
             border: 2px solid rgba(255, 255, 255, 0.3);
             padding: 0.75rem 1.5rem;
@@ -48,11 +48,11 @@
             align-items: center;
             gap: 0.5rem;
             backdrop-filter: blur(10px);
+            transition: .5s;
         }
 
         .back-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
+           
             transform: translateX(-5px);
         }
 
@@ -88,7 +88,7 @@
         .login-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+             background: linear-gradient(135deg, hsl(245, 75%, 60%) 0%, hsl(280, 75%, 55%) 100%);
             border-radius: 20px;
             display: flex;
             align-items: center;
@@ -161,7 +161,7 @@
         .login-form .btn-login {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+             background: linear-gradient(135deg, hsl(245, 75%, 60%) 0%, hsl(280, 75%, 55%) 100%);
             color: white;
             border: none;
             border-radius: 12px;
@@ -185,22 +185,27 @@
         .btn-demo {
             width: 100%;
             padding: 1rem;
-            background: #dc2626;
-            color: white;
-            border: none;
+            background: transparent;
+            border: solid 2px #fc8181;
             border-radius: 12px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
             margin-top: 0.75rem;
             box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+            transition: .5s;
+        }
+        .btn-demo::before {
+            content: "⚡";
         }
 
+
         .btn-demo:hover {
-            background: #b91c1c;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+            color: white;
+             transition: .5s;
         }
 
         .alert {
@@ -409,7 +414,7 @@
 
         @media (max-width: 480px) {
             body {
-                padding: 0.5rem;
+                padding: .5em 1em;
             }
 
             .login-card {
@@ -452,13 +457,6 @@
 </head>
 <body>
     <div class="login-wrapper">
-        <a href="/" class="back-button">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Volver
-        </a>
-
         <div class="login-card">
             <div class="login-header">
                 <div class="login-icon">
@@ -511,26 +509,17 @@
             <button type="button" class="btn-demo" onclick="fillDemoCredentials()">
                 Usar Credenciales Demo
             </button>
+            
         </div>
-
-        <div class="credentials-card">
-            <h4>Cuenta Demo</h4>
-            <div class="credential-item">
-                <span class="credential-label">Email:</span>
-                <span class="credential-value" onclick="copyToClipboard(this)" title="Click para copiar">
-                    demo@dtgrowthpartners.com
-                </span>
-            </div>
-            <div class="credential-item">
-                <span class="credential-label">Password:</span>
-                <span class="credential-value" onclick="copyToClipboard(this)" title="Click para copiar">
-                    demo123
-                </span>
-            </div>
-            <div class="demo-badge">
-                Haz click en las credenciales para copiarlas
-            </div>
-        </div>
+        <br>
+        <br>
+<a href="/" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver
+        </a>
+       
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
