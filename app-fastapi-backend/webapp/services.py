@@ -118,7 +118,7 @@ def list_generated_invoices() -> List[Dict[str, str]]:
             # Extraer información del nombre del archivo si es posible (ej: 'cuenta_cobro_Cliente_X_20231027103000.pdf')
             parts = filename.replace('.pdf', '').split('_')
             client_name = parts[2] if len(parts) > 2 else "Desconocido"
-            date_str = parts[-1] if len(parts) > 3 else "Sin fecha"
+            date_str = parts[-1] if len(parts) > 0 else "Sin fecha"
 
             invoices.append({
                 "filename": filename,
