@@ -4,11 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Generador de Cuentas de Cobro{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}?v=11.0">
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}?v=12.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+<style>
+    #salir {
+    background-color: #e20613 !important;
+    color: white;;
+    width: 80px;
+    margin: 20px;
+    padding: 10px 15px;
+    border-radius: 8px;
+}
+</style>
 <body>
     <div class="container">
         <header class="main-header">
@@ -22,16 +32,46 @@
             </div>
             {% if request.session.user %}
             <div class="main-header-right">
-                <a href="/dashboard" class="btn btn-ghost">Dashboard</a>
-                <a href="/template-editor" class="btn btn-ghost">✏️ Editor de Plantilla</a>
-                <div class="user-pill">
+                <a href="/dashboard" class="btn btn-ghost desktop-only">Dashboard</a>
+                <a href="/template-editor" class="btn btn-ghost desktop-only">Editor de Plantilla</a>
+                <div class="user-pill desktop-only">
                     <span class="user-avatar">{{ request.session.user[0]|upper }}</span>
                     <span class="user-name">{{ request.session.user }}</span>
                 </div>
-                <a href="/logout" class="btn btn-ghost">Salir</a>
+                <a href="/logout" class="btn btn-ghost desktop-only">Salir</a>
+                <button class="hamburger-menu mobile-only" id="hamburger-menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
             </div>
             {% endif %}
         </header>
+        
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay">
+            <div class="mobile-menu-content">
+                <div class="mobile-menu-header">
+                    <div class="app-logo" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                        <div style="width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                            <span style="color: white; font-weight: bold; font-size: 1.25rem;">C</span>
+                        </div>
+                        <span style="font-weight: bold; font-size: 1.25rem; color: #1a202c;">CobraFlow</span>
+                    </div>
+                    <button class="mobile-menu-close" id="mobile-menu-close">✕</button>
+                </div>
+                <nav class="mobile-menu-nav">
+                     <div class="mobile-user-pill">
+                        <span class="user-avatar">{{ request.session.user[0]|upper }}</span>
+                        <span class="user-name">{{ request.session.user }}</span>
+                    </div>
+                    <a href="/dashboard" class="mobile-menu-item">Dashboard</a>
+                    <a href="/template-editor" class="mobile-menu-item">Editor de Plantilla</a>
+                   
+                    <a href="/logout" class="mobile-menu-item" id="salir">Salir</a>
+                </nav>
+            </div>
+        </div>
         
         <main>
             {% block content %}{% endblock %}
@@ -46,5 +86,43 @@
     {% block mobile_navbar %}{% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Mobile menu functionality
+        const hamburgerMenu = document.getElementById('hamburger-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        const mobileMenuClose = document.getElementById('mobile-menu-close');
+        
+        if (hamburgerMenu) {
+            hamburgerMenu.addEventListener('click', () => {
+                mobileMenuOverlay.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            });
+        }
+        
+        if (mobileMenuClose) {
+            mobileMenuClose.addEventListener('click', () => {
+                mobileMenuOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+        }
+        
+        // Close menu when clicking outside
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.addEventListener('click', (e) => {
+                if (e.target === mobileMenuOverlay) {
+                    mobileMenuOverlay.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
+        
+        // Close menu when pressing ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenuOverlay.style.display === 'block') {
+                mobileMenuOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
 </body>
 </html>
