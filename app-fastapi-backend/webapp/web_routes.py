@@ -134,26 +134,25 @@ async def generate_invoice_request(request: Request, user: str = Depends(auth.lo
         print(f"DEBUG - moneda: {moneda}")
         print(f"DEBUG - plazo_pago: {plazo_pago}")
         print(f"DEBUG - texto_legal: {texto_legal[:100] if texto_legal else 'VACIO'}")
-        print(f"DEBUG - retenciones_json: {retenciones_json}")
-        print(f"DEBUG - retenciones parseadas: {retenciones}")
         
         # Forzar valores por defecto si no se reciben correctamente
         if not plazo_pago or plazo_pago == "30":
             print("ADVERTENCIA: plazo_pago no se recibió correctamente, usando valor por defecto")
             plazo_pago = "30"
         
-        if not isinstance(retenciones, list):
-            print("ADVERTENCIA: retenciones no es una lista válida, inicializando como vacía")
-            retenciones = []
-
         # Parse retenciones
         retenciones_json = form_data.get("retenciones_aplicadas", "[]")
         print(f"DEBUG - retenciones_json: {retenciones_json}")
+        retenciones = []
         try:
             retenciones = json.loads(retenciones_json) if retenciones_json else []
             print(f"DEBUG - retenciones parseadas: {retenciones}")
         except Exception as e:
             print(f"DEBUG - Error parseando retenciones: {e}")
+            retenciones = []
+        
+        if not isinstance(retenciones, list):
+            print("ADVERTENCIA: retenciones no es una lista válida, inicializando como vacía")
             retenciones = []
         
         # Load saved billing data
