@@ -68,16 +68,7 @@
                 </div>
             </div>
 
-            {% if success_message %}
-                <div class="alert alert-success">{{ success_message }}</div>
-                {% if generated_pdf_url %}
-                    <div class="pdf-preview">
-                        <p>Previsualización del PDF:</p>
-                        <iframe src="{{ generated_pdf_url }}" width="100%" height="400px"></iframe>
-                        <a href="{{ generated_pdf_url }}" target="_blank" class="btn btn-secondary">Abrir en nueva pestaña</a>
-                    </div>
-                {% endif %}
-            {% endif %}
+            {# El modal de éxito se muestra automáticamente via JavaScript - Ver script más abajo #}
 
             {% if error_message %}
                 <div class="alert alert-danger">{{ error_message }}</div>
@@ -187,7 +178,14 @@
                     </div>
                     <div class="step-content">
                         <div class="form-group-wizard">
-                            <label for="tipo-operacion">Tipo de operación</label>
+                            <label for="tipo-operacion">
+                                Tipo de operación
+                                <span class="tooltip-trigger">?
+                                    <span class="tooltip-content">
+                                        Define si la transacción es entre dos personas naturales o de una persona natural hacia una empresa. Esto determina las retenciones aplicables.
+                                    </span>
+                                </span>
+                            </label>
                             <select id="tipo-operacion" name="tipo_operacion" required onchange="updateRetenciones()">
                                 <option value="">-- Selecciona el tipo de operación --</option>
                                 <option value="natural-natural">Persona Natural → Persona Natural</option>
@@ -199,6 +197,11 @@
                             <div class="retenciones-header">
                                 <h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #1a1a1a;">
                                     Retenciones aplicables
+                                    <span class="tooltip-trigger">?
+                                        <span class="tooltip-content">
+                                            Son descuentos legales que el cliente debe hacer sobre el monto total de tu factura. Las empresas están obligadas a retener ciertos porcentajes según la ley colombiana.
+                                        </span>
+                                    </span>
                                 </h4>
                                 <p style="margin: 0 0 16px 0; font-size: 13px; color: #6b7280;">
                                     Estas retenciones se aplicarán automáticamente según la legislación colombiana
@@ -363,7 +366,14 @@
                     </div>
                     <div class="step-content">
                         <div class="form-group-wizard">
-                            <label for="plazo-pago">Plazo de pago</label>
+                            <label for="plazo-pago">
+                                Plazo de pago
+                                <span class="tooltip-trigger">?
+                                    <span class="tooltip-content">
+                                        Define cuántos días tiene el cliente para realizar el pago desde la fecha de emisión. Esto afecta el texto legal que aparecerá en la cuenta de cobro.
+                                    </span>
+                                </span>
+                            </label>
                             <select id="plazo-pago" name="plazo_pago" required onchange="updateTextoLegal()">
                                 <option value="">-- Selecciona el plazo --</option>
                                 <option value="15">15 días</option>
@@ -3391,6 +3401,33 @@ input#primary-color, input#secondary-color {
 
 <!-- Intro.js JavaScript -->
 <script src="https://unpkg.com/intro.js/intro.js"></script>
+
+<!-- UX Enhancements JavaScript -->
+<script src="/static/ux-enhancements.js"></script>
+
+<!-- Auto-show success modal when PDF is generated -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Verificar si hay un PDF generado exitosamente
+        {% if generated_pdf_url %}
+        const pdfUrl = "{{ generated_pdf_url }}";
+        const filename = pdfUrl.split('/').pop();
+
+        // Esperar a que ux-enhancements.js se cargue
+        setTimeout(() => {
+            if (typeof showSuccessModal === 'function') {
+                showSuccessModal(pdfUrl, filename);
+
+                // Limpiar la URL para evitar que el modal aparezca al recargar
+                const url = new URL(window.location);
+                url.searchParams.delete('success');
+                url.searchParams.delete('pdf');
+                window.history.replaceState({}, '', url);
+            }
+        }, 500);
+        {% endif %}
+    });
+</script>
 
 <style>
     /* Personalización de Intro.js */

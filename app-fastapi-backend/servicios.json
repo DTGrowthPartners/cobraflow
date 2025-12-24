@@ -29,6 +29,11 @@
       "nombre": "Diseño de Material Publicitario",
       "descripcion": "Creación de folletos, banners y material promocional",
       "categoria": "Diseño Gráfico"
+    },
+    {
+      "nombre": "App Mobile",
+      "descripcion": "Desarrollo de app",
+      "categoria": "mobile"
     }
   ]
 }

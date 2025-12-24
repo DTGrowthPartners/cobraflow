@@ -1661,4 +1661,500 @@ table {
     }
 }
 
+/* ===== NUEVAS MEJORAS UX - PRIORIDAD ALTA ===== */
+
+/* 1. Toast Notifications System */
+.toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+
+.toast {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding: 16px 20px;
+    min-width: 300px;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border-left: 4px solid var(--primary-purple);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    pointer-events: all;
+    opacity: 0;
+    transform: translateX(400px);
+    animation: slideInToast 0.3s ease forwards;
+}
+
+.toast.toast-success {
+    border-left-color: var(--success-green);
+}
+
+.toast.toast-error {
+    border-left-color: #ef4444;
+}
+
+.toast.toast-info {
+    border-left-color: #3b82f6;
+}
+
+.toast.toast-warning {
+    border-left-color: #f59e0b;
+}
+
+.toast-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+}
+
+.toast-message {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    font-size: 18px;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.toast-close:hover {
+    color: var(--text-primary);
+}
+
+@keyframes slideInToast {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.toast.toast-hiding {
+    animation: slideOutToast 0.3s ease forwards;
+}
+
+@keyframes slideOutToast {
+    to {
+        opacity: 0;
+        transform: translateX(400px);
+    }
+}
+
+/* 2. Validation Error Styles */
+.form-group-wizard.has-error input,
+.form-group-wizard.has-error select,
+.form-group-wizard.has-error textarea {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.error-message {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #ef4444;
+    font-size: 13px;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+.error-message::before {
+    content: "⚠";
+    font-size: 14px;
+}
+
+/* 3. Floating Action Button (FAB) - Botón Generar siempre visible */
+.fab-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.fab-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 28px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.fab-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(16, 185, 129, 0.5);
+}
+
+.fab-button:active {
+    transform: translateY(0);
+}
+
+.fab-button .fab-icon {
+    font-size: 20px;
+}
+
+.fab-button.fab-preview {
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-dark) 100%);
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4);
+}
+
+.fab-button.fab-preview:hover {
+    box-shadow: 0 12px 32px rgba(124, 58, 237, 0.5);
+}
+
+/* 4. Modal de Confirmación */
+.confirm-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.2s ease;
+}
+
+.confirm-modal-content {
+    background: var(--bg-white);
+    margin: 10% auto;
+    padding: 0;
+    border-radius: var(--radius-xl);
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.confirm-modal-header {
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-dark) 100%);
+    padding: 24px 28px;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.confirm-modal-icon {
+    font-size: 32px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.confirm-modal-title {
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.confirm-modal-body {
+    padding: 28px;
+}
+
+.confirm-summary {
+    background: var(--gray-50);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.confirm-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-light);
+    gap: 16px;
+}
+
+.confirm-summary-row:last-child {
+    border-bottom: none;
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 2px solid var(--border-medium);
+}
+
+.confirm-summary-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+.confirm-summary-value {
+    font-size: 14px;
+    color: var(--text-primary);
+    text-align: right;
+    font-weight: 500;
+}
+
+.confirm-summary-value.highlight {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-purple);
+}
+
+.confirm-modal-footer {
+    display: flex;
+    gap: 12px;
+    padding: 0 28px 28px 28px;
+}
+
+.confirm-modal-footer .btn {
+    flex: 1;
+}
+
+/* Botón de WhatsApp en modal */
+.btn-success {
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+
+/* 5. Tooltips Informativos */
+.tooltip-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: var(--primary-purple-light);
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: help;
+    margin-left: 6px;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.tooltip-trigger:hover {
+    background: var(--primary-purple);
+    transform: scale(1.1);
+}
+
+.tooltip-content {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    padding: 12px 16px;
+    background: var(--gray-900);
+    color: white;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    line-height: 1.5;
+    width: 250px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip-content::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--gray-900);
+}
+
+.tooltip-trigger:hover .tooltip-content {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+/* 6. Contador de caracteres */
+.char-counter {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.char-counter.char-warning {
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.char-counter.char-error {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.char-progress-bar {
+    width: 60px;
+    height: 4px;
+    background: var(--border-light);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+}
+
+.char-progress-fill {
+    height: 100%;
+    background: var(--success-green);
+    transition: all 0.3s ease;
+    border-radius: var(--radius-xl);
+}
+
+.char-progress-fill.warning {
+    background: #f59e0b;
+}
+
+.char-progress-fill.error {
+    background: #ef4444;
+}
+
+/* 7. Cliente seleccionado mejorado */
+.selected-client-enhanced {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border: 2px solid var(--success-green);
+    border-radius: var(--radius-lg);
+    margin-top: 12px;
+    animation: fadeIn 0.3s ease;
+}
+
+.selected-client-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.selected-client-info {
+    flex: 1;
+}
+
+.selected-client-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 2px 0;
+}
+
+.selected-client-nit {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .toast-container {
+        top: 60px;
+        right: 12px;
+        left: 12px;
+    }
+
+    .toast {
+        min-width: unset;
+        max-width: unset;
+        width: 100%;
+    }
+
+    .fab-container {
+        bottom: 80px;
+        right: 16px;
+        left: 16px;
+    }
+
+    .fab-button {
+        width: 100%;
+        justify-content: center;
+        padding: 14px 20px;
+        border-radius: var(--radius-lg);
+    }
+
+    .confirm-modal-content {
+        margin: 20% auto;
+        width: 95%;
+    }
+
+    .confirm-modal-header {
+        padding: 20px;
+    }
+
+    .confirm-modal-body {
+        padding: 20px;
+    }
+
+    .confirm-modal-footer {
+        padding: 0 20px 20px 20px;
+        flex-direction: column;
+    }
+
+    .tooltip-content {
+        width: 200px;
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+}
+
 

@@ -3,5 +3,15 @@
     "nombre_completo": "Cliente SAS",
     "direccion": "CR 77 C 48 91 BRR ESTADIO",
     "nit": "123456780"
+  },
+  "ariel_torres": {
+    "nombre_completo": "Arie Torres y Asociados",
+    "direccion": "Socorro #33-431",
+    "nit": "190037620"
+  },
+  "edgardo_meza": {
+    "nombre_completo": "Edgardo Meza",
+    "direccion": "El Reposo Kr #68E",
+    "nit": "10436439827"
   }
 }
