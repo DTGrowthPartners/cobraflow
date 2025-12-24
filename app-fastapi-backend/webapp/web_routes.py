@@ -136,7 +136,7 @@ async def generate_invoice_request(request: Request, user: str = Depends(auth.lo
         print(f"DEBUG - texto_legal: {texto_legal[:100] if texto_legal else 'VACIO'}")
         
         # Forzar valores por defecto si no se reciben correctamente
-        if not plazo_pago or plazo_pago == "30":
+        if not plazo_pago:
             print("ADVERTENCIA: plazo_pago no se recibió correctamente, usando valor por defecto")
             plazo_pago = "30"
         

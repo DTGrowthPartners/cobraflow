@@ -74,7 +74,7 @@
                 <div class="alert alert-danger">{{ error_message }}</div>
             {% endif %}
 
-            <form action="/dashboard/generate" method="post" class="wizard-form" onsubmit="debugFormSubmit(event)">
+            <form action="/dashboard/generate" method="post" class="wizard-form" onsubmit="debugFormSubmit(event); recalcularTotales();">
                 <!-- Campos hidden para retenciones -->
                 <input type="hidden" id="retenciones_aplicadas" name="retenciones_aplicadas" value="">
 
@@ -3267,7 +3267,7 @@ input#primary-color, input#secondary-color {
         console.log('texto_legal:', document.getElementById('texto-legal')?.value);
         console.log('retenciones_aplicadas:', document.getElementById('retenciones_aplicadas')?.value);
         // No prevenimos el submit, solo logueamos
-        return true;
+        // return true;
     }
 
     function debugFormSubmitClick() {
